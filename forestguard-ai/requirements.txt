@@ -1,0 +1,3 @@
+# Local crop inspection only. Model training remains remote.
+numpy==2.1.3
+rasterio==1.4.3

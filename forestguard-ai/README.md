@@ -11,6 +11,33 @@ Budget: INR 0 for software, datasets, APIs, model services and hosting. Heavy
 processing/training runs in a free hosted CPU notebook when available. The
 finished product must analyze stored data with saved models offline.
 
+## Synthetic demonstration
+
+A synthetic fixture supplies fictional imagery, labels and separated evaluation
+inputs for testing. Phase 0's demo setup is complete under this authorized scope;
+real-pilot validation remains separate. [Demo instructions](docs/DEMO_DATA.md).
+
+## Local tooling: Phase 1
+
+The lightweight local crop inspector now works with stored sample exports.
+From this project folder, using the prepared environment:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/inspect_local.py --input data/phase0/boundary_check_version6 --output data/phase1/my_first_report
+.\.venv\Scripts\python.exe scripts/check_local.py
+```
+
+It checks files, grids, band order and quality masks in bounded windows and
+exports measured coverage to JSON/CSV. Choose a new report folder for each run.
+[Setup, offline reinstall and verified results](docs/PHASE1_FOUNDATION.md).
+
+## Phase 2 data preparation
+
+Two real March 2024/2025 observations now share a verified grid and common valid
+mask. The dataset registry, offline pair verifier and label-provenance/separation
+audit are implemented. [Data, measured coverage and label-review workflow](docs/PHASE2_DATA_AND_LABELS.md).
+Reviewed labels and actual evaluation splits are pending reference evidence.
+
 ## Phase 0 — establish feasibility
 
 Objective: inspect one real satellite crop and determine whether suitable
@@ -77,6 +104,11 @@ There is no Gemma or other hosted-model dependency in this fresh foundation.
 An optional language feature can be considered after the offline analysis works.
 
 See [progress and completion gates](PROJECT_PLAN.md) and [sources and licenses](docs/SOURCES.md).
+The [location-review workflow](docs/LOCATION_REVIEW_WORKFLOW.md) explains the
+source template and private execution copy used to check historical site leads.
+The [measured feasibility assessment](docs/PHASE0_FEASIBILITY_RESULT.md) records
+the successful candidate-mask/imagery run and the geographic/label gates that
+remain unmet. Phase 0 has not been marked complete.
 
 ## Git and phase handoffs
 

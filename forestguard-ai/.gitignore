@@ -8,7 +8,7 @@ service-account*.json
 *.pem
 *.key
 
-# Local datasets, trained models and private reference material
+# Local datasets (real inputs and synthetic fixtures), maps, models and private records
 /data/
 /models/
 /reports/joga_records/
@@ -39,6 +39,7 @@ service-account*.json
 *.sqlite3-*
 
 # Python environments, caches and test output
+*.whl
 .venv/
 venv/
 __pycache__/

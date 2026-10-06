@@ -1,0 +1,87 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import './style.css';
+
+const paths={leaf:'M12 21c-7-3-8-12 6-17 3 12-2 17-6 17Zm0 0c-2-5 0-9 4-13',grid:'M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z',map:'m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zm6-3v15m6-12v15',database:'M20 6c0 2-4 3-8 3S4 8 4 6s4-3 8-3 8 1 8 3ZM4 6v12c0 2 4 3 8 3s8-1 8-3V6M4 12c0 2 4 3 8 3s8-1 8-3',file:'M14 3H5v18h14V8zm0 0v5h5M8 12h8M8 16h6',arrow:'M5 12h14m-5-5 5 5-5 5',download:'M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4',upload:'M12 16V4m-5 5 5-5 5 5M4 17v4h16v-4',check:'m5 12 4 4 10-10',search:'M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm6-2 6 6',focus:'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M12 8v8m-4-4h8',layers:'m12 3 10 6-10 6L2 9Zm-9 11 9 6 9-6',clock:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm0-15v6l4 2'};
+function Icon({name,size=20}) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]||paths.leaf}/></svg>; }
+const percent=n=>`${((n||0)*100).toFixed(2)}%`;
+const number=n=>Number(n||0).toLocaleString('en-IN');
+const dateLabel=d=>new Date(d+'T12:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+async function api(url,options) { const response=await fetch(url,options); const result=await response.json(); if(!response.ok) throw Error(result.detail||'Request failed'); return result; }
+
+function MapPane({data,observation,layer,rings,fitSignal,index,maps,busy}) {
+  const host=useRef(null),map=useRef(null),image=useRef(null),outline=useRef(null),fitted=useRef('');
+  useEffect(()=>{
+    const instance=L.map(host.current,{crs:L.CRS.Simple,minZoom:-2,maxZoom:5,zoomControl:false,attributionControl:false});
+    L.control.zoom({position:'topleft'}).addTo(instance); map.current=instance; maps.current[index]=instance;
+    instance.on('move',()=>{const peer=maps.current[1-index]; if(peer&&!busy.current){busy.current=true;peer.setView(instance.getCenter(),instance.getZoom(),{animate:false});busy.current=false;}});
+    const resize=new ResizeObserver(()=>instance.invalidateSize());resize.observe(host.current);
+    return ()=>{resize.disconnect();maps.current[index]=null;instance.remove();map.current=null;};
+  },[]);
+  useEffect(()=>{
+    if(!map.current||!data||!observation)return;
+    const bounds=[[0,0],[data.height,data.width]];
+    image.current?.remove();
+    image.current=L.imageOverlay(`/api/datasets/${data.id}/${observation.id}/image/${layer}`,bounds).addTo(map.current);
+    if(fitted.current!==data.id){map.current.fitBounds(bounds,{padding:[22,22]});fitted.current=data.id;}
+    outline.current?.remove();
+    outline.current=L.layerGroup(rings.map(ring=>L.polyline(ring.map(([x,y])=>[data.height-y,x]),{color:'#f3db82',weight:1.5,opacity:.95}))).addTo(map.current);
+  },[data?.id,observation?.id,layer,rings]);
+  useEffect(()=>{if(map.current&&data)map.current.fitBounds([[0,0],[data.height,data.width]],{padding:[22,22]});},[fitSignal]);
+  return <div className="map-pane"><div ref={host} className="leaflet-host" role="img" aria-label={`${data.title}, ${observation.name}, ${layer} layer`}/><div className="map-date"><span className="map-dot"/>{dateLabel(observation.date)}{data.kind==='synthetic'&&<small>Simulated · {observation.name}</small>}</div><div className="map-scale">10 m / pixel <span>Saved raster</span></div></div>;
+}
+
+function App(){
+  const [datasets,setDatasets]=useState([]),[selected,setSelected]=useState('sentinel'),[section,setSection]=useState('Overview'),[viewId,setViewId]=useState('1');
+  const [layer,setLayer]=useState('imagery'),[compare,setCompare]=useState(false),[rings,setRings]=useState([]),[showBoundary,setShowBoundary]=useState(true),[imported,setImported]=useState(false);
+  const [activity,setActivity]=useState([]),[loading,setLoading]=useState(true),[checking,setChecking]=useState(false),[toast,setToast]=useState(''),[error,setError]=useState(''),[search,setSearch]=useState(''),[fit,setFit]=useState(0);
+  const zipInput=useRef(null),boundaryInput=useRef(null),maps=useRef([]),syncBusy=useRef(false);
+  const data=datasets.find(d=>d.id===selected)||datasets[0]; const observation=data?.views.find(v=>v.id===viewId)||data?.views[0];
+  const isDemo=data?.kind==='synthetic';
+  async function refresh(){setDatasets(await api('/api/datasets'));setActivity(await api('/api/activity'));}
+  useEffect(()=>{refresh().catch(e=>setError(e.message)).finally(()=>setLoading(false));},[]);
+  useEffect(()=>{if(!data)return;setViewId(data.views[0].id);setLayer('imagery');setCompare(false);setImported(false);setShowBoundary(true);setRings([]);api(`/api/datasets/${data.id}/outline`).then(r=>setRings(r.rings)).catch(e=>setError(e.message));},[data?.id]);
+  useEffect(()=>{if(!toast)return;const id=setTimeout(()=>setToast(''),4500);return()=>clearTimeout(id);},[toast]);
+  async function check(){setChecking(true);setError('');try{const r=await api(`/api/datasets/${data.id}/validate`,{method:'POST'});setToast(r.detail);setActivity(await api('/api/activity'));}catch(e){setError(e.message);}finally{setChecking(false);}}
+  async function importZip(event){const file=event.target.files?.[0];if(!file)return;setChecking(true);setError('');try{const result=await api('/api/import',{method:'POST',headers:{'Content-Type':'application/zip'},body:file});await refresh();setSelected(result.id);setSection('Map workspace');setToast('Sample imported and checked');}catch(e){setError(e.message);}finally{setChecking(false);event.target.value='';}}
+  async function importBoundary(event){const file=event.target.files?.[0];if(!file)return;try{if(file.size>1024*1024)throw Error('Boundary limit is 1 MiB');const r=await api(`/api/datasets/${data.id}/boundary`,{method:'POST',headers:{'Content-Type':'application/json'},body:await file.text()});setRings(r.rings);setImported(true);setShowBoundary(true);setToast('Outline added for display');}catch(e){setError(e.message);}finally{event.target.value='';}}
+  const visible=datasets.filter(d=>(d.title+' '+d.subtitle).toLowerCase().includes(search.toLowerCase()));
+  const compareView=data?.views.find(v=>v.id!==observation?.id);
+  return <div className="app-shell">
+    <aside className="sidebar"><div className="brand"><div className="brand-mark"><Icon name="leaf" size={25}/></div><div>ForestGuard<span>AI MONITORING WORKSPACE</span></div></div>
+      <div className="workspace-label">WORKSPACE</div><nav>{[['Overview','grid'],['Map workspace','map'],['Datasets','database'],['Reports','file']].map(([name,icon])=><button key={name} onClick={()=>setSection(name)} className={section===name?'active':''}><Icon name={icon}/><span>{name}</span>{section===name&&<i/>}</button>)}</nav>
+      <div className="sidebar-note"><div className="status-dot"/> Local workspace<p>Stored maps. Your computer.<br/>No online basemap required.</p><span>Harda, Madhya Pradesh</span></div>
+      <div className="sidebar-footer"><div className="avatar">FG</div><div>Project workspace<small>Local session</small></div><Icon name="leaf" size={16}/></div>
+    </aside>
+    <div className="main-shell"><header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>{section}</strong></div><div className="topbar-right"><span className="local-badge"><i/> Local</span><span className="top-avatar">FG</span></div></header>
+    <main><div className="page-heading"><div><div className="eyebrow">FORESTGUARD AI</div><h1>{section==='Overview'?'A clearer view of your forest.':section}</h1><p>{section==='Overview'?'Explore saved observations, compare dates and review the evidence.':section==='Map workspace'?'Inspect every observation on its original raster grid.':section==='Datasets'?'Your saved imagery and clearly identified demonstration inputs.':'Export traceable, shareable snapshots of your saved data.'}</p></div><button className="button secondary" onClick={()=>zipInput.current.click()} disabled={checking}><Icon name="upload"/> Import sample ZIP</button></div>
+    <input hidden ref={zipInput} type="file" accept=".zip" onChange={importZip}/><input hidden ref={boundaryInput} type="file" accept=".geojson,.json" onChange={importBoundary}/>
+    {error&&<div className="error-box" role="alert">{error}<button aria-label="Dismiss error" onClick={()=>setError('')}>×</button></div>}
+    {loading?<div className="empty-state">Opening saved datasets…</div>:!data?<div className="empty-state"><Icon name="database" size={38}/><h2>Your workspace is ready.</h2><p>Import an exported forestguard_phase0.zip sample or generate the synthetic fixture.</p><button className="button primary" onClick={()=>zipInput.current.click()}>Import a sample</button></div>:<>
+      {(section==='Overview'||section==='Map workspace')&&<>
+        <div className="dataset-bar"><div><span className={`data-badge ${isDemo?'demo':''}`}>{isDemo?'Synthetic demo':'Real imagery'}</span><select aria-label="Select dataset" value={data.id} onChange={e=>setSelected(e.target.value)}>{datasets.map(d=><option key={d.id} value={d.id}>{d.title}</option>)}</select></div><span className="dataset-scope">{data.scope}</span></div>
+        <div className="stats-grid"><Stat label={isDemo?'Known-label coverage':'Common usable coverage'} value={percent(isDemo?observation.coverage:data.coverage)} note={isDemo?'Inside the selected simulated split':'Valid observations across saved dates'} icon="check"/>
+          <Stat label={isDemo?'Simulated forest':'Saved observations'} value={isDemo?`${observation.forest_ha.toFixed(2)} ha`:data.views.length} note={isDemo?'Generated class pixels, not a model result':'Acquisition dates available to inspect'} icon="leaf"/>
+          <Stat label="Raster resolution" value={`${data.resolution} m`} note={`${data.width} × ${data.height} pixels`} icon="focus"/>
+          <Stat label="File check set" value={data.verified_files} note="Run a fresh check below" icon="file"/></div>
+        <div className={`workspace-grid ${section==='Map workspace'?'expanded':''}`}><section className="panel map-panel"><div className="panel-heading"><div><h2>Observation explorer</h2><span>Pan, zoom and compare stored layers</span></div><button className="icon-button" title="Fit image" aria-label="Fit image" onClick={()=>setFit(fit+1)}><Icon name="focus"/></button></div>
+          <div className="map-toolbar"><div className="segments">{data.layers.map(l=><button key={l} className={layer===l?'chosen':''} onClick={()=>setLayer(l)}>{l==='imagery'?'True colour':l==='classes'?'Simulated classes':data.id==='sentinel'?'Common coverage':'Usable mask'}</button>)}</div><label className="compare-toggle"><input type="checkbox" checked={compare} disabled={data.views.length<2} onChange={e=>setCompare(e.target.checked)}/>Compare</label></div>
+          <div className={`maps ${compare?'dual':''}`}><MapPane key={data.id+'-main'} data={data} observation={observation} layer={layer} rings={showBoundary?rings:[]} fitSignal={fit} index={0} maps={maps} busy={syncBusy}/>{compare&&compareView&&<MapPane key={data.id+'-compare'} data={data} observation={compareView} layer={layer} rings={showBoundary?rings:[]} fitSignal={fit} index={1} maps={maps} busy={syncBusy}/>}</div>
+          <div className="map-footer"><label><input type="checkbox" checked={showBoundary} onChange={e=>setShowBoundary(e.target.checked)}/><span className="legend-outline"/>{imported?'Imported outline · display only':isDemo?'Fictional study grid':'Candidate outline'}</label><button onClick={()=>boundaryInput.current.click()}>Import GeoJSON <Icon name="upload" size={15}/></button></div>
+          <div className="date-strip">{data.views.map(v=><button key={v.id} className={observation.id===v.id?'selected':''} onClick={()=>setViewId(v.id)}><span>{isDemo?v.name:dateLabel(v.date)}</span><small>{isDemo?'Simulated '+dateLabel(v.date):'Sentinel-2 · L2A'}</small></button>)}</div>
+        </section><aside className="insight-stack"><section className="panel insight-card"><div className="panel-heading"><h2>Observation details</h2><Icon name="layers"/></div><dl><dt>{isDemo?'Simulated date':'Acquisition date'}</dt><dd>{dateLabel(observation.date)}</dd><dt>Coordinate system</dt><dd>{data.crs}</dd><dt>Available bands</dt><dd>{data.band_order.join(' · ')}</dd><dt>Data version</dt><dd className="mono">{data.version}</dd></dl><button className="button primary full" onClick={check} disabled={checking}><Icon name={checking?'clock':'check'}/>{checking?'Checking stored files…':'Check dataset'}</button></section>
+          <section className="panel insight-card"><div className="small-label">{isDemo?'SIMULATION SUMMARY':'COVERAGE BY DATE'}</div><h3>{isDemo?'A safe place to test.':'Know what is observable.'}</h3><p>{isDemo?'Classes are generated for workflow testing. They are not predictions of Joga forest cover.':'Only pixels valid on both dates belong to the common coverage mask.'}</p>{data.views.map(v=><div className="coverage-row" key={v.id}><div><span>{isDemo?v.name:dateLabel(v.date)}</span><strong>{percent(v.coverage)}</strong></div><div className="bar"><i style={{width:percent(v.coverage)}}/></div></div>)}<div className="legend"><span><i className="green"/>{layer==='classes'?'Simulated forest':'Usable pixels'}</span>{layer==='classes'&&<span><i className="sand"/>Simulated non-forest</span>}</div></section>
+          <section className="export-card"><Icon name="file" size={24}/><h3>Keep the evidence.</h3><p>Download dates, coverage and data provenance in a portable report.</p><a href={`/api/datasets/${data.id}/report/html`} onClick={()=>setTimeout(()=>api('/api/activity').then(setActivity),700)}>Export report <Icon name="arrow" size={17}/></a></section></aside></div>
+      </>}
+      {section==='Datasets'&&<><div className="library-toolbar"><div className="search-box"><Icon name="search"/><input aria-label="Search datasets" placeholder="Search your datasets…" value={search} onChange={e=>setSearch(e.target.value)}/></div><span>{visible.length} saved datasets</span></div><div className="dataset-cards">{visible.map(d=><article className="panel library-card" key={d.id}><div className="dataset-thumb" style={{backgroundImage:`url(/api/datasets/${d.id}/${d.views[0].id}/image/imagery)`}}><span className={`data-badge ${d.kind==='synthetic'?'demo':''}`}>{d.kind==='synthetic'?'Synthetic demo':'Real imagery'}</span></div><div><h2>{d.title}</h2><p>{d.subtitle}</p><dl><dt>Observations</dt><dd>{d.views.length}</dd><dt>Resolution</dt><dd>{d.resolution} m</dd><dt>Scope</dt><dd>{d.scope}</dd></dl><button className="button secondary full" onClick={()=>{setSelected(d.id);setSection('Map workspace');}}>Open workspace <Icon name="arrow" size={17}/></button></div></article>)}</div>{visible.length===0&&<p className="empty-state">No datasets match your search.</p>}</>}
+      {section==='Reports'&&<section className="panel report-panel"><div className="panel-heading"><div><h2>Reports, ready to travel.</h2><span>Exports keep observed and synthetic data identified.</span></div><Icon name="download"/></div>{datasets.map(d=><div className="report-row" key={d.id}><div className="report-icon"><Icon name="file"/></div><div><h3>{d.title}</h3><p>{d.views.length} observations · {d.kind==='synthetic'?'Simulated dates':'Acquisition dates'} · {d.resolution} m</p></div><a className="button secondary" href={`/api/datasets/${d.id}/report/csv`}>CSV <Icon name="download" size={16}/></a><a className="button primary" href={`/api/datasets/${d.id}/report/html`}>HTML report <Icon name="download" size={16}/></a></div>)}</section>}
+      <section className="panel activity-panel"><div className="panel-heading"><div><h2>Recent activity</h2><span>Checks and exports performed in this workspace</span></div><Icon name="clock"/></div>{activity.length?activity.slice(0,5).map(a=><div className="activity-row" key={a.id}><span className={`activity-status ${a.status}`}><Icon name="check" size={16}/></span><div><strong>{a.action}</strong><span>{a.detail}</span></div><time>{new Date(a.at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Kolkata'})}</time><span className="result-badge">{a.status}</span></div>):<div className="activity-empty">No checks yet. Run “Check dataset” to record a verified result.</div>}</section>
+      <footer className="page-footer"><span>ForestGuard AI · Local observation workspace</span><span>{data.attribution}</span></footer>
+    </>}
+    </main></div>{toast&&<div className="toast" role="status"><Icon name="check"/>{toast}</div>}
+  </div>;
+}
+function Stat({label,value,note,icon}){return <article className="stat-card"><div className="stat-top"><span>{label}</span><Icon name={icon}/></div><strong>{value}</strong><small>{note}</small></article>;}
+createRoot(document.getElementById('root')).render(<App/>);

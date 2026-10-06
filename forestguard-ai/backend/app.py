@@ -1,0 +1,269 @@
+"""Local saved-data API. No external inference, tiles or model claims."""
+import csv
+import hashlib
+import html
+import io
+import json
+import re
+import sqlite3
+import sys
+import uuid
+import zipfile
+from datetime import datetime, timezone
+from pathlib import Path
+
+import numpy as np
+import rasterio
+from rasterio.warp import transform_geom
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, Response
+from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'scripts'))
+from inspect_local import inspect
+from verify_pair import verify_pair
+from verify_bundle import verify
+
+STATE=ROOT/'data/app'
+STATE.mkdir(parents=True,exist_ok=True)
+app=FastAPI(title='ForestGuard local API',docs_url=None,redoc_url=None)
+app.add_middleware(TrustedHostMiddleware,allowed_hosts=['127.0.0.1','localhost','testserver'])
+
+
+def read(path):
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def history(action,dataset,status,detail):
+    with sqlite3.connect(STATE/'activity.sqlite') as db:
+        db.execute('CREATE TABLE IF NOT EXISTS activity (id INTEGER PRIMARY KEY, at TEXT, action TEXT, dataset TEXT, status TEXT, detail TEXT)')
+        db.execute('INSERT INTO activity(at,action,dataset,status,detail) VALUES(?,?,?,?,?)',
+                   (datetime.now(timezone.utc).isoformat(),action,dataset,status,detail))
+
+
+def catalog():
+    items=[]
+    pair=ROOT/'data/phase2/pair_version7'
+    if (pair/'pair_report.json').exists():
+        report=read(pair/'pair_report.json')
+        views=[]
+        for i,when in enumerate(report['dates'],1):
+            views.append({'id':str(i),'date':when[:10],'name':when[:10],
+                'pixels':report['candidate_pixels'],'usable':report['usable_pixels_by_date'][i-1],
+                'coverage':report['usable_pixels_by_date'][i-1]/report['candidate_pixels'],
+                'forest_ha':None,'folder':pair/f'date_{i}'})
+        items.append({'id':'sentinel','title':'Joga · saved Sentinel-2','kind':'real',
+            'subtitle':'Aligned March observations','scope':'Candidate outline · pipeline checks',
+            'coverage':report['common_usable_fraction'],'resolution':10,'verified_files':23,
+            'version':'pipeline-5f9a7ea39daafa3f','views':views,'folder':pair,
+            'boundary':read(pair/'boundary_input.geojson'),'boundary_crs':'EPSG:4326',
+            'attribution':'Contains modified Copernicus Sentinel data 2024 and 2025',
+            'layers':['imagery','coverage']})
+    demo=ROOT/'data/demo/fixture_v1'
+    if (demo/'manifest.json').exists():
+        report=read(demo/'manifest.json'); views=[]
+        for sample in report['samples']:
+            counts=sample['synthetic_class_counts_inside_split']; total=sum(counts.values())
+            views.append({'id':sample['split'],'date':sample['simulated_date'],'name':sample['split'].title(),
+                'pixels':total,'usable':counts['0']+counts['1'],'coverage':(counts['0']+counts['1'])/total,
+                'forest_ha':counts['1']*.01,'folder':demo/sample['directory']})
+        area=read(demo/'assumed_study_area.json')
+        items.append({'id':'demo','title':'Synthetic forest sandbox','kind':'synthetic',
+            'subtitle':'Generated fixture · seed 42','scope':'Fictional study grid · simulated classes',
+            'coverage':None,'resolution':10,'verified_files':20,'version':'synthetic-fixture-v1',
+            'views':views,'folder':demo,'boundary':{'type':'Feature','geometry':area['geometry'],'properties':{}},
+            'boundary_crs':area['geometry_crs'],'attribution':'Project-generated synthetic data',
+            'layers':['imagery','classes','coverage']})
+    imports=STATE/'imports'
+    if imports.exists():
+        for folder in sorted(imports.iterdir()):
+            if re.fullmatch(r'import-[a-f0-9]{12}',folder.name) and (folder/'import_complete.json').exists():
+                r=read(folder/'report.json'); total=r['study_pixels']; usable=r['usable_pixels']
+                items.append({'id':folder.name,'title':r['scene_id'],'kind':'real','subtitle':'Imported saved sample',
+                    'scope':r.get('area_label','Research crop'),'coverage':usable/total,'resolution':10,
+                    'verified_files':7,'version':folder.name,'folder':folder,'boundary':None,
+                    'attribution':r.get('attribution','Saved sample'),'layers':['imagery','coverage'],
+                    'views':[{'id':'1','date':r['acquisition'][:10],'name':r['acquisition'][:10],
+                        'pixels':total,'usable':usable,'coverage':usable/total,'forest_ha':None,'folder':folder}]})
+    return items
+
+
+def dataset(identity):
+    item=next((d for d in catalog() if d['id']==identity),None)
+    if item is None: raise HTTPException(404,'Dataset not found')
+    return item
+
+
+def view(item,identity):
+    found=next((v for v in item['views'] if v['id']==identity),None)
+    if found is None: raise HTTPException(404,'Observation not found')
+    return found
+
+
+def public(item):
+    result={k:v for k,v in item.items() if k not in {'folder','boundary','boundary_crs','views'}}
+    result['views']=[{k:v for k,v in obs.items() if k!='folder'} for obs in item['views']]
+    first=item['views'][0]
+    with rasterio.open(first['folder']/'reflectance.tif',driver='GTiff') as raster:
+        result.update(width=raster.width,height=raster.height,crs=str(raster.crs),band_order=list(raster.descriptions))
+    result['model_version']=None
+    return result
+
+
+def pixel_outline(item,geojson,crs):
+    if not isinstance(geojson,dict): raise HTTPException(400,'Use polygon GeoJSON')
+    with rasterio.open(item['views'][0]['folder']/'reflectance.tif',driver='GTiff') as raster:
+        inverse=~raster.transform; polygons=[]
+        features=geojson.get('features',[geojson])
+        if not isinstance(features,list) or not features: raise HTTPException(400,'Use polygon GeoJSON')
+        for feature in features:
+            if not isinstance(feature,dict): raise HTTPException(400,'Use polygon GeoJSON')
+            geometry=feature.get('geometry',feature)
+            if not isinstance(geometry,dict): raise HTTPException(400,'Use polygon GeoJSON')
+            if geometry.get('type') not in {'Polygon','MultiPolygon'}: raise HTTPException(400,'Use polygon GeoJSON')
+            projected=transform_geom(crs,raster.crs,geometry)
+            parts=projected['coordinates'] if geometry['type']=='MultiPolygon' else [projected['coordinates']]
+            for polygon in parts:
+                for ring in polygon:
+                    if not 4<=len(ring)<=5000: raise HTTPException(400,'Outline exceeds vertex limit')
+                    points=[list(inverse*(p[0],p[1])) for p in ring]
+                    if not np.isfinite(points).all(): raise HTTPException(400,'Invalid coordinates')
+                    polygons.append(points)
+        return polygons
+
+
+@app.get('/api/health')
+def health(): return {'status':'ok','operation':'local stored data','model_connected':False}
+
+
+@app.get('/api/datasets')
+def datasets(): return [public(d) for d in catalog()]
+
+
+@app.get('/api/activity')
+def activity():
+    if not (STATE/'activity.sqlite').exists(): return []
+    with sqlite3.connect(STATE/'activity.sqlite') as db:
+        db.row_factory=sqlite3.Row
+        return [dict(r) for r in db.execute('SELECT * FROM activity ORDER BY id DESC LIMIT 20')]
+
+
+@app.get('/api/datasets/{identity}/outline')
+def outline(identity):
+    item=dataset(identity)
+    return {'rings':pixel_outline(item,item['boundary'],item['boundary_crs']) if item['boundary'] else []}
+
+
+@app.post('/api/datasets/{identity}/boundary')
+async def import_boundary(identity,request:Request):
+    payload=bytearray()
+    async for chunk in request.stream():
+        payload.extend(chunk)
+        if len(payload)>1024**2: raise HTTPException(413,'Boundary limit is 1 MiB')
+    try:
+        geojson=json.loads(payload)
+        rings=pixel_outline(dataset(identity),geojson,'EPSG:4326')
+    except (ValueError,KeyError,TypeError,rasterio.errors.RasterioError) as error:
+        raise HTTPException(400,'Could not read polygon GeoJSON') from error
+    return {'rings':rings,'use':'display-only imported outline'}
+
+
+@app.get('/api/datasets/{identity}/{observation}/image/{layer}')
+def image(identity,observation,layer):
+    item=dataset(identity); obs=view(item,observation)
+    if layer not in item['layers']: raise HTTPException(404,'Layer not available')
+    if layer=='imagery': return FileResponse(obs['folder']/'preview.png',media_type='image/png')
+    source=obs['folder']/('labels.tif' if layer=='classes' else 'usable.tif')
+    if layer=='coverage' and identity=='sentinel': source=item['folder']/'common_usable.tif'
+    target=STATE/'previews'/f'{identity}-{observation}-{layer}-{source.stat().st_mtime_ns}.png'
+    if not target.exists():
+        target.parent.mkdir(exist_ok=True)
+        with rasterio.open(source,driver='GTiff') as raster:
+            if max(raster.shape)>512: raise HTTPException(400,'Only small crops supported')
+            values=raster.read(1); rgba=np.zeros((4,*raster.shape),dtype='uint8')
+            if layer=='classes':
+                for cls,color in [(0,(212,183,136)),(1,(66,150,101))]:
+                    for channel,value in enumerate(color): rgba[channel,values==cls]=value
+                    rgba[3,values==cls]=255
+            else:
+                for channel,value in enumerate([103,189,154]): rgba[channel,values==1]=value
+                rgba[3,values==1]=255
+            with rasterio.open(target,'w',driver='PNG',height=raster.height,width=raster.width,
+                               count=4,dtype='uint8',transform=raster.transform,crs=raster.crs) as saved: saved.write(rgba)
+    return FileResponse(target,media_type='image/png')
+
+
+@app.post('/api/datasets/{identity}/validate')
+def validate(identity):
+    item=dataset(identity)
+    try:
+        if identity=='sentinel':
+            result=verify_pair(item['folder']); detail=f"{result['verified_files']} hashes and common coverage verified"
+        elif identity=='demo':
+            manifest=read(item['folder']/'checksums.json')
+            for name,record in manifest.items():
+                path=(item['folder']/name).resolve()
+                if not path.is_relative_to(item['folder'].resolve()) or hashlib.sha256(path.read_bytes()).hexdigest()!=record['sha256']:
+                    raise ValueError('Synthetic file integrity failure')
+            detail=f'{len(manifest)} synthetic fixture hashes verified'
+        else:
+            result=inspect(item['folder']); detail='Saved sample hashes, grids and masks verified'
+        history('Data check',identity,'passed',detail)
+        return {'status':'passed','detail':detail}
+    except (OSError,ValueError,KeyError,zipfile.BadZipFile,rasterio.errors.RasterioError) as error:
+        history('Data check',identity,'failed','Stored input validation failed')
+        raise HTTPException(400,'Stored input validation failed') from error
+
+
+@app.post('/api/import')
+async def import_sample(request:Request):
+    payload=bytearray()
+    async for chunk in request.stream():
+        payload.extend(chunk)
+        if len(payload)>10*1024**2: raise HTTPException(413,'Sample ZIP limit is 10 MiB')
+    uploads=STATE/'uploads'; uploads.mkdir(exist_ok=True)
+    source=uploads/f'{uuid.uuid4().hex}.zip'; source.write_bytes(payload)
+    identity='import-'+hashlib.sha256(payload).hexdigest()[:12]
+    folder=STATE/'imports'/identity
+    try:
+        verify(source)
+        if not folder.exists():
+            folder.mkdir(parents=True)
+            (folder/'forestguard_phase0.zip').write_bytes(payload)
+            with zipfile.ZipFile(source) as archive:
+                for name in archive.namelist(): (folder/name).write_bytes(archive.read(name))
+        inspect(folder)
+        (folder/'import_complete.json').write_text(json.dumps({'status':'validated','id':identity}))
+    except (OSError,ValueError,KeyError,TypeError,zipfile.BadZipFile,rasterio.errors.RasterioError) as error:
+        raise HTTPException(400,'Use a valid exported forestguard_phase0.zip sample') from error
+    history('Sample imported',identity,'passed','Saved crop imported and checked')
+    return public(dataset(identity))
+
+
+@app.get('/api/datasets/{identity}/report/{format}')
+def report(identity,format):
+    item=public(dataset(identity))
+    rows=[{'dataset':item['title'],'data_kind':item['kind'],
+        'date_type':'simulated' if item['kind']=='synthetic' else 'acquired',
+        'date':v['date'],'total_pixels':v['pixels'],'usable_pixels':v['usable'],
+        'coverage_percent':round(v['coverage']*100,4),
+        'simulated_forest_ha':v['forest_ha'] if item['kind']=='synthetic' else ''} for v in item['views']]
+    if format=='csv':
+        buffer=io.StringIO(); writer=csv.DictWriter(buffer,fieldnames=list(rows[0])); writer.writeheader()
+        for row in rows:
+            writer.writerow({k:("'"+v if isinstance(v,str) and v.startswith(('=','+','-','@')) else v) for k,v in row.items()})
+        content=buffer.getvalue(); mime='text/csv'
+    elif format=='html':
+        cells=''.join('<tr>'+''.join(f'<td>{html.escape(str(v))}</td>' for v in row.values())+'</tr>' for row in rows)
+        headers=''.join(f'<th>{html.escape(k)}</th>' for k in rows[0])
+        content=f'<!doctype html><html lang="en"><meta charset="utf-8"><title>ForestGuard report</title><style>body{{font:16px system-ui;margin:48px;color:#193d31}}table{{border-collapse:collapse}}td,th{{padding:12px;border:1px solid #ddd;text-align:left}}small{{color:#68776e}}</style><h1>ForestGuard AI</h1><h2>{html.escape(item["title"])}</h2><p>{html.escape(item["scope"])}</p><table><thead>{headers}</thead><tbody>{cells}</tbody></table><p>Data kind: {item["kind"]}. Coverage is imagery/label observability, not model accuracy. No trained model is connected.</p><small>{html.escape(item["attribution"])}</small></html>'
+        mime='text/html'
+    else: raise HTTPException(404,'Report format not supported')
+    history('Report exported',identity,'passed',format.upper()+' report')
+    return Response(content,media_type=mime,headers={'Content-Disposition':f'attachment; filename="forestguard-{identity}.{format}"'})
+
+
+DIST=ROOT/'frontend/dist'
+if DIST.exists(): app.mount('/',StaticFiles(directory=DIST,html=True),name='frontend')

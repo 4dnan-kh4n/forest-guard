@@ -18,7 +18,7 @@ BBOX = [76.785, 22.413, 76.805, 22.433]
 BANDS = [('blue', 'B02'), ('green', 'B03'), ('red', 'B04'), ('nir', 'B08')]
 
 
-def run():
+def run(bbox=None, area_label='provisional research crop; not the Joga beat boundary', scene_id=SCENE):
     if platform.system() == 'Windows':
         raise RuntimeError('Use a hosted Kaggle or Colab CPU runtime; local processing is disabled.')
     if Path('/kaggle/working').is_dir():
@@ -31,6 +31,12 @@ def run():
         base, provider = Path('/content'), 'Colab'
     else:
         raise RuntimeError('Use a hosted Kaggle or Colab CPU runtime; local processing is disabled.')
+
+    bbox = BBOX if bbox is None else list(bbox)
+    if (len(bbox) != 4 or not all(math.isfinite(v) for v in bbox)
+            or not -180 <= bbox[0] < bbox[2] <= 180
+            or not -90 <= bbox[1] < bbox[3] <= 90):
+        raise ValueError('Provide west/south/east/north bounds in longitude/latitude degrees.')
 
     packages = {}
     for name in ['numpy', 'rasterio', 'Pillow']:
@@ -50,7 +56,9 @@ def run():
     output = base / 'forestguard_phase0' / datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     output.mkdir(parents=True)
     started = time.monotonic()
-    url = f'https://earth-search.aws.element84.com/v1/collections/{COLLECTION}/items/{SCENE}'
+    if not isinstance(scene_id, str) or not scene_id.startswith('S2') or not all(c.isalnum() or c == '_' for c in scene_id):
+        raise ValueError('Provide a Sentinel-2 scene identifier.')
+    url = f'https://earth-search.aws.element84.com/v1/collections/{COLLECTION}/items/{scene_id}'
     try:
         with urlopen(url, timeout=30) as response:
             content = response.read(512001)
@@ -59,14 +67,14 @@ def run():
     if len(content) > 512000:
         raise ValueError('Metadata exceeds the 500 KiB safety limit.')
     item = json.loads(content)
-    assert item['id'] == SCENE
+    assert item['id'] == scene_id
     (output / 'source.json').write_bytes(content)
     assets = item['assets']
     calibration, measurements, masks = {}, [], []
     with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR', GDAL_HTTP_TIMEOUT='60',
                       CPL_VSIL_CURL_ALLOWED_EXTENSIONS='.tif', GDAL_CACHEMAX=64*1024**2):
         with rasterio.open(assets['red']['href']) as reference:
-            bounds = transform_bounds('EPSG:4326', reference.crs, *BBOX, densify_pts=21)
+            bounds = transform_bounds('EPSG:4326', reference.crs, *bbox, densify_pts=21)
             crop = from_bounds(*bounds, transform=reference.transform)
             left, top = math.floor(crop.col_off), math.floor(crop.row_off)
             right, bottom = math.ceil(crop.col_off+crop.width), math.ceil(crop.row_off+crop.height)
@@ -99,7 +107,7 @@ def run():
     x, y = grid.c+(col+.5)*grid.a, grid.f+(row+.5)*grid.e
     lon, lat = project_points(crs, 'EPSG:4326', x.ravel(), y.ravel())
     lon, lat = np.asarray(lon).reshape(shape), np.asarray(lat).reshape(shape)
-    study = (lon >= BBOX[0]) & (lon <= BBOX[2]) & (lat >= BBOX[1]) & (lat <= BBOX[3])
+    study = (lon >= bbox[0]) & (lon <= bbox[2]) & (lat >= bbox[1]) & (lat <= bbox[3])
     valid = study & np.logical_and.reduce(masks) & np.isfinite(values).all(axis=0) & np.isin(scl, [4, 5, 6])
     assert valid.any(), 'No usable pixels: inspect another observation or research crop'
     values[:, ~valid] = -9999
@@ -123,8 +131,8 @@ def run():
     classes, counts = np.unique(scl[study], return_counts=True)
     report = {
         'status': 'real research sample; not forest labels or beat reporting',
-        'scene_id': SCENE, 'collection':COLLECTION, 'acquisition': item['properties']['datetime'], 'metadata_url': url,
-        'bbox_lon_lat': BBOX, 'official_boundary_verified': False, 'shape': list(shape),
+        'scene_id': scene_id, 'collection':COLLECTION, 'acquisition': item['properties']['datetime'], 'metadata_url': url,
+        'bbox_lon_lat': bbox, 'area_label':area_label, 'official_boundary_verified': False, 'shape': list(shape),
         'crs': str(crs), 'transform': list(grid)[:6], 'resolution_m': 10,
         'band_order': [name for _, name in BANDS], 'calibration': calibration,
         'reflectance_formula': 'raw * asset scale + asset offset, applied once',
@@ -140,7 +148,7 @@ def run():
                     'gdal': rasterio.__gdal_version__},
         'processing_seconds': round(time.monotonic()-started, 3),
         'generated_at_utc': datetime.now(timezone.utc).isoformat(),
-        'attribution': 'Contains modified Copernicus Sentinel data 2025',
+        'attribution': f'Contains modified Copernicus Sentinel data {item["properties"]["datetime"][:4]}',
         'license_url': 'https://cds.climate.copernicus.eu/licences/ec-sentinel',
         'model_trained': False, 'reviewed_labels_exist': False,
     }

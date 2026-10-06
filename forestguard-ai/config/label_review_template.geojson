@@ -1,0 +1,14 @@
+{
+  "type": "FeatureCollection",
+  "features": [],
+  "review_status": "EMPTY TEMPLATE: no reviewed labels",
+  "required_feature_properties": [
+    "label_id", "class", "observation_date", "reference_source",
+    "reference_access_license", "reference_date", "reviewer", "review_date",
+    "confidence", "uncertainty_notes", "study_area_version", "split",
+    "reference_kind", "review_status", "reference_independent"
+  ],
+  "allowed_classes": ["forest", "non_forest", "unknown"],
+  "allowed_splits": ["unassigned", "train", "validation", "test"],
+  "instructions": "Use real reviewed geographic evidence; unknown is excluded from binary training. Freeze separated locations/dates before sampling. Store filled reviews under ignored data/labels/."
+}

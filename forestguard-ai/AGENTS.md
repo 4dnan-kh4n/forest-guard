@@ -14,3 +14,6 @@
   The user will push after each phase; do not commit or push without a request.
 - Keep the INR 0 budget, cloud-heavy processing and offline stored-data operation
   requirements. Do not fabricate boundaries, labels, accuracy or completed phases.
+- User-authorized synthetic fixtures may support demonstrations/tests. Mark their
+  geometry, dates, classes and model scores as synthetic; keep real provenance
+  and validation gates separate. Never relabel simulated data as observed.
