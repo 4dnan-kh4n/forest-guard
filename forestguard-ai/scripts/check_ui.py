@@ -25,6 +25,11 @@ def main():
     request('/api/login',json.dumps({'district':'Harda','beat':'Joga','password':'wrong'}).encode(),401)
     assert json.loads(request('/api/login',json.dumps({'district':'Harda','beat':'Joga','password':'joga@123'}).encode()))['authenticated']
     assert json.loads(request('/api/session'))['authenticated']
+    monthly=json.loads(request('/api/reports/monthly-demo'))
+    assert monthly['data_kind']=='synthetic_demo' and len(monthly['months'])==60
+    assert monthly['months'][0]['month']=='2021-11' and monthly['months'][-1]['month']=='2026-10'
+    assert all(0<=m['simulated_fire_risk_pct']<=100 for m in monthly['months'])
+    assert b'data_kind' in request('/api/reports/monthly-demo.csv')
     datasets=json.loads(request('/api/datasets'))
     assert {'sentinel','demo'}<={d['id'] for d in datasets}
     checks=0

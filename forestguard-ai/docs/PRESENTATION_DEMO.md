@@ -31,3 +31,18 @@ password rejection, login/session/logout, raster previews, vegetation calculatio
 reports and imported inputs. Run it with the server active. Dependency/build and
 startup instructions remain in docs/UI_STARTUP.md. Data/sessions/previews/builds
 remain ignored by Git; source, lockfiles and these instructions are trackable.
+
+## Five-year forest and fire example
+
+After sign-in the officer dashboard opens directly to **Forest change & fire**.
+It presents 60 deterministic monthly example records from Nov 2021 through
+Oct 2026. The one-year/five-year switches and CSV export work offline. The
+reproducible generator is `scripts/monthly_demo.py`; its JSON output is saved
+under ignored `data/demo/forest_fire_history_demo_v1.json`.
+
+The charts show fictional canopy hectares, monthly loss and fire-signal counts
+and a seasonal example risk index. The example uses no satellite images, fire
+reports, weather or real forest boundary. Values illustrate the report UI only.
+It cannot substantiate deforestation or support field action. Current stored
+satellite dates can instead be viewed from **Map workspace**; Sentinel-2 is
+explained there in plain language as satellite imagery with infrared light.

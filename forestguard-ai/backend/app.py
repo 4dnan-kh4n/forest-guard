@@ -115,7 +115,7 @@ def catalog():
                 'pixels':report['candidate_pixels'],'usable':report['usable_pixels_by_date'][i-1],
                 'coverage':report['usable_pixels_by_date'][i-1]/report['candidate_pixels'],
                 'forest_ha':None,'folder':pair/f'date_{i}'})
-        items.append({'id':'sentinel','title':'Joga · saved Sentinel-2','kind':'real',
+        items.append({'id':'sentinel','title':'Joga pilot · saved satellite maps','kind':'real',
             'subtitle':'Aligned March observations','scope':'Candidate outline · pipeline checks',
             'coverage':report['common_usable_fraction'],'resolution':10,'verified_files':23,
             'version':'pipeline-5f9a7ea39daafa3f','views':views,'folder':pair,

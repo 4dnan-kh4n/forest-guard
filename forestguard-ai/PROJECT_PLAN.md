@@ -196,3 +196,13 @@ Startup and reproducible checks: [local UI](docs/UI_STARTUP.md).
   access control, logout and stored-data analysis; no trained classifier claimed.
 
 Presentation steps: [demo walkthrough](docs/PRESENTATION_DEMO.md).
+
+User requested the officer screen focus on deforestation/fire reporting with
+plain-language labels and a universal landing page. Login now opens the monthly
+forest/fire report first. `scripts/monthly_demo.py` reproducibly provides 60
+simulated month records (Nov 2021–Oct 2026) with canopy area, example cover change,
+fire signals and a seasonal illustration index. Time filters and CSV export are
+wired. This monthly dataset is synthetic only: no 60 monthly satellite images,
+reference forest boundaries, fire detections or training data were supplied.
+No simulated value is presented as a finding about Joga or any real area. The
+saved real March 2024/2025 imagery remains available under Satellite map.
