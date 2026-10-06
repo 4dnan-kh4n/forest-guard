@@ -1,0 +1,11 @@
+{
+  "name": "forest-guard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "gemma": "node --env-file-if-exists=.env src/cli.js",
+    "test": "node --test"
+  }
+}

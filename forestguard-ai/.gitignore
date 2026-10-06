@@ -1,0 +1,68 @@
+# Secrets (commit only the placeholder template)
+.env
+.env.*
+!.env.example
+kaggle.json
+credentials*.json
+service-account*.json
+*.pem
+*.key
+
+# Local datasets, trained models and private reference material
+/data/
+/models/
+/reports/joga_records/
+/docs/JOGA_RECORDS_REVIEW.md
+*.tif
+*.tiff
+*.jp2
+*.npy
+*.npz
+*.joblib
+*.pkl
+*.pickle
+*.onnx
+*.pt
+*.pth
+*.h5
+*.hdf5
+*.keras
+*.safetensors
+*.zip
+
+# Local database files and journals
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+
+# Python environments, caches and test output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Frontend dependencies and generated builds
+node_modules/
+dist/
+build/
+coverage/
+
+# Notebook checkpoints, temporary files and OS metadata
+.ipynb_checkpoints/
+*.log
+*.tmp
+*.temp
+*.bak
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
