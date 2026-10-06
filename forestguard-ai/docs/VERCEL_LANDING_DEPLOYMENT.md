@@ -16,13 +16,10 @@ This deploys the public React/Vite landing page only. The officer dashboard, log
    - Install Command: `pnpm install --frozen-lockfile`
    - Build Command: `pnpm run build`
    - Output Directory: `dist`
-5. Before deploying, add this environment variable under **Environment Variables**:
-   - Name: `VITE_FORESTGUARD_LANDING_ONLY`
-   - Value: `true`
-   - Environments: Production, Preview, and Development
+5. The Vite build detects Vercel's `VERCEL=1` system variable and automatically builds the public landing-page mode. If system environment variables are disabled in Vercel, add `VITE_FORESTGUARD_LANDING_ONLY=true` under **Environment Variables** for Production, Preview, and Development.
 6. Choose **Deploy**. Vercel builds the static site and gives you a `vercel.app` URL. Later pushes to the connected branch create new deployments.
 
-The variable is intentionally named with Vite's `VITE_` prefix because it is a public build setting, not a secret. With it set to `true`, the production landing page contains no demo password or login form and does not send a login request to a missing API.
+The optional variable is intentionally named with Vite's `VITE_` prefix because it is a public build setting, not a secret. Hosted mode contains no local password or login form and does not send a login request to a missing API.
 
 ## 3. Check the deployed page
 

@@ -1,14 +1,14 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './landing.css';
 
-const landingOnly = import.meta.env.VITE_FORESTGUARD_LANDING_ONLY === 'true';
+const landingOnly = __FORESTGUARD_LANDING_ONLY__;
 
 export function ForestLogo({size=42}) {
   return <svg width={size} height={size} viewBox="0 0 48 52" fill="none" aria-label="ForestGuard trees and shield"><path d="M24 3 43 11v14c0 12-10 20-19 24C15 45 5 37 5 25V11L24 3Z" stroke="currentColor" strokeWidth="3"/><path d="m24 12-8 12h5l-7 10h20l-7-10h5L24 12Z" fill="currentColor"/><path d="M24 33v7M13 23l-4 7h8m18-7 4 7h-8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/></svg>;
 }
 
 function ForestAnimation({stage,paused,onPause}){
-  return <div className={`forest-animation ${paused?'paused':''}`}>
+  return <div className={`forest-animation stage-${stage} ${paused?'paused':''}`}>
     <div className="motion-heading"><span>FOREST INTELLIGENCE IN MOTION</span><button onClick={onPause} aria-label={paused?'Play forest animation':'Pause forest animation'}>{paused?'Play':'Pause'}</button></div>
     <div className="observation-window"><div className="window-chrome"><span className="window-dots"><i/><i/><i/></span> Satellite image <span className="window-lock">◈</span></div>
       <div className="scene-heading"><strong>Forest landscape</strong><span>Workflow illustration</span></div>
@@ -27,9 +27,9 @@ function ForestAnimation({stage,paused,onPause}){
       </svg>
       <div className="scene-bottom"><ForestLogo size={26}/><div><strong>ForestGuard AI</strong><span>{['Read saved satellite observations','Mask clouds and uncertain pixels','Compare common usable coverage'][stage]}</span></div><i className="live-orb"/></div>
     </div>
-    <div className="flow-connector"><span>{['Imagery acquired','Quality layer aligned','Comparison prepared'][stage]}</span></div>
+    <div className="flow-connector"><i className="flow-pulse" aria-hidden="true"/><span><small>DATA FLOW</small>{['Satellite observation captured','Clouds and gaps filtered','Dates compared on one grid'][stage]}</span></div>
     <div className="analysis-window"><div className="analysis-icon">✦</div><div><strong>{['A view from above.','A clearer signal.','Evidence to review.'][stage]}</strong><span>{['Visible colours and leaf-growth signals','Usable pixels, consistent geographic grid','Inspect dates and vegetation indicators'][stage]}</span></div><div className="analysis-bars"><i/><i/><i/><i/><i/></div></div>
-    <div className="motion-stages">{['Observe','Analyze','Compare'].map((text,i)=><div className={i===stage?'active':''} key={text}><i/><small>0{i+1}</small><span>{text}</span></div>)}</div>
+    <div className="motion-stages" aria-label="Satellite analysis stages"><div className="stage-rail"><i style={{width:`${stage*50}%`}}/><b key={stage} style={{left:`${stage*50}%`}}/></div>{['Observe','Prepare','Compare'].map((text,i)=><div className={`${i===stage?'active':''} ${i<stage?'complete':''}`} key={text}><i>{i<stage?'✓':`0${i+1}`}</i><span>{text}</span></div>)}</div>
     <p className="motion-caption">Satellite imagery → usable observations → local insights</p>
   </div>;
 }
@@ -37,11 +37,11 @@ function ForestAnimation({stage,paused,onPause}){
 export default function Landing({onLogin}){
   const [stage,setStage]=useState(0),[paused,setPaused]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches),[loginOpen,setLoginOpen]=useState(false),[password,setPassword]=useState(landingOnly?'':'joga@123'),[showPassword,setShowPassword]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
   const dialog=useRef(null);
-  useEffect(()=>{if(paused)return;const id=setInterval(()=>setStage(s=>(s+1)%3),3600);return()=>clearInterval(id);},[paused]);
+  useEffect(()=>{if(paused)return;const id=setInterval(()=>setStage(s=>(s+1)%3),3000);return()=>clearInterval(id);},[paused]);
   useEffect(()=>{if(loginOpen)dialog.current.showModal();else dialog.current?.close();},[loginOpen]);
   useEffect(()=>{const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');observer.unobserve(e.target);}}),{threshold:.12});document.querySelectorAll('.landing .reveal').forEach(e=>observer.observe(e));return()=>observer.disconnect();},[]);
   function openLogin(){setError('');setLoginOpen(true);}
-  async function signIn(event){event.preventDefault();if(landingOnly){setError('Officer sign-in is available in the local workspace.');return;}setBusy(true);setError('');try{const response=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({district:'Harda',beat:'Joga',password})});const result=await response.json();if(!response.ok)throw Error(result.detail||'Could not sign in');setLoginOpen(false);onLogin(result);}catch(e){setError(e.message);}finally{setBusy(false);}}
+  async function signIn(event){event.preventDefault();if(landingOnly){setError('Officer sign-in is available in the local workspace.');return;}setBusy(true);setError('');try{const response=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({district:'Harda',beat:'Joga',password})});let result;try{result=await response.json();}catch{throw Error('This deployment does not have the ForestGuard sign-in service. Use the locally running workspace.');}if(!response.ok)throw Error(result.detail||'Could not sign in');setLoginOpen(false);onLogin(result);}catch(e){setError(e.message);}finally{setBusy(false);}}
   return <div className="landing" id="home"><a className="skip-link" href="#landing-main">Skip to content</a>
     <header className="landing-nav"><a href="#home" className="landing-brand"><ForestLogo/><span>ForestGuard<small>Intelligence for a greener tomorrow</small></span></a><nav aria-label="Landing navigation"><a href="#about">About</a><a href="#workflow">How it works</a><a href="#access">Officer access</a><a href="#faq">FAQ</a></nav><button className="land-button" onClick={openLogin}>Officer login <span>↗</span></button></header>
     <main id="landing-main" className="landing-main"><section className="landing-hero"><div className="hero-copy"><div className="hero-intro">Our forests. Our future. Our responsibility.</div><p className="hero-aside">A clearer view from above. A better decision on the ground.</p><h1>Keep it <span key={stage} className="cycling-word">{['Green.','Protected.','Thriving.'][stage]}</span><br/><span className="lime-line">See the change.</span><br/><span className="mint-line">Guard the future.</span></h1><p className="hero-description">Turn satellite observations into a clearer picture of your forest. Explore the landscape, compare dates, and bring the evidence back to the officers who know it best.</p><div className="hero-actions"><button className="land-button" onClick={openLogin}>Explore your forest <span>↗</span></button><a className="land-button outline" href="#workflow">See how it works <span>↓</span></a></div><div className="hero-tags"><span><i/> Monitoring forests everywhere</span><span>Built for local operation</span></div></div><ForestAnimation stage={stage} paused={paused} onPause={()=>setPaused(!paused)}/></section>
