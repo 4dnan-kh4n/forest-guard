@@ -1,6 +1,8 @@
 # Progress checklist
 
-Started fresh: 6 October 2026. Current phase: 2, in progress. Phase 1 foundation completed; Phase 0 validation gates remain open.
+Started fresh: 6 October 2026. Current work: Phase 5 observation UI, advanced at
+the user's request. Phase 1 foundation is complete; real-data validation and
+Phase 2 reviewed-label gates remain open.
 
 User-authorized demonstration scope: Phase 0 demo setup is complete using clearly
 labeled synthetic/assumed data. Phase 1 is complete. This demo status is separate
@@ -111,7 +113,7 @@ Phase 1 tooling may proceed independently; Phase 0 is not marked complete.
 | 2 — imagery and labels | Curated crops, reviewed labels, frozen splits | Two-date cloud pipeline run succeeds; independent labels and actual frozen splits pending | In progress |
 | 3 — model | Cloud-trained baseline/Random Forest and exported model bundle | Independent precision, recall, F1, IoU, area error and failure review | Pending |
 | 4 — changes | Suspected loss/gain layers and hectare estimates | Common valid coverage, alignment and seasonal errors reviewed | Pending |
-| 5 — application | Local maps, dashboard, API and CSV/HTML exports | End-to-end stored-data operation including offline maps | Pending |
+| 5 — application | Local maps, dashboard, API and CSV/HTML exports | Observation UI verified on real/synthetic saved data; model inference/change jobs pending | UI delivered; model integration pending |
 | 6 — fire risk | Evaluated model if credible events/weather permit | Time-aware validation, false alarms, PR-AUC and calibration | Pending |
 | 7 — loss risk | Forecast if justified, otherwise historical indicators | Sufficient multi-year labels and later-period/separate-area evaluation | Pending |
 | 8 — recommendations | Transparent evidence-based rules and alert history | Traceable evidence/time/version; authorization before network sharing | Pending |
@@ -164,3 +166,33 @@ label/geography/split gates above. Phase 3 has not started.
 - [x] Preserve demo ZIP/manifest/check result; keep generated data ignored.
 
 Demo dataset: data/demo/fixture_v1/. No real reviewed labels or accuracy claimed.
+
+## Phase 5 UI milestone
+
+- [x] Announce phase objective and advance UI at the user's request.
+- [x] Build React dashboard and local Leaflet raster maps without online tiles/fonts.
+- [x] Connect actual saved Sentinel-2 metadata, dates, masks and synthetic class layers.
+- [x] Implement dataset library/search, ZIP import and display-only GeoJSON outlines.
+- [x] Implement CSV/HTML exports and SQLite history of real checks/imports/exports.
+- [x] Build production assets; final API check verifies 15 image responses and
+  nine invalid input cases after importing the saved sample.
+- [x] Verify browser comparison, layer/date selection, checks, search, CSV download,
+  ZIP/GeoJSON imports and navigation; no browser console errors observed.
+- [x] Verify narrow/mobile and desktop layouts without horizontal overflow.
+- [x] Maintain Git exclusions for databases, data, caches, dependencies and builds.
+- [ ] Connect selected exported model and suspected cover-change layers after training.
+
+Startup and reproducible checks: [local UI](docs/UI_STARTUP.md).
+
+## Presentation UI update
+
+- [x] Reference-inspired forest landing page, trees-and-shield logo, cycling
+  headline, animated satellite/forest workflow, section reveals and FAQ controls.
+- [x] Harda/Joga login with requested local demo password, server-side sessions,
+  protected dataset APIs, logout and preset presentation inputs.
+- [x] Run imagery analysis computes real NDVI vegetation indicators from stored
+  reflectance/masks, with an index layer, date summaries and report fields.
+- [x] Production build and API checks pass including wrong-password rejection,
+  access control, logout and stored-data analysis; no trained classifier claimed.
+
+Presentation steps: [demo walkthrough](docs/PRESENTATION_DEMO.md).

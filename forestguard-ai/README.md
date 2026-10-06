@@ -11,7 +11,18 @@ Budget: INR 0 for software, datasets, APIs, model services and hosting. Heavy
 processing/training runs in a free hosted CPU notebook when available. The
 finished product must analyze stored data with saved models offline.
 
-## Synthetic demonstration
+## Local UI
+
+The forest landing page opens first. Officer login uses **Harda → Joga** and the
+local presentation password **joga@123**. [Presentation walkthrough](docs/PRESENTATION_DEMO.md).
+
+The observation dashboard is implemented with React, Leaflet, FastAPI and SQLite.
+Start the prepared build with `.\start_ui.ps1`, then open http://127.0.0.1:8000.
+It displays saved imagery, comparison maps, coverage, dataset checks and CSV/HTML
+reports. [Setup and UI verification](docs/UI_STARTUP.md). Trained forest/change
+inference remains to be connected; synthetic class layers are labeled.
+
+## Synthetic demonstration data
 
 A synthetic fixture supplies fictional imagery, labels and separated evaluation
 inputs for testing. Phase 0's demo setup is complete under this authorized scope;

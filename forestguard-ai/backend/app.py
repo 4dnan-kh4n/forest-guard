@@ -1,11 +1,14 @@
 """Local saved-data API. No external inference, tiles or model claims."""
 import csv
 import hashlib
+import hmac
 import html
 import io
 import json
 import re
 import sqlite3
+import secrets
+import time
 import sys
 import uuid
 import zipfile
@@ -16,7 +19,7 @@ import numpy as np
 import rasterio
 from rasterio.warp import transform_geom
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
@@ -25,11 +28,69 @@ sys.path.insert(0,str(ROOT/'scripts'))
 from inspect_local import inspect
 from verify_pair import verify_pair
 from verify_bundle import verify
+from monthly_demo import build_history
 
 STATE=ROOT/'data/app'
 STATE.mkdir(parents=True,exist_ok=True)
 app=FastAPI(title='ForestGuard local API',docs_url=None,redoc_url=None)
 app.add_middleware(TrustedHostMiddleware,allowed_hosts=['127.0.0.1','localhost','testserver'])
+
+
+def officer_session(request):
+    token=request.cookies.get('forestguard_session','')
+    if not token or not (STATE/'activity.sqlite').exists(): return False
+    with sqlite3.connect(STATE/'activity.sqlite') as db:
+        db.execute('CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, expires REAL)')
+        return db.execute('SELECT 1 FROM sessions WHERE token=? AND expires>?',
+            (hashlib.sha256(token.encode()).hexdigest(),time.time())).fetchone() is not None
+
+
+@app.middleware('http')
+async def require_officer(request,call_next):
+    if request.url.path.startswith('/api/') and request.url.path not in {'/api/login','/api/logout','/api/session','/api/health'}:
+        if not officer_session(request): return JSONResponse({'detail':'Please sign in to the officer workspace'},status_code=401)
+    response=await call_next(request)
+    if request.url.path.startswith('/api/'): response.headers['Cache-Control']='no-store'
+    return response
+
+
+@app.post('/api/login')
+async def login(request:Request):
+    payload=bytearray()
+    async for chunk in request.stream():
+        payload.extend(chunk)
+        if len(payload)>4096: raise HTTPException(413,'Login request too large')
+    try: credentials=json.loads(payload)
+    except ValueError: raise HTTPException(400,'Invalid login request')
+    if (not isinstance(credentials,dict) or credentials.get('district')!='Harda'
+            or credentials.get('beat')!='Joga' or not isinstance(credentials.get('password'),str)
+            or not hmac.compare_digest(credentials['password'].encode(),b'joga@123')):
+        raise HTTPException(401,'Incorrect district, beat or password')
+    # ponytail: one loopback demo account; use per-officer accounts before deployment.
+    token=secrets.token_urlsafe(32)
+    with sqlite3.connect(STATE/'activity.sqlite') as db:
+        db.execute('CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, expires REAL)')
+        db.execute('DELETE FROM sessions WHERE expires<=?',(time.time(),))
+        db.execute('INSERT INTO sessions VALUES (?,?)',(hashlib.sha256(token.encode()).hexdigest(),time.time()+8*3600))
+    response=JSONResponse({'authenticated':True,'district':'Harda','beat':'Joga'})
+    response.set_cookie('forestguard_session',token,httponly=True,samesite='strict',max_age=8*3600)
+    return response
+
+
+@app.get('/api/session')
+def session(request:Request):
+    return {'authenticated':officer_session(request),'district':'Harda','beat':'Joga'}
+
+
+@app.post('/api/logout')
+def logout(request:Request):
+    token=request.cookies.get('forestguard_session','')
+    with sqlite3.connect(STATE/'activity.sqlite') as db:
+        db.execute('CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, expires REAL)')
+        # Single presentation account: end all of its local sessions on logout.
+        db.execute('DELETE FROM sessions')
+    response=JSONResponse({'authenticated':False}); response.delete_cookie('forestguard_session')
+    return response
 
 
 def read(path):
@@ -60,7 +121,7 @@ def catalog():
             'version':'pipeline-5f9a7ea39daafa3f','views':views,'folder':pair,
             'boundary':read(pair/'boundary_input.geojson'),'boundary_crs':'EPSG:4326',
             'attribution':'Contains modified Copernicus Sentinel data 2024 and 2025',
-            'layers':['imagery','coverage']})
+            'layers':['imagery','coverage','ndvi']})
     demo=ROOT/'data/demo/fixture_v1'
     if (demo/'manifest.json').exists():
         report=read(demo/'manifest.json'); views=[]
@@ -123,6 +184,15 @@ def pixel_outline(item,geojson,crs):
             geometry=feature.get('geometry',feature)
             if not isinstance(geometry,dict): raise HTTPException(400,'Use polygon GeoJSON')
             if geometry.get('type') not in {'Polygon','MultiPolygon'}: raise HTTPException(400,'Use polygon GeoJSON')
+            coordinates=geometry['coordinates'] if geometry['type']=='MultiPolygon' else [geometry['coordinates']]
+            if not coordinates: raise HTTPException(400,'Empty outline')
+            for polygon in coordinates:
+                if not polygon: raise HTTPException(400,'Empty polygon')
+                for ring in polygon:
+                    if not 4<=len(ring)<=5000 or ring[0]!=ring[-1]: raise HTTPException(400,'Use closed polygon rings')
+                    for point in ring:
+                        if len(point)<2 or not np.isfinite(point[:2]).all(): raise HTTPException(400,'Invalid coordinates')
+                        if crs=='EPSG:4326' and (abs(point[0])>180 or abs(point[1])>90): raise HTTPException(400,'Use longitude/latitude coordinates')
             projected=transform_geom(crs,raster.crs,geometry)
             parts=projected['coordinates'] if geometry['type']=='MultiPolygon' else [projected['coordinates']]
             for polygon in parts:
@@ -136,6 +206,25 @@ def pixel_outline(item,geojson,crs):
 
 @app.get('/api/health')
 def health(): return {'status':'ok','operation':'local stored data','model_connected':False}
+
+
+def monthly_history():
+    path=ROOT/'data/demo/forest_fire_history_demo_v1.json'
+    result=read(path) if path.exists() else build_history()
+    if result.get('schema')!='forestguard-synthetic-history-v1' or len(result.get('months',[]))!=60:
+        raise HTTPException(500,'Monthly demonstration data is incomplete')
+    return result
+
+
+@app.get('/api/reports/monthly-demo')
+def monthly_demo_report(): return monthly_history()
+
+
+@app.get('/api/reports/monthly-demo.csv')
+def monthly_demo_csv():
+    rows=monthly_history()['months']; buffer=io.StringIO()
+    writer=csv.DictWriter(buffer,fieldnames=list(rows[0])); writer.writeheader(); writer.writerows(rows)
+    return Response(buffer.getvalue(),media_type='text/csv',headers={'Content-Disposition':'attachment; filename="forestguard-simulated-monthly-history.csv"'})
 
 
 @app.get('/api/datasets')
@@ -165,7 +254,7 @@ async def import_boundary(identity,request:Request):
     try:
         geojson=json.loads(payload)
         rings=pixel_outline(dataset(identity),geojson,'EPSG:4326')
-    except (ValueError,KeyError,TypeError,rasterio.errors.RasterioError) as error:
+    except (ValueError,KeyError,TypeError,IndexError,rasterio.errors.RasterioError) as error:
         raise HTTPException(400,'Could not read polygon GeoJSON') from error
     return {'rings':rings,'use':'display-only imported outline'}
 
@@ -175,6 +264,16 @@ def image(identity,observation,layer):
     item=dataset(identity); obs=view(item,observation)
     if layer not in item['layers']: raise HTTPException(404,'Layer not available')
     if layer=='imagery': return FileResponse(obs['folder']/'preview.png',media_type='image/png')
+    if layer=='ndvi':
+        values,valid,profile=vegetation(item,obs)
+        target=STATE/'previews'/f'{identity}-{observation}-ndvi.png'
+        target.parent.mkdir(exist_ok=True)
+        rgba=np.zeros((4,*values.shape),dtype='uint8')
+        level=np.clip((values+1)/2,0,1)
+        rgba[0]=(190*(1-level)).astype('uint8'); rgba[1]=(70+140*level).astype('uint8')
+        rgba[2]=(65+15*level).astype('uint8'); rgba[3,valid]=255
+        with rasterio.open(target,'w',driver='PNG',height=profile['height'],width=profile['width'],count=4,dtype='uint8') as saved: saved.write(rgba)
+        return FileResponse(target,media_type='image/png')
     source=obs['folder']/('labels.tif' if layer=='classes' else 'usable.tif')
     if layer=='coverage' and identity=='sentinel': source=item['folder']/'common_usable.tif'
     target=STATE/'previews'/f'{identity}-{observation}-{layer}-{source.stat().st_mtime_ns}.png'
@@ -193,6 +292,34 @@ def image(identity,observation,layer):
             with rasterio.open(target,'w',driver='PNG',height=raster.height,width=raster.width,
                                count=4,dtype='uint8',transform=raster.transform,crs=raster.crs) as saved: saved.write(rgba)
     return FileResponse(target,media_type='image/png')
+
+
+def vegetation(item,obs):
+    with rasterio.open(obs['folder']/'reflectance.tif',driver='GTiff') as raster:
+        if max(raster.shape)>512: raise HTTPException(400,'Only small crops supported')
+        red,nir=raster.read([3,4]); profile=raster.profile
+        valid=np.isfinite(red)&np.isfinite(nir)&(red!=raster.nodata)&(nir!=raster.nodata)&(np.abs(nir+red)>1e-6)
+    with rasterio.open(obs['folder']/'usable.tif') as quality: valid &= quality.read(1)==1
+    study= item['folder']/'common_usable.tif' if item['id']=='sentinel' else obs['folder']/('split_mask.tif' if item['kind']=='synthetic' else 'study.tif')
+    with rasterio.open(study) as area: valid &= area.read(1)==1
+    ndvi=np.zeros(red.shape,dtype='float32'); np.divide(nir-red,nir+red,out=ndvi,where=valid)
+    return np.clip(ndvi,-1,1),valid,profile
+
+
+@app.post('/api/datasets/{identity}/analyze')
+def analyze(identity):
+    item=dataset(identity); observations=[]
+    for obs in item['views']:
+        values,valid,_=vegetation(item,obs)
+        if not valid.any(): raise HTTPException(400,'No usable observations')
+        observations.append({'date':obs['date'],'valid_pixels':int(valid.sum()),
+            'median_ndvi':round(float(np.median(values[valid])),4),
+            'vegetation_signal_percent':round(float((values[valid]>.35).mean()*100),2)})
+    result={'method':'NDVI = (B08 − B04) / (B08 + B04)','kind':item['kind'],'observations':observations,
+        'interpretation':'Vegetation indicator; not forest classification or verified forest loss.'}
+    if identity=='sentinel': result['median_ndvi_difference']=round(observations[1]['median_ndvi']-observations[0]['median_ndvi'],4)
+    history('Imagery analyzed',identity,'passed','Stored reflectance vegetation indicators calculated')
+    return result
 
 
 @app.post('/api/datasets/{identity}/validate')
@@ -244,12 +371,16 @@ async def import_sample(request:Request):
 
 @app.get('/api/datasets/{identity}/report/{format}')
 def report(identity,format):
-    item=public(dataset(identity))
+    original=dataset(identity); item=public(original)
     rows=[{'dataset':item['title'],'data_kind':item['kind'],
         'date_type':'simulated' if item['kind']=='synthetic' else 'acquired',
         'date':v['date'],'total_pixels':v['pixels'],'usable_pixels':v['usable'],
         'coverage_percent':round(v['coverage']*100,4),
         'simulated_forest_ha':v['forest_ha'] if item['kind']=='synthetic' else ''} for v in item['views']]
+    for row,obs in zip(rows,original['views']):
+        values,valid,_=vegetation(original,obs)
+        row['ndvi_median']=round(float(np.median(values[valid])),4) if valid.any() else ''
+        row['ndvi_valid_pixels']=int(valid.sum())
     if format=='csv':
         buffer=io.StringIO(); writer=csv.DictWriter(buffer,fieldnames=list(rows[0])); writer.writeheader()
         for row in rows:

@@ -56,10 +56,12 @@ node_modules/
 dist/
 build/
 coverage/
+.pnpm-store/
 
 # Notebook checkpoints, temporary files and OS metadata
 .ipynb_checkpoints/
 *.log
+*.pid
 *.tmp
 *.temp
 *.bak
