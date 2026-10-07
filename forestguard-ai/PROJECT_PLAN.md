@@ -1,8 +1,10 @@
 # Progress checklist
 
-Started fresh: 6 October 2026. Current work: Phase 5 observation UI, advanced at
-the user's request. Phase 1 foundation is complete; real-data validation and
-Phase 2 reviewed-label gates remain open.
+Started fresh: 6 October 2026. Current work: return to Phase 0 scientific
+feasibility following the hackathon, at the user's request on 7 October 2026.
+Phase 1 foundation passes its offline checks; Phase 0 geography/reference gates,
+Phase 2 reviewed labels/splits and Phase 5 model integration remain open.
+See [restart audit and ordered remaining work](docs/RESTART_AUDIT.md).
 
 User-authorized demonstration scope: Phase 0 demo setup is complete using clearly
 labeled synthetic/assumed data. Phase 1 is complete. This demo status is separate
@@ -10,10 +12,11 @@ from real-pilot gates below. See [synthetic demo data](docs/DEMO_DATA.md).
 
 Only results from this new project count toward its completion gates.
 
-Deadline priority: deliver the smallest working forest-cover/change workflow.
+Development priority: deliver an evaluated working forest-cover/change workflow.
 Avoid optional infrastructure and advanced risk features before the first release.
-Keep essential geography, label, leakage and integrity checks; report unmet gates
-honestly instead of marking them complete to meet a deadline.
+The hackathon deadline no longer controls scientific or engineering decisions.
+Keep essential geography, label, leakage and integrity checks; fix known defects
+and require agreed release checks to pass before claiming a completed product.
 
 Before starting each new phase, explain its objective, inputs, processing,
 deliverable and verification in chat. Continue only with honest measured results.
@@ -56,8 +59,9 @@ The user will push the code after each phase.
   polygon mask and export integrity pass. Candidate coverage 99.0979%, not accuracy.
 - [x] Inspect actual overlay and save feasibility result. No independent positional
   error measurement or credible forest-positive labels established.
-- [ ] Validate sourced compartment polygon topology and spatial registration;
-  establish current beat membership rather than equating compartment and beat.
+- [ ] Validate sourced compartment polygon spatial registration and establish
+  current beat membership rather than equating compartment and beat. Topology
+  already passes its documented single-ring check.
 - [ ] Establish official beat boundary or an explicitly confirmed provisional study polygon.
 - [ ] Demonstrate credible reviewed forest/non-forest/unknown labels.
 - [ ] Establish independent evaluation locations/dates and attainable acceptance targets.
