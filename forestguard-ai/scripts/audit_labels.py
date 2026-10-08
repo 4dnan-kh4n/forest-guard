@@ -30,19 +30,38 @@ def audit(document):
         cls=props['class']; split=props['split']
         if cls not in {'forest','non_forest','unknown'} or split not in {'unassigned','train','validation','test'}:
             raise ValueError('Invalid class or split.')
-        if props['review_status'] not in {'unreviewed','reviewed','weak_only'} or props['confidence'] not in {'high','medium','low'}:
+        status=props['review_status']
+        if status not in {'unreviewed','reviewed','weak_only'}:
+            raise ValueError('Invalid review status or confidence.')
+        pending=status=='unreviewed' and split=='unassigned' and cls=='unknown'
+        if props['confidence'] not in ({None,'high','medium','low'} if pending else {'high','medium','low'}):
             raise ValueError('Invalid review status or confidence.')
         kind=props['reference_kind']
         if kind not in {'field_observation','dated_reference_imagery','weak_map','historical_management_document'}:
             raise ValueError('Invalid reference kind.')
         if not isinstance(props['reference_independent'],bool): raise ValueError('Independence must be boolean.')
-        for field in ['reference_source','reference_access_license','reviewer','study_area_version']:
+        for field in ['reference_source','reference_access_license','study_area_version']:
             if not isinstance(props[field],str) or not props[field].strip(): raise ValueError(f'Empty {field}.')
-        dates={field:date.fromisoformat(props[field]) for field in ['observation_date','reference_date','review_date']}
-        temporal_support=abs((dates['reference_date']-dates['observation_date']).days)<=31
-        if props['review_status']=='reviewed' and dates['review_date']<max(dates['observation_date'],dates['reference_date']):
+        if not (pending and props['reviewer'] is None) and (not isinstance(props['reviewer'],str) or not props['reviewer'].strip()):
+            raise ValueError('Empty reviewer.')
+        dates={'observation_date':date.fromisoformat(props['observation_date'])}
+        for field in ['reference_date','review_date']:
+            value=props[field]
+            if pending and value is None:
+                dates[field]=None
+                continue
+            try:dates[field]=date.fromisoformat(value)
+            except (ValueError,TypeError):
+                if (field=='reference_date' and split=='unassigned' and kind=='weak_map'
+                        and isinstance(value,str) and len(value)>=4 and value[:4].isdigit()
+                        and ('annual' in value or len(value)==4)):
+                    dates[field]=None
+                else:raise ValueError(f'Invalid or insufficiently precise {field}.')
+        temporal_support=dates['reference_date'] is not None and abs((dates['reference_date']-dates['observation_date']).days)<=31
+        if status=='reviewed' and dates['review_date']<max(dates['observation_date'],dates['reference_date'] or dates['observation_date']):
             raise ValueError('Review predates its observation/reference evidence.')
-        if cls=='unknown' and not str(props['uncertainty_notes']).strip(): raise ValueError('Unknown label needs uncertainty notes.')
+        if cls=='unknown' and (not isinstance(props['uncertainty_notes'],str) or not props['uncertainty_notes'].strip()):
+            raise ValueError('Unknown label needs uncertainty notes.')
         if split!='unassigned':
             if cls=='unknown' or props['review_status']!='reviewed' or props['confidence']=='low':
                 raise ValueError('Uncertain/unreviewed examples cannot enter frozen model splits.')
@@ -79,7 +98,7 @@ def audit(document):
             'declared_independent_reviewed_counts':{c:reviewed[c] for c in ['forest','non_forest','unknown']},
             'split_counts':{s:splits[s] for s in ['unassigned','train','validation','test']},
             'split_checks_complete':complete,'training_eligible':False,
-            'scope':'provenance audit; current project geography remains pipeline-only',
+            'scope':'declared provenance and split audit; not verification of class truth or model readiness',
             'reference_evidence_supplied':bool(features),'no_classes_generated':True}
 
 

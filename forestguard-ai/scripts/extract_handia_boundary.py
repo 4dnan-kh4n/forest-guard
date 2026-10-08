@@ -1,4 +1,4 @@
-"""Extract the official Handia KML's Joga 278 candidate; no boundary approval."""
+"""Extract one Handia compartment candidate, retaining its source provenance."""
 import argparse
 import hashlib
 import html
@@ -9,10 +9,16 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 NS = {'k': 'http://www.opengis.net/kml/2.2'}
+OFFICIAL_SOURCE_SHA256 = '44eb2168008f5e9654d64cce4bfba9b9a3081d509ceb663b340f779c66c34250'
+OFFICIAL_SOURCE_URL = 'https://mpforest.gov.in/publicdomain/Workingplanlibrary/WPLuploaddata//27111.kml'
 
 
-def extract(path):
+def extract(path, compartment=278):
+    if not isinstance(compartment, int) or not 1 <= compartment <= 99999:
+        raise ValueError('Expected a positive compartment number.')
     original = path.read_bytes()
+    source_hash = hashlib.sha256(original).hexdigest()
+    known_source = source_hash == OFFICIAL_SOURCE_SHA256
     if len(original) > 2 * 1024**2 or b'<!DOCTYPE' in original.upper():
         raise ValueError('Unexpected or oversized KML.')
     repaired = False
@@ -33,10 +39,8 @@ def extract(path):
         # Specific to this export's adjacent attribute/value table cells.
         props = {key: html.unescape(value.strip()) for key, value in re.findall(
             r'<td>\s*([A-Za-z0-9_]+)\s*</td>\s*<td>(.*?)</td>', description, re.S)}
-        if props.get('N_BEAT') != 'JOGA':
+        if (props.get('Range'), props.get('COMPT_NO')) != ('HANDIA', str(compartment)):
             continue
-        if (props.get('Range'), props.get('COMPT_NO'), props.get('LGL_Status')) != ('HANDIA', '278', 'RF'):
-            raise ValueError('Additional/different Joga compartment: review before extraction.')
         polygons = []
         for polygon in place.findall('.//k:Polygon', NS):
             rings = []
@@ -61,20 +65,28 @@ def extract(path):
                 rings.append(ring)
             polygons.append(rings)
         if not polygons:
-            raise ValueError('No Joga polygons.')
-        props.update(source_sha256=hashlib.sha256(original).hexdigest(),
-            source_url='https://mpforest.gov.in/publicdomain/Workingplanlibrary/WPLuploaddata//27111.kml',
-            status='official-source compartment candidate; pending spatial/current-boundary review',
-            current_boundary_verified=False, pilot_approved=False, forest_ground_truth=False)
+            raise ValueError('No compartment polygons.')
+        props.update(source_sha256=source_hash,
+            source_url=OFFICIAL_SOURCE_URL if known_source else None,
+            source_kind='preserved_official_download' if known_source else 'user_provided_kml_origin_unverified',
+            status=('official-source compartment candidate' if known_source else 'user-provided compartment geometry')+'; pending spatial/current-boundary review',
+            current_boundary_verified=False, pilot_approved=False, forest_ground_truth=False,
+            use=('pipeline checks only; user decision' if compartment == 278 else
+                 'compartment candidate; exact study geometry and registration pending'))
         candidates.append({'type':'Feature','properties':props,
             'geometry':{'type':'MultiPolygon','coordinates':polygons}})
     if len(candidates) != 1:
-        raise ValueError('Expected one Joga candidate; review source changes.')
+        raise ValueError(f'Expected one HANDIA compartment {compartment} candidate; review source changes.')
     coords = [p for f in candidates for polygon in f['geometry']['coordinates'] for ring in polygon for p in ring]
     bbox = [min(p[0] for p in coords), min(p[1] for p in coords),
             max(p[0] for p in coords), max(p[1] for p in coords)]
     return {'type':'FeatureCollection','bbox':bbox,'features':candidates}, {
-        'placemarks_inspected':len(places),'joga_candidates':len(candidates),
+        'placemarks_inspected':len(places),'compartment_candidates':len(candidates),
+        'requested_compartment':compartment,
+        'source_sha256':source_hash,
+        'source_kind':candidates[0]['properties']['source_kind'],
+        'source_beat':candidates[0]['properties'].get('N_BEAT'),
+        'source_circle':candidates[0]['properties'].get('N_CRICLE'),
         'missing_xsi_namespace_added_in_memory':repaired,'source_file_unchanged':True,
         'coordinate_order':'longitude, latitude; KML geographic coordinates',
         'altitudes_discarded_for_2d_boundary':True,'vertices_including_closure':len(coords),
@@ -86,11 +98,18 @@ def extract(path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('kml', type=Path)
+    parser.add_argument('--compartment', type=int, default=278)
+    parser.add_argument('--output', type=Path, help='New folder; existing artifacts are never overwritten.')
     args = parser.parse_args()
     before = hashlib.sha256(args.kml.read_bytes()).hexdigest()
-    collection, report = extract(args.kml)
+    collection, report = extract(args.kml, args.compartment)
     assert hashlib.sha256(args.kml.read_bytes()).hexdigest() == before
-    out = args.kml.parent
-    (out/'joga_278.candidate.geojson').write_text(json.dumps(collection,indent=2)+'\n')
+    out = args.output or (args.kml.parent if args.compartment == 278 else args.kml.parent/f'compartment_{args.compartment}')
+    stem = 'joga_278' if args.compartment == 278 else f'compartment_{args.compartment}'
+    target = out/f'{stem}.candidate.geojson'
+    if target.exists() or (out/'boundary_extraction_report.json').exists():
+        raise ValueError('Output already exists; choose a new --output folder.')
+    out.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(collection,indent=2)+'\n')
     (out/'boundary_extraction_report.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2))

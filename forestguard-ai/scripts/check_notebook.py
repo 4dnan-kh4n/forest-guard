@@ -43,4 +43,14 @@ except RuntimeError as error:
     assert 'hosted' in str(error), str(error)
 else:
     raise AssertionError('Local runtime must be rejected')
-print('PASS: four source notebooks, empty outputs, private-settings separation and local execution guard.')
+research = json.loads((root/'notebooks/04_multiseason_research.ipynb').read_text(encoding='utf-8'))
+research_code = [c for c in research['cells'] if c['cell_type'] == 'code']
+assert ''.join(research_code[0]['source']) == 'STUDY = None\n'
+assert ''.join(research_code[1]['source']) == source.split("if __name__ == '__main__':")[0]
+assert ''.join(research_code[2]['source']) == (root/'cloud/research_features.py').read_text(encoding='utf-8')
+assert ''.join(research_code[3]['source']) == (root/'cloud/multiseason_research.py').read_text(encoding='utf-8')
+assert ''.join(research_code[4]['source']) == (root/'cloud/worldcover_reference.py').read_text(encoding='utf-8')
+for cell in research_code:
+    assert cell['outputs'] == [] and cell['execution_count'] is None
+    compile(''.join(cell['source']), 'research notebook', 'exec')
+print('PASS: five source notebooks, empty outputs, private-settings separation and local execution guard.')

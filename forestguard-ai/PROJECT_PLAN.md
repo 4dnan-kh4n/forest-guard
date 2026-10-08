@@ -6,6 +6,85 @@ Phase 1 foundation passes its offline checks; Phase 0 geography/reference gates,
 Phase 2 reviewed labels/splits and Phase 5 model integration remain open.
 See [restart audit and ordered remaining work](docs/RESTART_AUDIT.md).
 
+Update on 7 October 2026: the user selects **compartment 279** as the study target.
+The saved official Handia KML tags it PF / RAMPURA beat / JOGA circle. Selection
+is confirmed; exact geometry comparison with the user's Google Earth export and
+spatial registration remain pending. Do not substitute the old 278 dataset or
+describe 279 as the entire Joga beat. Its 95-vertex source candidate passes the
+bounded topology check (4,277 edge pairs), with source bytes preserved.
+See [279 evidence and next inputs](docs/COMPARTMENT_279_STUDY.md), safe scope config
+`config/study_area.json`, and [adopted cover definition v1](docs/FOREST_COVER_DEFINITION.md).
+The cover definition is selected; credible reference labels and evaluation design
+remain unfinished. No new study-area imagery, labels or model results are claimed.
+
+Update on 8 October 2026: the supplied `comp_PF.kml` provides one 279 polygon.
+Its 82-vertex ring passes 3,159 edge comparisons. Selected coordinates are preserved
+as `compartment-279-user-kml-v1`, a user-selected provisional research geometry;
+independent registration and current official status remain unverified. The old
+working-plan candidate has 95 vertices and differs in projected area by about
+3.770891 ha. Both versions and original source bytes are retained; no geometry
+is adjusted to force an attribute match. Exact-coordinate selection is now resolved.
+[Officer data request and collection procedure](docs/FIELD_OFFICER_DATA_REQUEST.md)
+and [blank field form](docs/FIELD_OBSERVATION_FORM.md) are ready. No field labels
+have been collected or trained model performance claimed.
+
+Research update, 8 October 2026: the user confirms the supplied 279 boundary is
+correct. This resolves user confirmation; an independent registration measurement
+has not been obtained. Original field photography is prohibited. The active route
+is now [satellite research](docs/SATELLITE_RESEARCH_PROTOCOL.md), with uncertain
+land-use/origin cases excluded rather than assigned assumed labels. A hosted-only
+three-season 2025 notebook prepares ten bands and five numerical features on a
+native 20 m grid. Public/private separation, numerical feature checks and local
+execution refusal pass. Cloud outputs and reference feasibility are tracked
+separately from syntax checks; no four-class accuracy is assumed.
+
+The separate private 279 research notebook Version 1 completed on 8 October 2026
+(script version 356345375). Saved locally: verified 1.54 MB research ZIP with
+12 hashed files. The December 13 crop supplies 94.21% feature-valid coverage
+inside the selected polygon at 20 m. Dry/wet candidates failed the initial 90%
+screen; status is partial seasonal data screening. Offline grids, polygon masks,
+counts, index formulas and tampered-hash rejection pass. No labels or classifier
+were created. Expand the bounded scene screen and establish remote-reference
+feasibility next; do not treat notebook execution success as completed science.
+
+Research Version 2 completed on 8 October 2026 (script version 356354114).
+- [x] Screen 36 bounded SCL crops using actual polygon coverage, then process
+  the best local candidates without relaxing the 90% feature threshold.
+- [x] Preserve April 3 and December 9, 2025 observations on a shared 20 m grid:
+  94.52% / 94.37% feature coverage; common coverage 94.19% (12,338 / 13,099 centres).
+- [x] Acquire a 262×396 WorldCover 2021 v200 crop under CC BY 4.0, retain original
+  classes/provenance/attribution, and verify nearest-neighbor alignment. The
+  102,720,459-byte source tile was not downloaded in full.
+- [x] Verify and preserve the 4,937,030-byte ZIP: 27 hashes/CRC pass, original
+  quality crops included, all feature/texture values reconstructed offline.
+- [x] Prepare seven unlabeled review footprints and a self-contained offline
+  review page; source/case checks and browser layout verification pass.
+- [ ] Establish reviewed forest-positive reference evidence and evaluation splits.
+  Convenience cases and the old weak map do not meet this gate.
+
+NASA reference check, 8 October 2026:
+- [x] Verify Earthdata sign-in and free/open collection metadata; preserve the
+  small public CMR inventory and actual spatial/variable subset settings.
+- [x] Download the 104,730-byte March 6 L2A V003 subset and inspect 81 real shots:
+  38 centres inside compartment 279; none pass the initial degrade=0 screen.
+- [x] Check the May 28 and June 23 subsets: Harmony returns two `nodata` warnings;
+  retain underlying workflow evidence instead of treating service success as data.
+- [x] Export exact-ID CSV/GeoJSON, hashes and inspection report; actual-data checks
+  pass, with existing-output and resource limits enforced.
+- [x] Fix pending-label audit and verify it still rejects premature reviewed/training
+  transitions. Recompute review medians with masks respected; all cases stay unknown.
+- [ ] Obtain credible positive forest references; GEDI 2025 check did not resolve this.
+
+Reproduction and measured limits: [GEDI reference check](docs/GEDI_REFERENCE_CHECK.md).
+
+Among the 12 screened monsoon scenes, maximum SCL coverage was 55.95%; the three
+processed candidates gave 48.94%, 30.91% and 13.25% feature coverage and were
+rejected. Scientific status remains partial seasonal data screening. No forest
+labels, model accuracy or change estimates have been manufactured. Latest files:
+`data/study/compartment_279_v1/research_v2_20261008/` and
+`data/labels/compartment_279_v2_review_pack/`. Reproduction and limitations are in
+`docs/SATELLITE_RESEARCH_PROTOCOL.md`.
+
 User-authorized demonstration scope: Phase 0 demo setup is complete using clearly
 labeled synthetic/assumed data. Phase 1 is complete. This demo status is separate
 from real-pilot gates below. See [synthetic demo data](docs/DEMO_DATA.md).
@@ -62,7 +141,9 @@ The user will push the code after each phase.
 - [ ] Validate sourced compartment polygon spatial registration and establish
   current beat membership rather than equating compartment and beat. Topology
   already passes its documented single-ring check.
-- [ ] Establish official beat boundary or an explicitly confirmed provisional study polygon.
+- [x] Establish an explicitly confirmed provisional compartment 279 study polygon
+  from the user-supplied KML on 8 October 2026. Official/current-boundary status
+  and independent registration checks remain open; this is not the full Joga beat.
 - [ ] Demonstrate credible reviewed forest/non-forest/unknown labels.
 - [ ] Establish independent evaluation locations/dates and attainable acceptance targets.
 

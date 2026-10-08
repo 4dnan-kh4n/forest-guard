@@ -1,0 +1,3 @@
+# Optional small NASA HDF subset inspection; no training dependencies.
+-r requirements.txt
+h5py==3.14.0

@@ -86,7 +86,8 @@ if __name__ == '__main__':
         result = check_ring(geometry['coordinates'][0][0])
         result.update(simple_ring_topology='PASS', source_sha256=hashlib.sha256(content).hexdigest(),
             spatial_registration='NOT CHECKED', current_beat_boundary='NOT VERIFIED',
-            approved_study_area=False, use='pipeline checks only; user decision')
+            approved_study_area=False, use=document['features'][0].get('properties',{}).get(
+                'use','pipeline checks only; user decision'))
         (args.geojson.parent/'boundary_topology_report.json').write_text(json.dumps(result,indent=2)+'\n')
         assert args.geojson.read_bytes() == content
         print(json.dumps(result,indent=2))
