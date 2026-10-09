@@ -28,3 +28,33 @@ for path,selected in [(root/'notebooks/04_multiseason_research.ipynb',None),
     path.write_text(json.dumps({'nbformat':4,'nbformat_minor':5,'metadata':{'kernelspec':{
         'name':'python3','display_name':'Python 3','language':'python'}},'cells':cells},indent=2)+'\n',encoding='utf-8')
 print('PASS: public/private research notebook sources compile; private geometry stays under ignored data/.')
+
+liss4_source = (root/'cloud/liss4_reference_crop.py').read_text(encoding='utf-8')
+execute = "archives = list(Path('/kaggle/input').rglob(PRODUCT + '.zip*'))\nif len(archives) != 1:\n    raise ValueError('Attach exactly one preserved source ZIP (or .zip.bin).')\nreference_output = run_liss4(archives[0], STUDY)\n"
+reference_jobs = [(root/'notebooks/05_liss4_reference.ipynb',None,None),
+                  (root/'data/study/compartment_279_v1/05_liss4_reference.private.ipynb',boundary,None)]
+november_spec_path = root/'data/reference/bhoonidhi_20261009/november_product/source_spec.json'
+if november_spec_path.exists():
+    november_spec = json.loads(november_spec_path.read_text())
+    reference_jobs.extend([(root/'notebooks/06_liss4_november_reference.ipynb',None,november_spec),
+        (root/'data/study/compartment_279_v1/06_liss4_november_reference.private.ipynb',boundary,november_spec)])
+for path, selected, source_spec in reference_jobs:
+    run_code = execute
+    if source_spec is not None:
+        run_code = ('SOURCE_SPEC = ' + repr(source_spec) + '\n'
+                    "archives = list(Path('/kaggle/input').rglob(SOURCE_SPEC['product'] + '.zip*'))\n"
+                    "if len(archives) != 1:\n    raise ValueError('Attach exactly one preserved November source ZIP (or .zip.bin).')\n"
+                    'reference_output = run_liss4(archives[0], STUDY, SOURCE_SPEC)\n')
+    cells = [{'id':'purpose','cell_type':'markdown','metadata':{},'source':[
+        '# Compartment 279: independent-sensor reference crop\n',
+        'Private Kaggle CPU; Accelerator None. No Internet required after input upload.\n',
+        'Attach the matching preserved archive; retain it as .zip.bin if upload would unpack it.\n',
+        'Requires 3 GiB free cloud disk; never loads a full raster into memory.\n',
+        'Exports raw digital numbers and NIR/red/green display; no calibrated reflectance, cloud accuracy or labels.\n']}]
+    for key, code in [('study','STUDY = '+repr(selected)+'\n'),('crop',liss4_source),('execute',run_code)]:
+        compile(code,str(path),'exec')
+        cells.append({'id':key,'cell_type':'code','metadata':{},'source':code.splitlines(keepends=True),
+                      'execution_count':None,'outputs':[]})
+    path.write_text(json.dumps({'nbformat':4,'nbformat_minor':5,'metadata':{'kernelspec':{
+        'name':'python3','display_name':'Python 3','language':'python'}},'cells':cells},indent=2)+'\n',encoding='utf-8')
+print('PASS: LISS-IV cloud notebook prepared with private geometry separated.')

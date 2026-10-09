@@ -73,7 +73,7 @@ def inspect(source, boundary_path, output):
                 row['screen_pass']=bool(row['inside_study'] and row['l2a_quality_flag_rel3']==1
                     and row['degrade_flag']==0 and 0.95<=row['sensitivity']<=1
                     and np.isfinite(row['rh98_m']) and -213<=row['rh98_m']<=213)
-                # ponytail: RH98 is a measurement hint; add land-use/canopy evidence before forest labeling.
+                # shortcut: RH98 is only a hint; add land-use/canopy evidence before forest labeling.
                 if not np.isfinite(row['rh98_m']): row['rh98_m']=None
                 rows.append(row);beam_rows.append(row)
             beams.append({'beam':name,'description':str(group.attrs.get('description','')),

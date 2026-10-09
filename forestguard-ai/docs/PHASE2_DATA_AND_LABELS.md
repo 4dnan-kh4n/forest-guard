@@ -4,6 +4,83 @@ Objective: preserve manageable calibrated observations, align dates, review real
 forest/non-forest evidence, and freeze independent evaluation splits before
 extracting training pixels. Started 6 October 2026; labels/splits are not complete.
 
+## Current selected study: compartment 279 — 9 October 2026
+
+Compartment 279 is the user-confirmed provisional research area. The historical
+278 pair below remains a pipeline fixture, not this selected dataset.
+
+The new `prepare_study_dataset.py` command reuses Phase 1 bundle verification
+and the existing label-provenance audit. It checks that label versions/dates
+match the imagery, rejects footprints clipped by the crop grid, and measures
+common usable pixel-centre coverage for each review footprint. It exports a
+content-versioned registry plus unchanged label and forest-definition snapshots.
+No pixels or patches are extracted for training.
+
+```powershell
+.\.venv\Scripts\python.exe scripts/prepare_study_dataset.py --input data/study/compartment_279_v1/research_v2_20261008/forestguard_279_research.zip --boundary data/study/compartment_279_v1/boundary.geojson --labels data/labels/compartment_279_november_comparison_v2/satellite_interpretations.geojson --output data/phase2/my_279_dataset
+.\.venv\Scripts\python.exe scripts/check_study_dataset.py
+```
+
+Choose a fresh output directory. The verified actual export is
+`data/phase2/compartment_279_dataset_v1/`, version
+`compartment-279-4a65d6141daf0a02`. Its registry retains all 27 imagery-file hashes,
+source identifiers/dates, per-band calibration, source licenses/attribution,
+band/feature orders, CRS/grid, quality/resampling rules and cloud/local versions.
+Input hashes cover imagery, selected boundary, labels and definition document.
+The source ZIP and licensed reference crops still need separate backup; this
+registry does not duplicate the complete imagery or external reference archive.
+
+Actual acquisitions are 3 April and 9 December 2025. They share a 123 by 172
+20 m analysis grid in EPSG:32643. Common usable coverage is 12,338/13,099
+study centres (94.1904%). All seven review footprints have usable pixel centres.
+There are three AI-assisted water/non-forest interpretations, four unknowns,
+zero confirmed forest examples and zero declared independent reviewed examples.
+All seven splits remain unassigned. Convenience patches selected from historical
+weak-map hints are not a representative or independent evaluation sample.
+
+Offline checks pass: registry reproducibility and saved JSON, unchanged label
+snapshot, matching actual footprint counts, version/date/outside-grid rejection,
+uncertain and non-independent split rejection, overwrite prevention and unchanged
+original inputs. Altered test copies stay in temporary folders; they are not
+project labels. Record: `data/phase2/study_verification.json`.
+
+**Imagery registration is finished; full Phase 2 is not complete.** Credible
+reviewed forest/non-forest evidence and representative independent spatial/date
+splits must precede sampling and supervised training. April versus December is
+not an accepted same-season change pair. Boundary positional accuracy also
+remains unmeasured. See `PHASE0_REMAINING_REQUIREMENTS.md` for permitted evidence
+options without prohibited field photography.
+
+## Fresh evidence-review pack
+
+The saved `data/labels/compartment_279_blind_review_v1/comparison.html` works
+offline with all three real dated previews and seven footprint/context views.
+It hides earlier interpretations and individual weak-map class hints. The
+`reviewer_cases.geojson` beside it is a new unanswered template: seven unknown,
+unreviewed, unassigned records; reviewer/confidence unset and independence false.
+The existing three water interpretations and four unknown records are unchanged.
+This is a reviewer aid, not a newly reviewed dataset or an independent test set.
+The original convenience selection still came from historical weak-map hints.
+
+The page lists the required decisions, source/date/reuse permission, reviewer,
+confidence, height or height potential, canopy, stand extent and forest use.
+No prohibited photography is requested. Fill the JSON only after permitted
+evidence supports the decision; leave unknowns and splits unassigned otherwise.
+Hiding hints alone does not establish reviewer or reference independence.
+
+```powershell
+.\.venv\Scripts\python.exe scripts/prepare_liss4_review.py data/study/compartment_279_v1/research_v2_20261008/forestguard_279_research.zip data/reference/bhoonidhi_20261009/november_crop_v1/liss4_279_reference.zip data/labels/compartment_279_november_comparison_v2/satellite_interpretations.geojson data/labels/my_blind_review --blind
+.\.venv\Scripts\python.exe scripts/check_blind_review.py
+.\.venv\Scripts\python.exe scripts/audit_labels.py data/labels/compartment_279_blind_review_v1/reviewer_cases.geojson --output data/phase2/my_fresh_review_audit.json
+```
+
+Checks pass for seven blank records, preserved IDs/geometry, hidden previous
+notes/class hints, 24 embedded preview views, offline operation, original-mode
+compatibility, overwrite protection and unchanged source inputs. Results are
+in `data/phase2/blind_review_verification.json`. No human review has occurred.
+
+## Historical pipeline work
+
 ## Working pipeline dataset
 
 The two-date private Kaggle notebook uses the existing four-band crop pipeline
@@ -131,8 +208,8 @@ The imagery-preparation deliverable is finalized at version
 `data/phase2/handoff.json` records hashes of the registry, label audit,
 verification summary and exported pair ZIP for backup/transfer.
 
-Full Phase 2 completion remains blocked by accepted study geography, reviewed
-labels and actual independent evaluation splits. There are zero reviewed labels;
+For this historical 278 fixture, full Phase 2 completion remained blocked by accepted study geography, reviewed
+labels and actual independent evaluation splits. There were zero reviewed labels;
 no split assignments, forest classes or model results were invented. Phase 3
 training code can be developed separately, but this handoff is not eligible for
 credible supervised forest-model training yet.

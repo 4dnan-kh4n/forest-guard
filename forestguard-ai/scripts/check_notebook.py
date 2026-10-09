@@ -54,3 +54,35 @@ for cell in research_code:
     assert cell['outputs'] == [] and cell['execution_count'] is None
     compile(''.join(cell['source']), 'research notebook', 'exec')
 print('PASS: five source notebooks, empty outputs, private-settings separation and local execution guard.')
+
+liss4 = json.loads((root/'notebooks/05_liss4_reference.ipynb').read_text(encoding='utf-8'))
+liss4_code = [c for c in liss4['cells'] if c['cell_type'] == 'code']
+assert ''.join(liss4_code[0]['source']) == 'STUDY = None\n'
+assert ''.join(liss4_code[1]['source']) == (root/'cloud/liss4_reference_crop.py').read_text(encoding='utf-8')
+for cell in liss4_code:
+    assert cell['outputs'] == [] and cell['execution_count'] is None
+    compile(''.join(cell['source']), 'LISS-IV reference notebook', 'exec')
+namespace = runpy.run_path(str(root/'cloud/liss4_reference_crop.py'))
+try:
+    namespace['run_liss4']('not-a-source.zip', None)
+except RuntimeError as error:
+    assert 'hosted Kaggle' in str(error)
+else:
+    raise AssertionError('Reference crop must reject local execution before opening input')
+print('PASS: LISS-IV source notebook and early local-processing guard.')
+
+november = root/'notebooks/06_liss4_november_reference.ipynb'
+if november.exists():
+    notebook = json.loads(november.read_text())
+    cells = [c for c in notebook['cells'] if c['cell_type'] == 'code']
+    assert ''.join(cells[0]['source']) == 'STUDY = None\n'
+    assert ''.join(cells[1]['source']) == (root/'cloud/liss4_reference_crop.py').read_text()
+    for cell in cells:
+        assert cell['outputs'] == [] and cell['execution_count'] is None
+        compile(''.join(cell['source']), 'November LISS-IV reference', 'exec')
+    execution = {}
+    exec(''.join(cells[2]['source']).split('archives =')[0], execution)
+    spec = execution['SOURCE_SPEC']
+    assert spec['capture_date'] == '2025-11-09' and spec['archive_bytes'] == 551494580
+    assert spec['archive_sha256'] == '3f0f9e0772fa613d5f850e03832c0a61c450d1c253ad79d27a2cca58561a70cb'
+    print('PASS: November source/date/checksum, source parity and private geometry separation.')

@@ -1,5 +1,12 @@
 # Scientific development restart — 7 October 2026
 
+Current status is recorded in the [9 October Phase 0 assessment](PHASE0_FEASIBILITY_RESULT.md).
+Compartment 279 is now the user-confirmed research target; real April/December
+2025 inputs and a weak historical map are preserved and verified. The targeted
+NASA reference downloads are inspected, with zero accepted height references.
+Credible forest-positive feasibility remains unresolved. The original restart
+inventory below describes what was present on 7 October, not the latest evidence.
+
 The hackathon is complete. Continue from the first unmet scientific gate while
 preserving verified tooling, real imagery and useful interface work. Existing
 synthetic fixtures are test inputs, not evidence of forest loss or fire in Joga.

@@ -1,5 +1,17 @@
 # Sources and license decisions
 
+Current adoption update, 9 October 2026: a small WorldCover **2021 v200** crop
+is now stored as a weak reference under CC BY 4.0, with its original class codes,
+year, citation and attribution preserved. It is not independent test truth.
+The NASA GEDI L2A V003 collection's saved metadata declares free/open access;
+small subsets and their DOI/source/hash provenance are retained locally. All
+downloaded dates failed the current reference screen, so none supplies accepted
+height truth. See [actual reference checks](GEDI_REFERENCE_CHECK.md).
+No new hosting, model subscription or paid data source is used.
+The user-selected 279 KML remains private reference material; user confirmation
+does not establish an open redistribution license or current full-beat extent.
+The earlier candidate-only decisions below are retained as a dated history.
+
 Checked against official provider/project references on 6 October 2026.
 No paid service, trial, card-dependent service or hosted inference API is adopted.
 
@@ -34,3 +46,12 @@ See [map evidence](JOGA_MAP_EVIDENCE.md) for source links and unresolved geograp
 The user-provided research box [76.785,22.413,76.805,22.433] and candidate scene
 S2C_43QFE_20250329_0_L2A are starting research inputs, not inherited outputs,
 an official beat boundary, an approved reporting polygon, or forest labels.
+# Additional historical height source, 9 October 2026
+
+ETH Global Canopy Height 2020 v1, Lang et al. (2023):
+https://langnico.github.io/globalcanopyheight/ ; dataset DOI
+https://doi.org/10.3929/ethz-b-000609802 ; paper DOI
+https://doi.org/10.1038/s41559-023-02206-6 . Data CC BY 4.0, attribute authors,
+dataset and paper. Model-predicted height and uncertainty, not independent current
+forest reference. N21E075 bounded crop and actual verification preserved; see
+HISTORICAL_HEIGHT_REFERENCE.md. No external trained weights adopted.

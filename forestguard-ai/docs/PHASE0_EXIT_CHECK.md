@@ -1,5 +1,12 @@
 # Phase 0 exit check
 
+Update, 9 October 2026: the user-confirmed compartment 279 research geometry
+replaces 278 as the selected target. The current gate decisions and measurements
+are in [the feasibility result](PHASE0_FEASIBILITY_RESULT.md). The bounded real
+crop and reference-download inspections are finished. Credible forest-positive
+reference feasibility remains unmet; reviewed labels and model scores are not
+invented to close it. The older status and 278 evidence below remain historical.
+
 Status on 6 October 2026: **incomplete**. No trained model or reviewed labels.
 The user keeps both Salyakhedi and Joga compartment 278 for pipeline checks only.
 Neither is an approved study area; do not infer approval from a deadline.

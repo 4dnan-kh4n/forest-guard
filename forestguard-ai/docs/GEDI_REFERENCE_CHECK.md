@@ -101,3 +101,98 @@ uncertain natural forest/plantation/orchard/scrub cases as unknown. If no credib
 independent reference is available, explicitly evaluate a tree-cover proxy
 separately and keep the forest-accuracy gate open. Freeze independent evaluation
 groups before extracting training pixels.
+
+## Expanded historical search, 8 October 2026
+
+The same public catalogue query was expanded to 18 April 2019–8 October 2026.
+It returned 25 L2A and 25 matching L2B granules. No 2026 acquisition appears in
+this current catalogue result for the study box; this is not a statement about
+global mission coverage or future catalogue updates. The closest unchecked
+historical dates are 16 May 2024 and 10 March 2023. Their data cannot be silently
+treated as independent labels for the 2025 observations.
+
+Saved inventory: `data/reference/gedi_catalogue/20261008T111446995414Z/`.
+All source hashes, latest numbered collection selection, complete bounded-page
+counts and date-interval checks pass. Invalid and reversed dates are rejected
+before network access or output-directory creation. The inventory retains the
+original 2025-only default; an explicit interval makes each new query reproducible.
+
+```powershell
+.venv\Scripts\python.exe scripts/check_gedi_catalogue.py --start 2019-04-18 --end 2026-10-08
+.venv\Scripts\python.exe scripts/verify_gedi_catalogue.py data/reference/gedi_catalogue/20261008T111446995414Z
+```
+
+Earthdata order `3396245838` requests these two historical L2A granules using
+the same small box and 80 selected fields. Spatial trimming and HDF output were
+explicitly re-enabled after the restored project's interface reset those settings.
+The 2.2 GB figure in the interface refers to original inputs, not downloaded data.
+Order processing and actual shot inspection remain separate milestones.
+
+The underlying workflow for order `3396245838` subsequently returned two
+`nodata` warnings and no subset files. Actual page text, screenshot and result
+manifest are retained in `data/reference/gedi_historical_orders/` as
+`march2023_may2024_*`. A successful order therefore did not establish shot
+coverage for either historical date.
+
+One targeted additional order (`3534264383`) requests the 14 January and
+24 July 2020 acquisitions on nominal track `T05201`, matching the track of the
+March 2025 file that actually returned points. This is a candidate-selection
+heuristic, not a promise that footprints repeat or pass quality checks. Both
+spatial trimming and HDF output were checked, with 80 variables selected.
+
+Metadata-only Sentinel-2 searches within 31 days of nominal dates 15 January
+and 24 July 2020 are saved under
+`data/reference/sentinel_historical_catalogues/20261008T180042662527Z/`.
+They returned 25 and 26 bounded candidates respectively; the API includes next
+links, so these are not complete scene inventories. Both response hashes,
+collection identifiers and record counts pass local checks. No rasters were
+downloaded and no usable pixel coverage was measured.
+January includes `S2A_T43QFE_20200115T054011_L2A`; July includes
+`S2B_T43QFE_20200725T052448_L2A`, whose tile cloud percentage is 83.23%.
+This percentage cannot establish visibility at our reference points. Acquisition
+times may span midnight; actual shot-date interpretation and local cloud masks
+must be checked before a dated reference match is claimed.
+
+The documented older GEDI degradation table describes code `7X` as star trackers
+1 and 2 unavailable, consistent with treating our March 2025 flag 70 cautiously.
+See [official Level 1B guide, degradation table](https://lpdaac.usgs.gov/documents/997/GEDI01B_User_Guide_V21.pdf).
+This flag indicates potential positioning trouble; it does not prove every shot
+is wrong. The initial zero-degradation screen remains unchanged.
+
+### July 2020 subset inspected on 9 October 2026
+
+Order `3534264383` generated two actual subset links. The July file was
+downloaded through the signed-in Earthdata browser after the credential-free
+Python route failed. No browser credentials were extracted and certificate
+validation was not disabled. The 253,699-byte original file, source URL,
+SHA-256 and inspection outputs are retained in `data/reference/gedi_20200724/`.
+SHA-256: `9ae31e60c4ee9c936988f46d8bcfee784dd4b6db1912c38cd4206b3f714ac12a`.
+
+There are 200 returned shots and 129 point centres inside the exact polygon.
+All 129 have degradation flag zero, but both release-2 and release-3 quality
+flags are zero. Interior sensitivities span 0.6307025–0.9535512; raw RH98 spans
+0–17.86 m. Those raw heights are not accepted reference heights. Zero shots
+pass the unchanged screen, and zero forest labels were created. Actual-shot,
+identifier, geometry, count and overwrite-protection checks pass.
+
+The January subset subsequently downloaded and was inspected on 9 October 2026.
+The 277,800-byte original and manifest are preserved in
+`data/reference/gedi_20200114/`, SHA-256
+`17c036c926fd7c1335e3ad841df21b03bb40c7161235799e60fb07ef995cc190`.
+It contains 188 shots, 121 centres inside the polygon, all degradation flag 70.
+Release-3 quality flags are zero for 80 interior shots and one for 41; none pass
+the unchanged combined screen. Actual-file, identifier, count, quality and
+overwrite-protection checks pass. No height references or forest labels were
+accepted. The targeted two-file download backlog is resolved.
+The completed-order screenshot is preserved as
+`data/reference/gedi_historical_orders/january_july2020_complete.png`.
+
+```powershell
+.venv\Scripts\python.exe scripts/inspect_gedi_subset.py data/reference/gedi_20200724/GEDI02_A_2020206191145_O09153_03_T05201_02_004_02_V003_subsetted.h5 data/study/compartment_279_v1/boundary.geojson data/reference/gedi_20200724/inspection_new
+.venv\Scripts\python.exe scripts/check_gedi_subset.py data/reference/gedi_20200724/GEDI02_A_2020206191145_O09153_03_T05201_02_004_02_V003_subsetted.h5 data/study/compartment_279_v1/boundary.geojson
+```
+
+Use a new inspection output folder; existing evidence cannot be overwritten.
+The optional public-link downloader rejects non-HDF responses, unsafe URLs,
+files over 10 MiB and existing destinations; its offline guard checks pass.
+These checks do not guarantee that NASA's redirect/download transport works.

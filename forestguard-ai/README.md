@@ -13,6 +13,11 @@ finished product must analyze stored data with saved models offline.
 
 ## Local UI
 
+Saved compartment 279 imagery has a checksum-verified backup and isolated recovery
+check. [Recovery instructions and scope](docs/RESEARCH_BACKUP.md).
+The clean local-wheel installation and restored API checks also passed;
+[fresh installation verification](docs/OFFLINE_INSTALL_CHECK.md).
+
 The forest landing page opens first. Officer login uses **Harda → Joga** and the
 local presentation password **joga@123**. [Presentation walkthrough](docs/PRESENTATION_DEMO.md).
 
@@ -21,6 +26,12 @@ Start the prepared build with `.\start_ui.ps1`, then open http://127.0.0.1:8000.
 It displays saved imagery, comparison maps, coverage, dataset checks and CSV/HTML
 reports. [Setup and UI verification](docs/UI_STARTUP.md). Trained forest/change
 inference remains to be connected; synthetic class layers are labeled.
+Officer login now opens the computed synthetic change dashboard, with before/after
+maps, loss/gain layers, coverage and four export formats.
+[Change dashboard instructions and checks](docs/CHANGE_DASHBOARD.md).
+Map workspace now defaults to the real compartment 279 observations from April
+and December 2025, with 94.19% common usable coverage and no forest-model claim.
+[Real observations, registration and limits](docs/COMPARTMENT_279_DASHBOARD.md).
 
 ## Synthetic demonstration data
 
@@ -42,12 +53,38 @@ It checks files, grids, band order and quality masks in bounded windows and
 exports measured coverage to JSON/CSV. Choose a new report folder for each run.
 [Setup, offline reinstall and verified results](docs/PHASE1_FOUNDATION.md).
 
+For the selected compartment 279 research bundle (20 m analysis grid):
+
+```powershell
+.\.venv\Scripts\python.exe scripts/inspect_research.py --input data/study/compartment_279_v1/research_v2_20261008/forestguard_279_research.zip --boundary data/study/compartment_279_v1/boundary.geojson --output data/phase1/my_279_report
+.\.venv\Scripts\python.exe scripts/check_research_local.py
+```
+
+This exports verified per-date/common imagery coverage, checks the selected
+boundary and preserves existing reports. It does not predict forest cover.
+Back up ignored datasets and wheels separately from Git.
+
 ## Phase 2 data preparation
 
-Two real March 2024/2025 observations now share a verified grid and common valid
+The current selected study is compartment 279. Its verified imagery and unchanged
+reference interpretations are registered at `compartment-279-4a65d6141daf0a02`.
+Run `scripts/check_study_dataset.py` with the prepared Python environment to
+reproduce the offline checks. [Current dataset and commands](docs/PHASE2_DATA_AND_LABELS.md).
+Reviewed forest examples and independent model splits remain unavailable.
+
+The historical pipeline-only 278 pair contains two real March 2024/2025 observations that share a verified grid and common valid
 mask. The dataset registry, offline pair verifier and label-provenance/separation
 audit are implemented. [Data, measured coverage and label-review workflow](docs/PHASE2_DATA_AND_LABELS.md).
 Reviewed labels and actual evaluation splits are pending reference evidence.
+
+## Phase 3 cloud training preparation
+
+The guarded baseline/Random Forest workflow and `notebooks/08_forest_training.ipynb`
+are prepared. [Training prerequisites, checks and exports](docs/PHASE3_TRAINING.md).
+The synthetic cloud fitting/export check passes; no real forest model has been
+trained. Current labels are correctly rejected as unready.
+Saved-model offline prediction now passes against the synthetic cloud fixture.
+[Inference command, checks and offline installation](docs/OFFLINE_MODEL_INFERENCE.md).
 
 ## Phase 0 — establish feasibility
 

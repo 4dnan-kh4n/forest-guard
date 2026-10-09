@@ -92,3 +92,17 @@ Their packaged notices are retained with installed dependencies. Core raster
 dependencies are documented in LOCAL_DEPENDENCIES.md. Real imagery displays
 Copernicus attribution; generated data is explicitly identified as synthetic.
 No external tiles, fonts, paid services or hosted LLM calls are used.
+
+## Change dashboard update — 9 October 2026
+
+Officer login now opens the saved synthetic change workflow. See
+[change dashboard handoff](CHANGE_DASHBOARD.md) for controls, API/browser checks,
+exports and remaining real-model requirements. The older monthly illustration
+is separate. Current regression checks pass 17 image responses.
+
+## Real compartment 279 update — 9 October 2026
+
+The map workspace defaults to the verified current research observations;
+[registration and real-data handoff](COMPARTMENT_279_DASHBOARD.md). API regression
+now verifies 23 image responses. Preserve the registered imagery separately from
+Git. April/December comparisons are for inspection, not forest-change inference.
