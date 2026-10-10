@@ -1,11 +1,25 @@
 # Current development checkpoint — 10 October 2026
 
-New local milestone: actual 2023–2026 annual images and weak-reference tree-cover
-estimates, three common-coverage annual comparisons, and refreshed real NASA FIRMS
-observations are connected. The bounded deployment package is prepared but this
-update still requires the user's push/redeploy. See [annual/fire evidence](ANNUAL_AND_FIRE.md).
-2022 calibration/acquisition, historical fire records and independent forest
-evaluation remain open; no missing year has been filled with generated results.
+Officer UI now opens yearly forest changes and offers only four sections. Selecting
+2023 shows estimated net tree-cover decrease of 13.04 ha compared with 2022;
+2024 shows estimated net increase of 3.08 ha. Percentages use the same common
+clear area, not different annual coverage or measured canopy density. Sources,
+exact mapped scope and model limitations are retained in expandable details.
+Synthetic fixtures remain preserved for engineering checks but are unavailable
+in officer navigation. Unexplained greenness scores and repeated status banners
+were removed. All maps ignore mouse-wheel zoom so the page continues scrolling;
+zoom buttons remain. Local browser checks and the frontend build passed; yearly
+arithmetic checks and 112 hosted API checks passed. This UI update needs redeployment.
+
+
+New local milestone: actual 2022–2026 annual images and weak-reference tree-cover
+estimates, four common-coverage annual comparisons, and refreshed real NASA FIRMS
+observations are connected. The 2022 image passed product-XML calibration and
+alignment checks; the previous four-year version is preserved. The deployed
+JavaScript includes the annual/fire views, but the new 2022 data still requires
+the user's push/redeploy. See [annual/fire evidence](ANNUAL_AND_FIRE.md).
+NASA historical-fire request 820485 is submitted and awaits processing. Independent
+forest evaluation remains open; no missing data has been filled with generated results.
 
 Real-image research change is now implemented: December 2024/2025 proxy
 comparison, 94.37% common coverage, 2.40 ha suspected tree-proxy loss and

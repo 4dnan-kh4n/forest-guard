@@ -21,7 +21,7 @@ with tempfile.TemporaryDirectory(dir=ROOT/'data/annual',prefix='synthetic_change
 folder=ROOT/'data/annual/observations_v1'
 report=json.loads((folder/'annual_report.json').read_bytes())
 pairs=calculate(folder,report)
-assert len(pairs)==3
+assert len(pairs)==4
 assert all(sum(p['transition_pixels'].values())==p['common_pixels'] for p in pairs)
 assert pairs==json.loads((folder/'annual_changes.json').read_bytes())['comparisons']
 print('PASS: annual common coverage, all transitions, excluded pixels and actual saved comparison reproducibility.')

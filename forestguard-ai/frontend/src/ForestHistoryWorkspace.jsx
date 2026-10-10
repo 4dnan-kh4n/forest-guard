@@ -1,16 +1,32 @@
 import React,{useEffect,useState} from 'react';
+import {annualChange} from './annualChange';
 
 export default function ForestHistoryWorkspace({api}){
   const [report,setReport]=useState(null),[year,setYear]=useState(2026),[error,setError]=useState('');
   useEffect(()=>{let active=true;api('/api/forest-history').then(r=>{if(active)setReport(r);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[]);
   const row=report?.observations?.find(item=>item.year===year);
   const change=report?.comparisons?.find(item=>item.after_year===year);
-  return <section aria-label="Annual forest observations"><div className="change-intro"><div><h2>Your forest, year by year.</h2><p>2022–2026 · dated satellite crops, estimated tree cover and clear image coverage.</p></div></div>{error&&<p className="error-box" role="alert">{error}</p>}<div className="change-actions">{[2022,2023,2024,2025,2026].map(value=><button key={value} className={`button ${year===value?'primary':'secondary'}`} aria-pressed={year===value} onClick={()=>setYear(value)}>{value}</button>)}</div>
-    {!report?<p role="status">Opening annual observations…</p>:!row?<section className="panel change-evidence"><h3>{year}: satellite crop not yet acquired</h3><p>ForestGuard is preparing the five-year image collection. You do not need to upload data. No image or percentage has been generated to fill this missing year.</p></section>:<>
-      <div className="change-period"><span>Image date: <strong>{row.date}</strong></span><span>{year===2026?'2026 observation; year still in progress':'Dated annual observation'}</span></div>
-      <div className="stats-grid">{[['Estimated tree-cover extent',row.tree_cover_proxy_percent==null?'Unavailable':`${row.tree_cover_proxy_percent.toFixed(1)}%`,'Of clear observed area; not canopy density'],['Estimated mapped tree cover',row.tree_cover_proxy_ha==null?'Unavailable':`${row.tree_cover_proxy_ha.toFixed(2)} ha`,'Research model estimate'],['Clear coverage',`${(row.coverage_fraction*100).toFixed(2)}%`,'Observable part of the study polygon'],['Greenness indicator',row.median_ndvi.toFixed(3),'Vegetation signal, not forest density']].map(([title,value,note])=><article className="stat-card" key={title}><div className="stat-top">{title}</div><strong>{value}</strong><small>{note}</small></article>)}</div>
-      <section className="panel" style={{padding:16}}><img style={{display:'block',width:'100%',maxHeight:'65vh',objectFit:'contain'}} src={`/api/forest-history/${year}/image`} alt={`Compartment 279 satellite image acquired ${row.date}`} onError={()=>setError('This saved annual image could not be loaded.')}/></section><section className="panel change-evidence"><h3>Observation evidence</h3><p>{report.limits}</p><p>Source image: {row.scene_id}. {row.attribution}</p></section>
-      {change&&<section className="panel change-evidence"><h3>Estimated change from {change.before_year} to {change.after_year}</h3><p>Suspected tree-class loss: <strong>{change.suspected_tree_proxy_loss_ha.toFixed(2)} ha</strong>. Suspected gain: <strong>{change.suspected_tree_proxy_gain_ha.toFixed(2)} ha</strong>.</p><p>Compared {change.common_area_ha.toFixed(2)} ha where both images are clear ({change.common_coverage_percent.toFixed(2)}% of the study area). These are research model transitions; seasonal differences and classification errors still need review.</p></section>}
+  const summary=annualChange(change);
+  return <section aria-label="Annual forest observations">
+    <div className="change-actions year-selector">{[2022,2023,2024,2025,2026].map(value=><button key={value} className={`button ${year===value?'primary':'secondary'}`} aria-pressed={year===value} onClick={()=>{setYear(value);setError('');}}>{value}</button>)}</div>
+    {error&&<p className="error-box" role="alert">{error}</p>}
+    {!report?<p role="status">Opening your forest history…</p>:!row?<section className="panel change-evidence"><h3>{year} image unavailable</h3><p>ForestGuard is preparing this image.</p></section>:<>
+      <section className={`panel annual-summary ${summary?.direction||'baseline'}`} aria-live="polite">
+        <span>{summary?`${change.before_year} → ${year}`:`${year} · reference year`}</span>
+        <h2>{summary?`Estimated tree cover ${summary.direction==='unchanged'?'has no net change':summary.direction}`:'Starting point for yearly comparisons'}</h2>
+        {summary?<><strong>{summary.netHa.toFixed(2)} ha {summary.direction==='decreased'?'net decrease':summary.direction==='increased'?'net increase':'net change'}</strong>
+          <p>Tree-covered share of the same compared area: <b>{summary.beforePercent.toFixed(1)}% → {summary.afterPercent.toFixed(1)}%</b>.</p>
+          <div className="annual-change-breakdown"><span>Possible loss: <b>{change.suspected_tree_proxy_loss_ha.toFixed(2)} ha</b></span><span>Possible gain: <b>{change.suspected_tree_proxy_gain_ha.toFixed(2)} ha</b></span></div>
+          <p>Satellite estimate — inspect areas of possible loss before confirming deforestation.</p></>:<p>{year} is the earliest saved year. Select a later year to see its change from the previous year.</p>}
+      </section>
+      <div className="change-period"><span>Satellite image: <strong>{row.date}</strong></span>{year===2026&&<span>2026 · through this image date</span>}</div>
+      <section className="panel annual-image"><img src={`/api/forest-history/${year}/image`} alt={`Joga mapped forest area, satellite image acquired ${row.date}`} onError={()=>setError('This satellite image could not be loaded.')}/></section>
+      <details className="panel change-evidence"><summary>Image details and how to read the result</summary>
+        <p><b>Mapped area:</b> compartment 279 in Joga. The available boundary does not cover the entire beat.</p>
+        <p><b>Clear image coverage:</b> {(row.coverage_fraction*100).toFixed(1)}% of this area.{change&&` The yearly comparison covers ${change.common_area_ha.toFixed(2)} ha (${change.common_coverage_percent.toFixed(1)}%) visible in both images.`}</p>
+        <p>Tree cover means the area the model assigns to the tree class. It does not measure how densely trees grow. Cloudy and missing pixels are excluded.</p>
+        <p>{report.limits}</p><p>Source: {row.scene_id}. {row.attribution}</p>
+      </details>
     </>}
   </section>;
 }

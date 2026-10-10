@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {annualChange} from './src/annualChange.js';
+const pair=counts=>({common_pixels:100,transition_pixels:counts});
+assert.deepEqual(annualChange(pair({0:20,1:60,2:15,3:5})),{direction:'decreased',netHa:.4,beforePercent:75,afterPercent:65});
+assert.equal(annualChange(pair({0:20,1:60,2:5,3:15})).direction,'increased');
+assert.equal(annualChange(pair({0:20,1:60,2:10,3:10})).direction,'unchanged');
+assert.equal(annualChange(null),null);
+assert.equal(annualChange(pair({0:20,1:60,2:10,3:9})),null);
+assert.equal(annualChange({common_pixels:0,transition_pixels:{0:0,1:0,2:0,3:0}}),null);
+console.log('PASS: yearly direction, same-area percentages, missing/invalid coverage.');

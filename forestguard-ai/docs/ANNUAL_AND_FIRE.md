@@ -14,7 +14,7 @@ metadata and checksums are in `data/annual/observations_v1/`.
 
 | Year | Real acquisition | Clear feature coverage | Predicted tree-class extent within clear area |
 | --- | --- | --- | --- |
-| 2022 | Not yet accepted | Unavailable | Unavailable |
+| 2022 | 1 October 2022 | 74.15% | 82.80% |
 | 2023 | 8 October 2023 | 74.39% | 79.16% |
 | 2024 | 2 October 2024 | 74.60% | 79.89% |
 | 2025 | 2 October 2025 | 52.45% | 79.29% |
@@ -32,6 +32,7 @@ This permits viewing partial observations, not claiming whole-compartment covera
 
 | Pair | Common clear area | Suspected tree-class loss | Suspected tree-class gain |
 | --- | --- | --- | --- |
+| 2022 → 2023 | 383.48 ha | 13.24 ha | 0.20 ha |
 | 2023 → 2024 | 384.56 ha | 1.64 ha | 4.72 ha |
 | 2024 → 2025 | 272.40 ha | 6.56 ha | 8.16 ha |
 | 2025 → 2026 | 273.16 ha | 9.12 ha | 6.60 ha |
@@ -50,9 +51,16 @@ inside a timestamped folder. The corrected notebook retains masks, accepts measu
 partial viewing coverage and puts the annual ZIP at `/kaggle/working/` too.
 
 An alternative public `sentinel-2-l2a` catalogue returned 2022 candidates. Legacy
-COG scale/offset metadata requires verification before importing model estimates;
-the selected metadata includes an offset-applied flag. No unverified 2022 estimate
-was inserted. Source guidance and known metadata issues:
+COG scale/offset metadata includes an offset-applied flag and required review.
+We instead acquired the reprocessed 1 October 2022 scene from Microsoft Planetary
+Computer. Private Kaggle version 357030486 completed in 41.1 seconds and exported
+564,886 bytes, preserved at `data/annual/2022_pc_v1/cloud_run3.zip`.
+Its original product XML specifies processing baseline 05.10, quantification
+10,000 and raw offsets −1,000 for all ten selected bands. These were applied to
+the unscaled asset values. XML, source IDs and hashes are retained. Grid, masks,
+statistics and archive hashes passed local verification; all four existing years
+remain byte-identical in the merged dataset. The prior annual version is retained
+at `data/annual/observations_before_2022/`. Source guidance and known metadata issues:
 [Element 84 catalogue documentation](https://github.com/Element84/earth-search),
 [legacy offset issue](https://github.com/Element84/earth-search/issues/66).
 The supplied KML is the geographic boundary; it is not the source of satellite pixels.
@@ -72,7 +80,11 @@ inside the polygon and zero within the nearby context. This is not proof no fire
 occurred. The image background is saved December 2025 context, not a live fire image.
 Satellite observations are not continuous surveillance or verified incident reports.
 [NASA FIRMS source and attribution](https://firms.modaps.eosdis.nasa.gov/active_fire/).
-Archived 2022–2026 fire history is still to be acquired; recent feeds cannot recreate it.
+NASA archive request 820485 was submitted successfully on 10 October 2026 for
+NOAA-20 VIIRS C2, 1 January 2022 through 10 October 2026, custom bounds
+[76.76, 22.37, 76.85, 22.44], CSV output. It awaits NASA processing; no archived
+counts have been inferred from recent feeds. The requested box provides context;
+actual reporting must still filter centres using the compartment polygon.
 
 ## Reproduce and deploy
 
@@ -93,7 +105,7 @@ Archived 2022–2026 fire history is still to be acquired; recent feeds cannot r
    Vercel configuration. Newly added features have been checked locally, not on the
    updated production deployment until that push occurs.
 
-103 selected deployment files total 37,849,943 bytes, below the 40 MiB guard.
+104 selected deployment files total 37,885,734 bytes, below the 40 MiB guard.
 Only annual PNG previews, reports and hashes are packaged; full raster/model data
 remains local. Git ignores private notebooks, downloaded rasters and training artifacts.
 
@@ -101,10 +113,11 @@ remains local. Git ignores private notebooks, downloaded rasters and training ar
 
 Frontend production build, fire parser/geometry/error checks, annual ZIP/mask/coverage
 checks, common-area transition conservation and real saved comparison reproducibility
-passed. Browser checks verified the 2023/2026 actual image views, 2026 comparison,
-missing 2022 handling and successful real NASA refresh. Hosted checks block networking
+passed. Browser checks verified actual 2022/2023/2026 image views, the new
+2022→2023 comparison and successful real NASA refresh. All 112 hosted API checks
+passed with five image endpoints and four comparisons. Hosted checks block networking
 and verify authentication, saved fire data and unavailable-refresh preservation.
 
-Next: independently verify 2022 calibration and obtain that crop; acquire archived
-fire events; independently evaluate forest references before operational claims.
+Next: download and verify the processed NASA archive; independently evaluate
+forest references before operational claims; push and redeploy the new data/views.
 No new software dependency, paid API or local training stack was introduced.

@@ -9,7 +9,7 @@ function ChangeMap({run,layer,title,fit}){
   const host=useRef(null),map=useRef(null),overlay=useRef(null);
   const [imageError,setImageError]=useState('');
   useEffect(()=>{
-    map.current=L.map(host.current,{crs:L.CRS.Simple,minZoom:-4,maxZoom:6,attributionControl:false});
+    map.current=L.map(host.current,{scrollWheelZoom:false,crs:L.CRS.Simple,minZoom:-4,maxZoom:6,attributionControl:false});
     const resize=new ResizeObserver(()=>map.current?.invalidateSize());resize.observe(host.current);
     return()=>{resize.disconnect();map.current.remove();map.current=null;};
   },[]);

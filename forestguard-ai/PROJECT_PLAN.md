@@ -5,10 +5,11 @@ Annual imagery and recent fire milestone — 10 October 2026:
 - [x] Rerun privately on Kaggle CPU; acquire and verify real 2023–2026 imagery.
 - [x] Keep original pixel masks and 90% default training screen; use measured partial
   coverage for annual viewing only.
-- [x] Register dated images, proxy extent and three comparisons over common clear coverage.
+- [x] Register real 2022–2026 images, proxy extent and four comparisons over common clear coverage.
 - [x] Connect real NOAA-20/21 NASA fire feeds, refresh and saved offline fallback.
 - [x] Verify local interface, exports, geometry/parser failures and bounded deployment data.
-- [ ] Verify 2022 calibration and acquire an accepted crop.
+- [x] Verify 2022 product XML calibration, acquire an accepted crop and preserve the prior dataset.
+- [x] Submit a bounded NASA NOAA-20 archive request for 2022–2026 (request 820485).
 - [ ] Acquire 2022–2026 archived fire history.
 - [ ] Push/redeploy and verify these additions on actual Vercel production.
 - [ ] Independently evaluate forest labels/model and operational change claims.
@@ -772,3 +773,12 @@ saved real March 2024/2025 imagery remains available under Satellite map.
 
 See [the deliverable and public-reference evaluation protocol](docs/REAL_IMAGE_CHANGE.md).
 
+
+Officer dashboard simplification — 10 October 2026:
+- [x] Default to yearly forest-change summary; remove synthetic selection from officer navigation.
+- [x] Use same-area tree-class percentages and net hectare direction, with explicit increase/decrease colours.
+- [x] Use Joga in normal navigation; retain exact mapped-area provenance in expandable details.
+- [x] Remove unexplained greenness numbers and repeated banners; retain factual source/coverage details.
+- [x] Disable wheel zoom on every Leaflet map; preserve zoom buttons and page scrolling.
+- [x] Pass arithmetic checks, frontend build, 112 hosted API checks and local browser verification.
+- [ ] Push/redeploy and verify this interface on Vercel.

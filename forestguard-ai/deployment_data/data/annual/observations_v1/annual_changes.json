@@ -1,6 +1,24 @@
 {
   "comparisons": [
     {
+      "before_year": 2022,
+      "after_year": 2023,
+      "before_date": "2022-10-01",
+      "after_date": "2023-10-08",
+      "common_pixels": 9587,
+      "common_area_ha": 383.48,
+      "common_coverage_percent": 73.18879303763646,
+      "suspected_tree_proxy_loss_ha": 13.24,
+      "suspected_tree_proxy_gain_ha": 0.2,
+      "transition_pixels": {
+        "0": 1623,
+        "1": 7628,
+        "2": 331,
+        "3": 5
+      },
+      "independent_forest_accuracy_measured": false
+    },
+    {
       "before_year": 2023,
       "after_year": 2024,
       "before_date": "2023-10-08",

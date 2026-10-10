@@ -12,20 +12,24 @@
     "sha256": "f8bfe0046fcdb4a98672780a9a665ccfa860efebeff7dbb2d4faf6b693cf0a49"
   },
   "data/annual/observations_v1/annual_report.json": {
-    "bytes": 3216,
-    "sha256": "aab1d42243a519e14acca4f21d3def867850ebbc04017370a3ff169aba514401"
+    "bytes": 3857,
+    "sha256": "9b55eb78dc6a2e152b8c28ddbf7956164c764cfcd82570a957002f1e64cdf951"
   },
   "data/annual/observations_v1/ui_checksums.json": {
-    "bytes": 548,
-    "sha256": "7139b3b184e4aa7ecd0561ac7d32ad0193d574cac9638335e57f700e69ec665a"
+    "bytes": 638,
+    "sha256": "0ebb2fa7429422a4dc87f797b12dc8bcc210c5a09bd7ed61c24e97082a52051a"
   },
   "data/annual/observations_v1/import_record.json": {
-    "bytes": 157,
-    "sha256": "d12f50dca1a3183ca2e26a9466b4d8e133ff749c3517fde430d774ec462e6e1c"
+    "bytes": 266,
+    "sha256": "fc274915a90a40fd6918a375eb9abe6d0adb6ec5193c57f5b76d1fb280632c59"
   },
   "data/annual/observations_v1/annual_changes.json": {
-    "bytes": 1705,
-    "sha256": "a55615fc21345d5f90d812194d68fe59746cf565d6d310c47a0f7f56a7382b75"
+    "bytes": 2202,
+    "sha256": "30f7189ee7117288f4c1aa876584549e51375861f36992486922f3e3e2e413ea"
+  },
+  "data/annual/observations_v1/2022/preview.png": {
+    "bytes": 34454,
+    "sha256": "0dd218409ade6c1f8c8734da8a6c1e24df5f414ac49a1444c204cedb4919257e"
   },
   "data/annual/observations_v1/2023/preview.png": {
     "bytes": 34002,

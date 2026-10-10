@@ -31,3 +31,16 @@
   .topbar-right .button{min-height:44px;padding:10px 14px}
   main{padding:20px 16px}.hosting-note{font-size:12px;padding:12px;margin-bottom:18px}
 }
+
+.year-selector{margin-bottom:24px}.year-selector .button{min-width:70px;min-height:44px;font-size:14px}
+.annual-summary{padding:28px;border-left:5px solid #6b7e87;margin-bottom:24px;background:#f5f7fa}
+.annual-summary>span{font-size:14px;font-weight:600}.annual-summary h2{font-size:26px;margin:12px 0}
+.annual-summary>strong{display:block;font-size:32px;margin:12px 0}.annual-summary p{font-size:15px;line-height:1.65;margin-top:12px}
+.annual-summary.decreased{color:#812d26;background:#fff3f0;border-color:#bc493b}
+.annual-summary.increased{color:#24543c;background:#eef7ef;border-color:#3b8057}
+.annual-change-breakdown{display:flex;gap:24px;flex-wrap:wrap;margin:18px 0;font-size:16px}
+.annual-image{padding:16px}.annual-image img{display:block;width:100%;max-height:65vh;object-fit:contain}
+.change-evidence summary{font-size:15px;font-weight:600;cursor:pointer;min-height:24px}
+@media(max-width:760px){.annual-summary{padding:20px}.annual-summary h2{font-size:23px}.annual-summary>strong{font-size:27px}.year-selector{gap:7px}.year-selector .button{min-width:52px;flex:1;padding:10px}}
+
+.workspace-grid{grid-template-columns:minmax(0,1fr)}

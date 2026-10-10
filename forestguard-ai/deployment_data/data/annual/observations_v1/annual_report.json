@@ -10,6 +10,22 @@
   "study_area_version": "compartment-279-user-kml-v1",
   "observations": [
     {
+      "year": 2022,
+      "date": "2022-10-01",
+      "scene_id": "S2A_MSIL2A_20221001T052651_R105_T43QFE_20240724T063709",
+      "usable_pixels": 9713,
+      "study_pixels": 13099,
+      "coverage_fraction": 0.7415069852660509,
+      "tree_cover_proxy_percent": 82.79625244517656,
+      "tree_cover_proxy_ha": 321.68,
+      "median_ndvi": 0.7873333692550659,
+      "model_version": "weak-proxy-14f032e581bf4ab5",
+      "attribution": "Contains modified Copernicus Sentinel data 2022",
+      "license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "canopy_density_percent": null,
+      "synthetic": false
+    },
+    {
       "year": 2023,
       "date": "2023-10-08",
       "scene_id": "S2B_T43QFE_20231008T052542_L2A",

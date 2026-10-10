@@ -56,6 +56,9 @@ def annual_run(study,base_run,feature_builder,model_bytes,expected_sha,output_ru
     (folder/'annual_report.json').write_bytes((json.dumps(report,indent=2)+'\n').encode())
     selected=['annual_report.json','research_report.json','boundary.geojson']
     for row in rows:selected.extend(str(row['year'])+'/'+name for name in ['preview.png','features.tif','usable_mask.tif','study_mask.tif','report.json','source.json']+(['proxy_classes.tif'] if model is not None else []))
+    for row in rows:
+        for name in ['product.xml','scene_classes.tif']:
+            if (folder/str(row['year'])/name).exists():selected.append(str(row['year'])+'/'+name)
     hashes={name:hashlib.sha256((folder/name).read_bytes()).hexdigest() for name in selected}
     (folder/'annual_checksums.json').write_bytes((json.dumps(hashes,indent=2)+'\n').encode())
     output=folder/'forestguard_annual_2022_2026.zip'

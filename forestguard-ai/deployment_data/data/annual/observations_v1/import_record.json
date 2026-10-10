@@ -1,9 +1,11 @@
 {
   "archive_sha256": "01489e18bcf476d0ad1dffee8c56adafc04990eb02d4f337562687d78220c706",
   "verified_years": [
+    2022,
     2023,
     2024,
     2025,
     2026
-  ]
+  ],
+  "additional_archive_sha256": "b4a0ecb7f946a699e3c997a2f6ae03d5e28157dd37f2f7c25904a9dc06df3f39"
 }

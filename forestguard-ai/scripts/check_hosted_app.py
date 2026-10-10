@@ -81,12 +81,11 @@ async def check():
                 await request('/api/fire/refresh',{})
             body,_=await request('/api/fire');assert json.loads(body)['fetched_at']==fire['fetched_at']
             body,_=await request('/api/forest-history');annual=json.loads(body)
-            assert annual['available'] and [row['year'] for row in annual['observations']]==[2023,2024,2025,2026]
-            assert len(annual['comparisons'])==3
+            assert annual['available'] and [row['year'] for row in annual['observations']]==[2022,2023,2024,2025,2026]
+            assert len(annual['comparisons'])==4
             for row in annual['observations']:
                 body,_=await request(f'/api/forest-history/{row["year"]}/image')
                 assert body.startswith(b'\x89PNG')
-            await request('/api/forest-history/2022/image',status=404)
             await request('/api/forest-history/2030/image',status=404)
             body,_=await request('/api/datasets');items=json.loads(body);assert {d['id'] for d in items}=={'compartment-279','sentinel','demo'}
             for item in items:

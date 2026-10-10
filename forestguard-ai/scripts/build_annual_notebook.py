@@ -2,6 +2,7 @@
 import base64
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -15,8 +16,17 @@ sources=[('pipeline',(ROOT/'cloud/inspect_sample.py').read_text(encoding='utf-8'
          ('research',(ROOT/'cloud/multiseason_research.py').read_text(encoding='utf-8')),
          ('annual',(ROOT/'cloud/annual_observations.py').read_text(encoding='utf-8'))]
 execute="SEASONS=[(str(year),f'{year}-09-20T00:00:00Z/{year}-10-09T23:59:59Z') for year in range(2022,2027)]\nSCL_SCREEN_LIMIT=6\nPROCESS_LIMIT=2\nMIN_FEATURE_COVERAGE=.5\nannual_output=annual_run(STUDY,run,research_features,MODEL_BYTES,MODEL_SHA,run_research)\n"
-for path,boundary,embedded in [(ROOT/'notebooks/13_annual_observations.ipynb',None,None),
-                              (ROOT/'data/annual/2022_2026_v1/private_run.ipynb',study,base64.b64encode(raw).decode())]:
+only_2022='--2022' in sys.argv
+if only_2022:
+    catalogue=json.loads((ROOT/'data/annual/2022_2026_v1/pc_2022_catalogue.json').read_bytes())
+    selected=next(item for item in catalogue['features'] if item['id']=='S2A_MSIL2A_20221001T052651_R105_T43QFE_20240724T063709')
+    sources=[('features',(ROOT/'cloud/research_features.py').read_text(encoding='utf-8')),
+             ('source2022',(ROOT/'cloud/observation_2022.py').read_text(encoding='utf-8')),
+             ('annual',(ROOT/'cloud/annual_observations.py').read_text(encoding='utf-8'))]
+    execute='PC_ITEM='+repr(selected)+'\nannual_output=annual_run(STUDY,None,research_features,MODEL_BYTES,MODEL_SHA,run_2022)\n'
+public=ROOT/('notebooks/14_2022_observation.ipynb' if only_2022 else 'notebooks/13_annual_observations.ipynb')
+private=ROOT/('data/annual/2022_pc_v1/private_run.ipynb' if only_2022 else 'data/annual/2022_2026_v1/private_run.ipynb')
+for path,boundary,embedded in [(public,None,None),(private,study,base64.b64encode(raw).decode())]:
     cells=[{'id':'purpose','cell_type':'markdown','metadata':{},'source':[
         '# ForestGuard annual satellite observations: 2022–2026\n',
         'Private Kaggle CPU, Accelerator None, Internet On. Existing NumPy, Rasterio, Pillow, scikit-learn and joblib only. No training or paid services.\n',
@@ -25,6 +35,11 @@ for path,boundary,embedded in [(ROOT/'notebooks/13_annual_observations.ipynb',No
         'Apply product calibration, cloud/shadow/missing masks and original grid checks. Annual viewing accepts at least 50% clear feature coverage, reports the measured fraction and excludes all invalid pixels. This is not a training-data acceptance target. Failed years remain missing.\n',
         'Our trusted historical-map proxy is embedded in the private copy. If runtime versions differ, imagery still exports but proxy percentages stay unavailable.\n',
         'Tree-cover class extent is not canopy density or confirmed deforestation. Preserve the ZIP before ending the cloud session.\n']}]
+    if only_2022:
+        cells[0]['source']=['# ForestGuard missing 2022 observation\n',
+            'Private Kaggle CPU: Accelerator None, Internet On. One 1 October 2022 scene reprocessed in 2024.\n',
+            'Read bounded 20m crops; calibrate from original product XML (quantification and band offsets), require unscaled COG headers; mask uncertain pixels. Public read token stays in runtime memory.\n',
+            'Existing trusted weak-map model only; no training. Export source XML, masks, source IDs, checksums and ZIP. The estimate is not independently validated forest cover.\n']
     setup='STUDY='+repr(boundary)+'\nMODEL_SHA='+repr(sha)+'\nMODEL_BYTES=base64.b64decode('+repr(embedded)+') if '+repr(embedded is not None)+' else b""\n'
     for key,code in [('imports','import base64\n'),('study',setup),*sources,('execute',execute)]:
         compile(code,str(path),'exec')
