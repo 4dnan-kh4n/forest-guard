@@ -31,6 +31,11 @@ service-account*.json
 *.safetensors
 *.zip
 
+# Only the explicitly prepared, bounded website datasets are deployable.
+!deployment_data/
+!deployment_data/**
+.vercel/
+
 # Local database files and journals
 *.db
 *.db-*

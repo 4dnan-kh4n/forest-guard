@@ -1,0 +1,51 @@
+{
+  "dataset_role": "pipeline checks only",
+  "scene_ids": [
+    "S2A_T43QFE_20240321T053116_L2A",
+    "S2A_T43QFE_20250328T052953_L2A"
+  ],
+  "dates": [
+    "2024-03-21T05:32:53.754000Z",
+    "2025-03-28T05:33:00.668000Z"
+  ],
+  "shape": [
+    339,
+    307
+  ],
+  "crs": "EPSG:32643",
+  "transform": [
+    10.0,
+    0.0,
+    684020.0,
+    0.0,
+    -10.0,
+    2482460.0
+  ],
+  "band_order": [
+    "B02",
+    "B03",
+    "B04",
+    "B08"
+  ],
+  "candidate_pixels": 58971,
+  "usable_pixels_by_date": [
+    57885,
+    58439
+  ],
+  "common_usable_pixels": 57605,
+  "common_usable_fraction": 0.9768360719675773,
+  "quality_rule": "all bands valid and finite; SCL 4/5/6; inside research-box pixel centers",
+  "grid_alignment": "PASS",
+  "source_boundary_sha256": "44eb2168008f5e9654d64cce4bfba9b9a3081d509ceb663b340f779c66c34250",
+  "pilot_approved": false,
+  "reviewed_label_count": 0,
+  "splits_frozen": false,
+  "model_trained": false,
+  "forest_loss_ha": null,
+  "forest_gain_ha": null,
+  "attribution": [
+    "Contains modified Copernicus Sentinel data 2024",
+    "Contains modified Copernicus Sentinel data 2025"
+  ],
+  "seasonal_note": "Both March observations; similar calendar season does not guarantee identical phenology or water level."
+}

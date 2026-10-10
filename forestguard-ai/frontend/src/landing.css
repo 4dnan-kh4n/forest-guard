@@ -20,10 +20,9 @@ html{scroll-behavior:smooth}
 
 /* Reference shield/tree/leaf mark: white ink on dark surfaces. */
 .forest-logo{flex-shrink:0}.landing .forest-logo,.officer-dialog .forest-logo,.sidebar .forest-logo{--logo-ink:#f3f5e9;--logo-cutout:#102015}.sidebar .brand-mark{background:transparent}
-/* A native modal sits above the custom cursor, so restore the system cursor. */
-html.custom-cursor-active:has(.officer-dialog[open]),html.custom-cursor-active:has(.officer-dialog[open]) *{cursor:auto!important}
-html.custom-cursor-active:has(.officer-dialog[open]) button{cursor:pointer!important}
-html.custom-cursor-active:has(.officer-dialog[open]) input{cursor:text!important}
-.landing:has(.officer-dialog[open]) .motion-cursor{visibility:hidden}
+/* Keep the matching modal cursor inside the browser's top layer. */
+.motion-cursor{z-index:20000}
+html:has(.officer-dialog[open]) .page-cursor{visibility:hidden}
+.officer-dialog>.modal-cursor{position:fixed}
 .officer-dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
 .officer-dialog>.forest-logo{display:block}

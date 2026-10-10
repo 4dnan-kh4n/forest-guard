@@ -1,5 +1,9 @@
 # Deploy the public landing page to Vercel
 
+For the officer login and dashboard, use [the full application deployment](VERCEL_FULL_APP.md).
+These older steps are only for an intentionally public landing page; set
+`VITE_FORESTGUARD_LANDING_ONLY=true` explicitly for that use.
+
 This deploys the public React/Vite landing page only. The officer dashboard, login API, local database, and saved analysis files are not hosted by this setup. On the deployed site, the Officer Login button explains that sign-in is available in the local workspace. The local demo keeps its existing sign-in flow.
 
 ## 1. Push the project to GitHub
@@ -16,7 +20,7 @@ This deploys the public React/Vite landing page only. The officer dashboard, log
    - Install Command: `pnpm install --frozen-lockfile`
    - Build Command: `pnpm run build`
    - Output Directory: `dist`
-5. The Vite build detects Vercel's `VERCEL=1` system variable and automatically builds the public landing-page mode. If system environment variables are disabled in Vercel, add `VITE_FORESTGUARD_LANDING_ONLY=true` under **Environment Variables** for Production, Preview, and Development.
+5. Set `VITE_FORESTGUARD_LANDING_ONLY=true` under **Environment Variables** for Production, Preview, and Development to intentionally deploy only the landing page.
 6. Choose **Deploy**. Vercel builds the static site and gives you a `vercel.app` URL. Later pushes to the connected branch create new deployments.
 
 The optional variable is intentionally named with Vite's `VITE_` prefix because it is a public build setting, not a secret. Hosted mode contains no local password or login form and does not send a login request to a missing API.

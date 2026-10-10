@@ -1,0 +1,38 @@
+{
+  "format": "forestguard-research-proxy-result-v1",
+  "scope": "User-confirmed compartment 279 research polygon, not full Joga beat",
+  "acquisition_date": "2025-12-09T05:42:45.261000Z",
+  "scene_id": "S2B_T43QFE_20251209T053610_L2A",
+  "model_version": "weak-proxy-14f032e581bf4ab5",
+  "dataset_version": "weak-proxy-279-76502052e21f0ad1",
+  "model_sha256": "8bf0858faaee969b35e003c466de19ab1767a96c5c8ed9098cb8010f13d3a6b8",
+  "dataset_sha256": "b4d93e7db778b51addcea7e9c574e1f593b56c48786778a1629cf3921cf7f8ec",
+  "observation_sha256": "bdc1f3b07c91446bfd6bcf504f4fbed516ec104509e4993b5e0504073558fbfb",
+  "model_kind": "exploratory_weak_map_proxy",
+  "class_mapping": {
+    "0": "other-cover proxy",
+    "1": "tree-cover proxy",
+    "255": "unobserved/outside study"
+  },
+  "study_mask_pixels": 13099,
+  "predicted_pixels": 12362,
+  "usable_fraction": 0.9437361630658829,
+  "class_pixels": {
+    "0": 3419,
+    "1": 8943
+  },
+  "resolution_m": 20,
+  "crs": "EPSG:32643",
+  "shape": [
+    123,
+    172
+  ],
+  "vote_meaning": "Uncalibrated mean tree-class probability across fitted decision trees; not accuracy, canopy percentage or validated confidence.",
+  "operational_use_approved": false,
+  "independent_forest_accuracy_measured": false,
+  "forest_area_ha": null,
+  "forest_loss_ha": null,
+  "forest_gain_ha": null,
+  "local_training_performed": false,
+  "limits": "Single-observation research inference. Validation pixels were already used in model selection; this map is not an independent test. Historical reference errors, crop/shrub confusion and uncertain land use remain."
+}

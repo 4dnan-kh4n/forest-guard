@@ -1,0 +1,30 @@
+{
+  "preview.png": {
+    "sha256": "bddd5af6dc8ce0438279f90938c923d5c417935969c123101fb2ac9d7554d485",
+    "bytes": 176659
+  },
+  "reflectance.tif": {
+    "sha256": "1ec1632849c178ad30d95c1c2bf88383bd8fa26f63e0b8a232a37d8b3bac2811",
+    "bytes": 1108442
+  },
+  "report.json": {
+    "sha256": "ef904d18156745b7243b209b394602e3a8f75432a572f3403f3a55f1de712ad2",
+    "bytes": 3424
+  },
+  "scl.tif": {
+    "sha256": "51404d3db21717d1586904d8027e40e969e0e715df6b1d27b8d502c083e3c9a6",
+    "bytes": 2732
+  },
+  "source.json": {
+    "sha256": "1f7b64b16c913d4d4cc01da3fce1272efc705eb7a3ff99038361515b4303271a",
+    "bytes": 17442
+  },
+  "study.tif": {
+    "sha256": "879088a077b706b1d55a0f01226baa31da5f8ce8d2ea86b3eaa420fb393abc6f",
+    "bytes": 1488
+  },
+  "usable.tif": {
+    "sha256": "aa817b031a0ac485e504e1aff0f52446351e60d4904386d6bdad4ccff2b0bafc",
+    "bytes": 2021
+  }
+}

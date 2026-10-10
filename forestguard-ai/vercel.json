@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "fastapi",
+  "buildCommand": "pnpm --dir frontend install --frozen-lockfile && pnpm --dir frontend run build",
+  "functions": {
+    "app.py": {
+      "maxDuration": 60,
+      "excludeFiles": "{.venv/**,**/node_modules/**,data/**,models/**,notebooks/**,docs/**,reports/**,**/__pycache__/**,.git/**,.env*,frontend/src/**}"
+    }
+  }
+}

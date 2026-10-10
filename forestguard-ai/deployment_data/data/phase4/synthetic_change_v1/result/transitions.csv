@@ -1,0 +1,5 @@
+synthetic_fixture,before_date,after_date,transition,pixels,area_ha
+True,2025-01-10,2026-01-12,stable_non_forest,16,0.64
+True,2025-01-10,2026-01-12,stable_forest,16,0.64
+True,2025-01-10,2026-01-12,suspected_loss,16,0.64
+True,2025-01-10,2026-01-12,suspected_gain,16,0.64

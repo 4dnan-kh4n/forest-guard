@@ -1,0 +1,15 @@
+{
+  "source_url": "https://www.kaggle.com/code/adnankh4n/forestguard-ai-fresh-feasibility/output?scriptVersionId=355697676",
+  "version": 7,
+  "recorded_at_utc": "2026-10-06T09:11:18.548717+00:00",
+  "files": {
+    "kaggle_outputs.zip": {
+      "sha256": "0da0fafcb5087db6c9278e424a98c3426afbd5ab92b210abb08a38d0ae35b968",
+      "bytes": 13693507
+    },
+    "phase2_pair.zip": {
+      "sha256": "ec41f7b1408afb805546acc67040b2ca403fc16bbeb3f15786d185021038c320",
+      "bytes": 6161209
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "data_kind": "synthetic",
+  "verified_files": 20,
+  "same_seed_reproducible": true,
+  "spatial_splits_disjoint": true,
+  "gap_m": 160,
+  "simulated_dates_disjoint": true,
+  "overwrite_rejected": true,
+  "real_pilot_validation": false
+}

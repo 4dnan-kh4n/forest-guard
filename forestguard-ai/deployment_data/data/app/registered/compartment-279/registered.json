@@ -1,0 +1,51 @@
+{
+  "id": "compartment-279",
+  "kind": "real",
+  "title": "Compartment 279 \u00b7 real saved observations",
+  "subtitle": "April and December 2025 \u00b7 different seasons",
+  "scope": "User-confirmed compartment 279 research polygon \u00b7 not full Joga beat",
+  "version": "imagery-279-bdc1f3b07c91446b",
+  "model_version": null,
+  "study_area_version": "compartment-279-user-kml-v1",
+  "coverage": 0.9419039621345141,
+  "resolution": 20,
+  "verified_files": 27,
+  "views": [
+    {
+      "id": "dry",
+      "date": "2025-04-03",
+      "name": "2025-04-03",
+      "scene_id": "S2B_T43QFE_20250403T053649_L2A",
+      "pixels": 13099,
+      "usable": 12381,
+      "coverage": 0.9451866554698832,
+      "forest_ha": null,
+      "source_license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+    },
+    {
+      "id": "post_monsoon",
+      "date": "2025-12-09",
+      "name": "2025-12-09",
+      "scene_id": "S2B_T43QFE_20251209T053610_L2A",
+      "pixels": 13099,
+      "usable": 12362,
+      "coverage": 0.9437361630658829,
+      "forest_ha": null,
+      "source_license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+    }
+  ],
+  "source_sha256": {
+    "bundle": "bdc1f3b07c91446bfd6bcf504f4fbed516ec104509e4993b5e0504073558fbfb",
+    "boundary": "3212df8ac0dc7b3868fd3798151bca0992fcdf74125d3eeb319755317c20aa34"
+  },
+  "attribution": "Contains modified Copernicus Sentinel data 2025",
+  "layers": [
+    "imagery",
+    "coverage",
+    "ndvi"
+  ],
+  "usable_filename": "usable_mask.tif",
+  "study_filename": "study_mask.tif",
+  "common_mask": true,
+  "limits": "Different seasons. Inspect imagery and vegetation indicators only; no forest classification, fire detection or forest-cover change measured."
+}

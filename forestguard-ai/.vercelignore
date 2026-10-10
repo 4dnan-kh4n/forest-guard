@@ -1,0 +1,10 @@
+.git/
+.venv/
+data/
+models/
+notebooks/
+reports/
+**/node_modules/
+**/__pycache__/
+.env*
+!deployment_data/**

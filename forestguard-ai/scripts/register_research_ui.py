@@ -1,5 +1,6 @@
 """Register the verified small compartment 279 imagery for the local dashboard."""
 import argparse
+import os
 import hashlib
 import json
 import tempfile
@@ -13,7 +14,8 @@ from rasterio.windows import Window
 from inspect_research import inspect
 from inspect_local import check_files
 
-ROOT=Path(__file__).resolve().parents[1]
+PROJECT_ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(os.environ['FORESTGUARD_DATA_ROOT']) if os.environ.get('FORESTGUARD_DATA_ROOT') else PROJECT_ROOT/('deployment_data' if os.environ.get('VERCEL')=='1' else '.')
 BUNDLE=ROOT/'data/study/compartment_279_v1/research_v2_20261008/forestguard_279_research.zip'
 BOUNDARY=ROOT/'data/study/compartment_279_v1/boundary.geojson'
 OUTPUT=ROOT/'data/app/registered/compartment-279'

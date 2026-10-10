@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "network_blocked_inference": true,
+  "predicted_pixels": 12362,
+  "class_and_vote_grids_checked": true,
+  "validation_confusion_matrix_matches_cloud": true,
+  "output_checksums_checked": true,
+  "nodata_and_vote_bounds_checked": true,
+  "originals_unchanged": true,
+  "overwrite_rejected": true,
+  "operational_forest_loader_rejects_proxy": true,
+  "local_training_performed": false,
+  "independent_forest_accuracy_measured": false,
+  "browser_rendering_checked": false
+}

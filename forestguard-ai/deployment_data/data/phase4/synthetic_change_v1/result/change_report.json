@@ -1,0 +1,38 @@
+{
+  "synthetic_fixture": true,
+  "scope": "synthetic pipeline check",
+  "before_date": "2025-01-10",
+  "after_date": "2026-01-12",
+  "model_version": "synthetic-fixture-v1",
+  "forest_definition_version": "forestguard-cover-v1",
+  "study_area_version": "synthetic-study-v1",
+  "study_mask_pixels": 112,
+  "common_observable_pixels": 64,
+  "unobservable_study_pixels": 48,
+  "common_coverage_fraction": 0.5714285714285714,
+  "pixel_area_ha": 0.04,
+  "study_mask_area_ha": 4.48,
+  "observable_area_ha": 2.56,
+  "transition_pixels": {
+    "stable_non_forest": 16,
+    "stable_forest": 16,
+    "suspected_loss": 16,
+    "suspected_gain": 16
+  },
+  "transition_area_ha": {
+    "stable_non_forest": 0.64,
+    "stable_forest": 0.64,
+    "suspected_loss": 0.64,
+    "suspected_gain": 0.64
+  },
+  "before_cover_on_common_ha": 1.28,
+  "after_cover_on_common_ha": 1.28,
+  "net_cover_change_on_common_ha": 0.0,
+  "area_method": "pixel-centre study mask times 20 m pixel area; not surveyed boundary or tree-crown area",
+  "input_sha256": {
+    "before": "2f8cd6c98b750447f18f6ee425b75e65bb92c2426a0861361709391394ac64f4",
+    "after": "9b5285ac350ac40829326222920659082795edbabb2d1ec47d26add024cc64a8",
+    "study_mask": "d1057b23455d309db86bab59c5ab39485c0bf5d82ce807894e0888400c7e34d4"
+  },
+  "limits": "Synthetic transitions only; not findings about Joga."
+}

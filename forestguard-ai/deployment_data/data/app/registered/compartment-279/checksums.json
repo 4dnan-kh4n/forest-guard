@@ -1,0 +1,58 @@
+{
+  "boundary.geojson": {
+    "bytes": 9476,
+    "sha256": "3212df8ac0dc7b3868fd3798151bca0992fcdf74125d3eeb319755317c20aa34"
+  },
+  "common_usable.tif": {
+    "bytes": 911,
+    "sha256": "42e92f9265cbca4811542472df27f0e278cc4bb646ed7ad52eb978fd8089b5b0"
+  },
+  "registered.json": {
+    "bytes": 1788,
+    "sha256": "156c84a23ed1cca5ef36b84cd700991e9a4dbc555da08d56e388d3f13c30a745"
+  },
+  "research_report.json": {
+    "bytes": 21616,
+    "sha256": "ce28548aa1e72878660150d298a0af61af1de87baba2999923bd91d35b66f5fb"
+  },
+  "dry/preview.png": {
+    "bytes": 37336,
+    "sha256": "61edcf301e15af9f3f3fd27b7feff7f6124bd6bb47ad6c6a754b402c652d1221"
+  },
+  "dry/reflectance.tif": {
+    "bytes": 687220,
+    "sha256": "7ad3133e77abb17326fe479103d237bf89b183b0681752dddc928d5f014b0e39"
+  },
+  "dry/source.json": {
+    "bytes": 25396,
+    "sha256": "52e27da84fce7137b1690f9ec7006aa10b4be42297cd08bf2825c35ae7c5f70d"
+  },
+  "dry/study_mask.tif": {
+    "bytes": 816,
+    "sha256": "d32a7bf3a1c2fd0d5288e0e582aa34e23dda4960b4ec40e4166291b80331cb6b"
+  },
+  "dry/usable_mask.tif": {
+    "bytes": 827,
+    "sha256": "02b981b82408361b2e8efedc19c676bbeb73ea973de529b3a686dd3222546531"
+  },
+  "post_monsoon/preview.png": {
+    "bytes": 35195,
+    "sha256": "581898b5f564d93bd98c51b55b16cd1cceeac41ee5f4703026405d62475b26be"
+  },
+  "post_monsoon/reflectance.tif": {
+    "bytes": 679612,
+    "sha256": "ddb10f110232d6e8f4f062efdf24194a77cd32fe4fe212b97b53dbe8d925197b"
+  },
+  "post_monsoon/source.json": {
+    "bytes": 25605,
+    "sha256": "2bdc771d36d444bcf857ae7e73dfcde14a86da15d839bb6ed17d7925d3bb41f4"
+  },
+  "post_monsoon/study_mask.tif": {
+    "bytes": 816,
+    "sha256": "d32a7bf3a1c2fd0d5288e0e582aa34e23dda4960b4ec40e4166291b80331cb6b"
+  },
+  "post_monsoon/usable_mask.tif": {
+    "bytes": 842,
+    "sha256": "2f8b032e3b0c4dd26127a22d98542fc0b4c5c36a08809e111c7ca7f3aa9ce7d0"
+  }
+}

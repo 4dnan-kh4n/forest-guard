@@ -1,0 +1,33 @@
+{
+  "data_kind": "synthetic",
+  "geometry_crs": "EPSG:32643",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          500000,
+          2500000
+        ],
+        [
+          501280,
+          2500000
+        ],
+        [
+          501280,
+          2498720
+        ],
+        [
+          500000,
+          2498720
+        ],
+        [
+          500000,
+          2500000
+        ]
+      ]
+    ]
+  },
+  "description": "Fictional 1.28 km square fixture, not the Joga beat boundary",
+  "official_boundary": false
+}

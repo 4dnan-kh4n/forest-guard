@@ -1,0 +1,82 @@
+{
+  "assumed_study_area.json": {
+    "bytes": 576,
+    "sha256": "f443c8fa0b9279021e3d3252e5ad60e6d35a7419d45b733ea54374bfdb5e3edb"
+  },
+  "manifest.json": {
+    "bytes": 2077,
+    "sha256": "7e0e7d2e8000d68edee95b7e6207a4f051d09142d05fca275e65fa0e30498d73"
+  },
+  "test/labels.tif": {
+    "bytes": 1574,
+    "sha256": "b9669d821132efb3f51995027960fbb7d823f5eca4dfa18483ecdf37f97becc6"
+  },
+  "test/preview.png": {
+    "bytes": 39445,
+    "sha256": "3ce5805002758f67ab31cd939743b66c214e18bb7c44ace077c2490dd8fdb41e"
+  },
+  "test/preview.png.aux.xml": {
+    "bytes": 940,
+    "sha256": "81091eb16a6c6b6100166b2e5783e5c244141bf5e875da1045d49b12b308f409"
+  },
+  "test/reflectance.tif": {
+    "bytes": 228195,
+    "sha256": "039e93408bb1b58c5ac2144bc341cb565bbb3fd17aeb036b648b005781bef0fc"
+  },
+  "test/split_mask.tif": {
+    "bytes": 968,
+    "sha256": "d195d3d9b3a4609140cd4a691124099c5d0bb9d8372fcc396bbc2c55671de27c"
+  },
+  "test/usable.tif": {
+    "bytes": 1802,
+    "sha256": "ee84690f2e42f0b5aa3d349238627019f1d5ec45876c6c4219ab5a287c778dd8"
+  },
+  "train/labels.tif": {
+    "bytes": 1658,
+    "sha256": "a047110088d15ab408dfa00b65d9a1a080397344d796291fb4c75e9697f7eb9e"
+  },
+  "train/preview.png": {
+    "bytes": 39597,
+    "sha256": "64b158f1267d61f5d563046129326e0e46d1a560faf7a1b262058c23578f34a9"
+  },
+  "train/preview.png.aux.xml": {
+    "bytes": 940,
+    "sha256": "81091eb16a6c6b6100166b2e5783e5c244141bf5e875da1045d49b12b308f409"
+  },
+  "train/reflectance.tif": {
+    "bytes": 228306,
+    "sha256": "6e7c66fa433aab364db3071cdae7111108c9bdc848bd45f9359042068cde5f0a"
+  },
+  "train/split_mask.tif": {
+    "bytes": 970,
+    "sha256": "02f9a8a7f5f1240d9829808a0403ff5b0e11f85723a3d8a4642007727e07cf4e"
+  },
+  "train/usable.tif": {
+    "bytes": 1790,
+    "sha256": "4ed5eb024c768d0abad0f8687fb14ba5b2890087232d1926240fe27808c417af"
+  },
+  "validation/labels.tif": {
+    "bytes": 1468,
+    "sha256": "5bec51beb810bd61b568b6e1b5ba7285afbd48efa05b8d19a8af1a63062b6a7f"
+  },
+  "validation/preview.png": {
+    "bytes": 39723,
+    "sha256": "a3918a400acf7832ffde2f76d174be9dfa79b672ad77a2895090820fea5bef2b"
+  },
+  "validation/preview.png.aux.xml": {
+    "bytes": 940,
+    "sha256": "81091eb16a6c6b6100166b2e5783e5c244141bf5e875da1045d49b12b308f409"
+  },
+  "validation/reflectance.tif": {
+    "bytes": 227693,
+    "sha256": "df9019f787a0db5634a633c0af344670703baa37c1d62d40bef4f455d05f131f"
+  },
+  "validation/split_mask.tif": {
+    "bytes": 972,
+    "sha256": "f61f150040006aa32d8674ecf3f28989d526caa01935f633e4e7ded6324b221c"
+  },
+  "validation/usable.tif": {
+    "bytes": 1834,
+    "sha256": "17f6b4a378665dd9acf2f1d82699d75d57d4825ac3c1521958b9b96ac53d689f"
+  }
+}

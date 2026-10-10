@@ -1,0 +1,645 @@
+{
+  "study_id": "handia-compartment-279",
+  "status": "PARTIAL_DATA_SCREENING",
+  "acquisitions": [
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250403T053649_L2A",
+      "acquisition": "2025-04-03T05:42:46.661000Z",
+      "shape": [
+        123,
+        172
+      ],
+      "crs": "EPSG:32643",
+      "transform": [
+        20.0,
+        0.0,
+        684060.0,
+        0.0,
+        -20.0,
+        2479720.0
+      ],
+      "analysis_resolution_m": 20,
+      "band_order": [
+        "B02",
+        "B03",
+        "B04",
+        "B08",
+        "B05",
+        "B06",
+        "B07",
+        "B8A",
+        "B11",
+        "B12"
+      ],
+      "feature_order": [
+        "B02",
+        "B03",
+        "B04",
+        "B08",
+        "B05",
+        "B06",
+        "B07",
+        "B8A",
+        "B11",
+        "B12",
+        "NDVI",
+        "EVI",
+        "NDRE_B8A_B05",
+        "NDMI_B8A_B11",
+        "NDVI_STD_3X3"
+      ],
+      "calibration": {
+        "B02": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B02.tif"
+        },
+        "B03": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B03.tif"
+        },
+        "B04": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B04.tif"
+        },
+        "B08": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B08.tif"
+        },
+        "B05": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B05.tif"
+        },
+        "B06": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B06.tif"
+        },
+        "B07": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B07.tif"
+        },
+        "B8A": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B8A.tif"
+        },
+        "B11": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B11.tif"
+        },
+        "B12": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/4/S2B_T43QFE_20250403T053649_L2A/B12.tif"
+        }
+      },
+      "inside_study_pixels": 13099,
+      "usable_feature_pixels": 12381,
+      "usable_fraction_inside_study": 0.9451866554698832,
+      "source_crop_path": "/kaggle/working/forestguard_phase0/20261008T094011628139Z",
+      "source_crop_bundle": "source_crop.zip",
+      "quality_rule": "All included bands valid; SCL 4/5/6 support for all contributing 10 m pixels; valid 3x3 index neighborhood",
+      "resampling": "B02/B03/B04/B08 averaged from 10 m to native red-edge 20 m grid; extra bands read at native 20 m; no upsampling",
+      "texture_footprint_m": 60,
+      "model_trained": false,
+      "labels_generated": false,
+      "source_license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "attribution": "Contains modified Copernicus Sentinel data 2025"
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2B_T43QFE_20251209T053610_L2A",
+      "acquisition": "2025-12-09T05:42:45.261000Z",
+      "shape": [
+        123,
+        172
+      ],
+      "crs": "EPSG:32643",
+      "transform": [
+        20.0,
+        0.0,
+        684060.0,
+        0.0,
+        -20.0,
+        2479720.0
+      ],
+      "analysis_resolution_m": 20,
+      "band_order": [
+        "B02",
+        "B03",
+        "B04",
+        "B08",
+        "B05",
+        "B06",
+        "B07",
+        "B8A",
+        "B11",
+        "B12"
+      ],
+      "feature_order": [
+        "B02",
+        "B03",
+        "B04",
+        "B08",
+        "B05",
+        "B06",
+        "B07",
+        "B8A",
+        "B11",
+        "B12",
+        "NDVI",
+        "EVI",
+        "NDRE_B8A_B05",
+        "NDMI_B8A_B11",
+        "NDVI_STD_3X3"
+      ],
+      "calibration": {
+        "B02": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B02.tif"
+        },
+        "B03": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B03.tif"
+        },
+        "B04": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B04.tif"
+        },
+        "B08": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B08.tif"
+        },
+        "B05": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B05.tif"
+        },
+        "B06": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B06.tif"
+        },
+        "B07": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B07.tif"
+        },
+        "B8A": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B8A.tif"
+        },
+        "B11": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B11.tif"
+        },
+        "B12": {
+          "scale": 0.0001,
+          "offset": -0.1,
+          "href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/43/Q/FE/2025/12/S2B_T43QFE_20251209T053610_L2A/B12.tif"
+        }
+      },
+      "inside_study_pixels": 13099,
+      "usable_feature_pixels": 12362,
+      "usable_fraction_inside_study": 0.9437361630658829,
+      "source_crop_path": "/kaggle/working/forestguard_phase0/20261008T094321865344Z",
+      "source_crop_bundle": "source_crop.zip",
+      "quality_rule": "All included bands valid; SCL 4/5/6 support for all contributing 10 m pixels; valid 3x3 index neighborhood",
+      "resampling": "B02/B03/B04/B08 averaged from 10 m to native red-edge 20 m grid; extra bands read at native 20 m; no upsampling",
+      "texture_footprint_m": 60,
+      "model_trained": false,
+      "labels_generated": false,
+      "source_license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "attribution": "Contains modified Copernicus Sentinel data 2025"
+    }
+  ],
+  "failed_attempts": [
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250806T053547_L2A",
+      "stage": "quality",
+      "usable_fraction_inside_study": 0.4893503320864188,
+      "error": "Below 90% feature-coverage screening target."
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250922T053241_L2A",
+      "stage": "quality",
+      "usable_fraction_inside_study": 0.30910756546301243,
+      "error": "Below 90% feature-coverage screening target."
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2A_T43QFE_20250924T053119_L2A",
+      "stage": "quality",
+      "usable_fraction_inside_study": 0.13245285899686998,
+      "error": "Below 90% feature-coverage screening target."
+    }
+  ],
+  "quality_screens": [
+    {
+      "season": "dry",
+      "scene_id": "S2C_T43QFE_20250217T054154_L2A",
+      "acquisition": "2025-02-17T05:43:10.873000Z",
+      "tile_cloud_percent": 2.7e-05,
+      "local_scl_coverage_fraction": 0.9652645240094664,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250212T053319_L2A",
+      "acquisition": "2025-02-12T05:42:51.650000Z",
+      "tile_cloud_percent": 3.7e-05,
+      "local_scl_coverage_fraction": 0.9419039621345141,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2C_T43QFE_20250319T053558_L2A",
+      "acquisition": "2025-03-19T05:43:11.605000Z",
+      "tile_cloud_percent": 0.000179,
+      "local_scl_coverage_fraction": 0.9140392396366135,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250324T054002_L2A",
+      "acquisition": "2025-03-24T05:42:50.966000Z",
+      "tile_cloud_percent": 0.000184,
+      "local_scl_coverage_fraction": 0.9331246660050385,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2C_T43QFE_20250309T053627_L2A",
+      "acquisition": "2025-03-09T05:43:11.683000Z",
+      "tile_cloud_percent": 0.00031,
+      "local_scl_coverage_fraction": 0.9836628750286281,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250314T054014_L2A",
+      "acquisition": "2025-03-14T05:42:49.677000Z",
+      "tile_cloud_percent": 0.000461,
+      "local_scl_coverage_fraction": 0.9851897091381021,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250219T053215_L2A",
+      "acquisition": "2025-02-19T05:32:57.417000Z",
+      "tile_cloud_percent": 0.000857,
+      "local_scl_coverage_fraction": 0.9698450263378884,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250311T052405_L2A",
+      "acquisition": "2025-03-11T05:32:54.947000Z",
+      "tile_cloud_percent": 0.001278,
+      "local_scl_coverage_fraction": 0.9916024123978929,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250403T053649_L2A",
+      "acquisition": "2025-04-03T05:42:46.661000Z",
+      "tile_cloud_percent": 0.001395,
+      "local_scl_coverage_fraction": 0.9996946331781053,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2B_T43QFE_20250420T052904_L2A",
+      "acquisition": "2025-04-20T05:32:54.569000Z",
+      "tile_cloud_percent": 0.001413,
+      "local_scl_coverage_fraction": 0.999236582945263,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2C_T43QFE_20250306T052321_L2A",
+      "acquisition": "2025-03-06T05:33:16.875000Z",
+      "tile_cloud_percent": 0.001628,
+      "local_scl_coverage_fraction": 0.9867928849530498,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "dry",
+      "scene_id": "S2C_T43QFE_20250214T052914_L2A",
+      "acquisition": "2025-02-14T05:33:17.146000Z",
+      "tile_cloud_percent": 0.001857,
+      "local_scl_coverage_fraction": 0.9664096495915718,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250806T053547_L2A",
+      "acquisition": "2025-08-06T05:43:07.195000Z",
+      "tile_cloud_percent": 26.799667,
+      "local_scl_coverage_fraction": 0.5595083594167494,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2B_T43QFE_20250910T053353_L2A",
+      "acquisition": "2025-09-10T05:42:46.844000Z",
+      "tile_cloud_percent": 57.962835,
+      "local_scl_coverage_fraction": 0.0,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2B_T43QFE_20250719T053028_L2A",
+      "acquisition": "2025-07-19T05:32:55.662000Z",
+      "tile_cloud_percent": 58.310026,
+      "local_scl_coverage_fraction": 0.0011451255821055043,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250922T053241_L2A",
+      "acquisition": "2025-09-22T05:33:06.730000Z",
+      "tile_cloud_percent": 62.916559,
+      "local_scl_coverage_fraction": 0.38468585388197574,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2B_T43QFE_20250930T053738_L2A",
+      "acquisition": "2025-09-30T05:42:48.405000Z",
+      "tile_cloud_percent": 65.537286,
+      "local_scl_coverage_fraction": 0.0,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2B_T43QFE_20250722T053744_L2A",
+      "acquisition": "2025-07-22T05:42:50.529000Z",
+      "tile_cloud_percent": 80.605721,
+      "local_scl_coverage_fraction": 0.0,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2A_T43QFE_20250924T053119_L2A",
+      "acquisition": "2025-09-24T05:33:08.137000Z",
+      "tile_cloud_percent": 81.564403,
+      "local_scl_coverage_fraction": 0.1879532788762501,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250816T054057_L2A",
+      "acquisition": "2025-08-16T05:43:07.399000Z",
+      "tile_cloud_percent": 82.013917,
+      "local_scl_coverage_fraction": 0.007176120314527827,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250925T053546_L2A",
+      "acquisition": "2025-09-25T05:43:02.964000Z",
+      "tile_cloud_percent": 85.12823,
+      "local_scl_coverage_fraction": 0.0,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2B_T43QFE_20250907T052510_L2A",
+      "acquisition": "2025-09-07T05:32:51.673000Z",
+      "tile_cloud_percent": 89.06135,
+      "local_scl_coverage_fraction": 0.019467134895793572,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2C_T43QFE_20250803T052644_L2A",
+      "acquisition": "2025-08-03T05:33:12.982000Z",
+      "tile_cloud_percent": 89.778131,
+      "local_scl_coverage_fraction": 0.0,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "wet",
+      "scene_id": "S2B_T43QFE_20250811T053353_L2A",
+      "acquisition": "2025-08-11T05:42:50.073000Z",
+      "tile_cloud_percent": 90.456438,
+      "local_scl_coverage_fraction": 0.0,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2A_T43QFE_20251213T053046_L2A",
+      "acquisition": "2025-12-13T05:33:07.206000Z",
+      "tile_cloud_percent": 0.000227,
+      "local_scl_coverage_fraction": 0.9988548744178944,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2C_T43QFE_20251121T052211_L2A",
+      "acquisition": "2025-11-21T05:33:02.127000Z",
+      "tile_cloud_percent": 0.000286,
+      "local_scl_coverage_fraction": 0.996182914726315,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2B_T43QFE_20251106T053017_L2A",
+      "acquisition": "2025-11-06T05:32:48.134000Z",
+      "tile_cloud_percent": 0.00029,
+      "local_scl_coverage_fraction": 0.9248797618138789,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2B_T43QFE_20251209T053610_L2A",
+      "acquisition": "2025-12-09T05:42:45.261000Z",
+      "tile_cloud_percent": 0.000376,
+      "local_scl_coverage_fraction": 0.9995419497671578,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2C_T43QFE_20251111T052127_L2A",
+      "acquisition": "2025-11-11T05:33:03.203000Z",
+      "tile_cloud_percent": 0.000461,
+      "local_scl_coverage_fraction": 0.9109855714176655,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2B_T43QFE_20251116T052403_L2A",
+      "acquisition": "2025-11-16T05:32:48.654000Z",
+      "tile_cloud_percent": 0.000496,
+      "local_scl_coverage_fraction": 0.9241926864646156,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2C_T43QFE_20251204T053220_L2A",
+      "acquisition": "2025-12-04T05:42:55.177000Z",
+      "tile_cloud_percent": 0.000549,
+      "local_scl_coverage_fraction": 0.8586151614627071,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2B_T43QFE_20251119T053830_L2A",
+      "acquisition": "2025-11-19T05:42:43.367000Z",
+      "tile_cloud_percent": 0.000613,
+      "local_scl_coverage_fraction": 0.9135048476982975,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2A_T43QFE_20251216T053634_L2A",
+      "acquisition": "2025-12-16T05:43:03.179000Z",
+      "tile_cloud_percent": 0.000646,
+      "local_scl_coverage_fraction": 0.9976334071303153,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2B_T43QFE_20251216T052818_L2A",
+      "acquisition": "2025-12-16T05:32:50.557000Z",
+      "tile_cloud_percent": 0.000671,
+      "local_scl_coverage_fraction": 0.9988548744178944,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2C_T43QFE_20251201T053130_L2A",
+      "acquisition": "2025-12-01T05:33:00.889000Z",
+      "tile_cloud_percent": 0.00088,
+      "local_scl_coverage_fraction": 0.9993892663562104,
+      "inside_study_pixels": 13099
+    },
+    {
+      "season": "post_monsoon",
+      "scene_id": "S2C_T43QFE_20251214T053239_L2A",
+      "acquisition": "2025-12-14T05:42:56.217000Z",
+      "tile_cloud_percent": 0.000893,
+      "local_scl_coverage_fraction": 0.7710512252843729,
+      "inside_study_pixels": 13099
+    }
+  ],
+  "season_windows": [
+    [
+      "dry",
+      "2025-02-01T00:00:00Z/2025-04-30T23:59:59Z"
+    ],
+    [
+      "wet",
+      "2025-07-01T00:00:00Z/2025-09-30T23:59:59Z"
+    ],
+    [
+      "post_monsoon",
+      "2025-10-01T00:00:00Z/2025-12-31T23:59:59Z"
+    ]
+  ],
+  "scl_screen_limit_per_season": 12,
+  "candidate_limit_per_season": 3,
+  "weak_reference": {
+    "dataset": "ESA WorldCover 2021 v200",
+    "reference_year": 2021,
+    "tile_id": "N21E075",
+    "source_url": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N21E075_Map.tif",
+    "source_tile_bytes": 102720459,
+    "source_etag": "\"a2c08853449adc466813d43f94a1d3a1-13\"",
+    "full_tile_downloaded": false,
+    "native_crs": "EPSG:4326",
+    "native_resolution_degrees": 8.333333333333333e-05,
+    "native_shape": [
+      262,
+      396
+    ],
+    "native_transform": [
+      8.333333333333333e-05,
+      0.0,
+      76.78825,
+      0.0,
+      -8.333333333333333e-05,
+      22.413333333333334
+    ],
+    "class_mapping": {
+      "10": "Tree cover",
+      "20": "Shrubland",
+      "30": "Grassland",
+      "40": "Cropland",
+      "50": "Built-up",
+      "60": "Bare / sparse vegetation",
+      "70": "Snow and ice",
+      "80": "Permanent water",
+      "90": "Herbaceous wetland",
+      "95": "Mangroves",
+      "100": "Moss and lichen"
+    },
+    "class_pixel_counts_inside_study": {
+      "10": 45144,
+      "20": 1840,
+      "30": 3962,
+      "40": 6809,
+      "60": 28,
+      "80": 8352
+    },
+    "aligned_grids": [
+      {
+        "season": "dry",
+        "grid_class_pixel_counts": {
+          "10": 8953,
+          "20": 357,
+          "30": 795,
+          "40": 1333,
+          "60": 4,
+          "80": 1657
+        }
+      },
+      {
+        "season": "post_monsoon",
+        "grid_class_pixel_counts": {
+          "10": 8953,
+          "20": 357,
+          "30": 795,
+          "40": 1333,
+          "60": 4,
+          "80": 1657
+        }
+      }
+    ],
+    "categorical_resampling": "nearest neighbour to observation pixel centres",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "\u00a9 ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+    "citation": "Zanaga et al. (2022). ESA WorldCover 10 m 2021 v200. https://doi.org/10.5281/zenodo.7254221",
+    "reference_kind": "weak_map",
+    "reference_independent": false,
+    "reviewed_labels_exist": false,
+    "limits": "2021 predicted classes; tree cover includes plantations and agricultural trees. No conversion to verified current forest labels or area."
+  },
+  "labels_reviewed": 0,
+  "model_trained": false,
+  "independent_model_accuracy_measured": false,
+  "cloud_runtime": {
+    "python": "3.13.15",
+    "numpy": "2.1.3",
+    "rasterio": "1.5.1",
+    "gdal": "3.12.4"
+  }
+}

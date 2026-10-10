@@ -1,11 +1,26 @@
 # Progress checklist
 
+Vercel full research application:
+- [x] Remove automatic landing-only mode; add FastAPI entrypoint/configuration,
+  bounded deployable data, server-side officer authentication and temporary state.
+- [x] Verify 75 isolated hosted API checks and existing local research checks.
+- [x] Verify hosted-mode browser login and saved research map using isolated
+  test credentials on localhost; Vercel-mode frontend build passes. This is
+  a local simulation, not verification of the deployed Vercel URL.
+- [ ] Configure private Vercel environment values and redeploy using the project
+  root, then verify the actual Linux/Python 3.12 deployment.
+- [ ] Add durable shared uploads/history, centrally revocable sessions and rate
+  limits before operational shared use; current new hosted results are temporary.
+See [Vercel full-app setup and actual limits](docs/VERCEL_FULL_APP.md).
+
 - [x] Adopt the supplied shield/tree/leaf logo design as a scalable vector across
   landing, login, dashboard and favicon; verify production build and live header.
   Visual evidence: `data/phase5/branding_v1/landing-logo.png` (local, Git-ignored).
-- [x] Restore system cursors while the native login modal is open; reset modal
-  scroll on reopening. Verified button/text cursors, visible logo and production
-  build; proof: `data/phase5/branding_v1/login-popup-fixed.png`.
+- [x] Keep the landing cursor across the application and inside the native login
+  modal. Login starts with Select district / Select beat and an empty password;
+  selected values are submitted, and all fields reset on reopening. Verified
+  local login, dashboard cursor, blank fields and production build; proof:
+  `data/phase5/branding_v1/login-custom-cursor.png`.
 
 Local research dashboard — 10 October 2026:
 - [x] Add an officer-only research view with real saved proxy map, scope, date,

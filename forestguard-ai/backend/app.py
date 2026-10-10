@@ -1,5 +1,6 @@
 """Local saved-data API. No external inference, tiles or model claims."""
 import csv
+import os
 import errno
 import hashlib
 import hmac
@@ -27,7 +28,9 @@ from fastapi.responses import FileResponse, Response, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from backend import hosting
 ROOT=Path(__file__).resolve().parents[1]
+DATA_ROOT=Path(hosting.DATA_ROOT) if hosting.DATA_ROOT else ROOT/('deployment_data' if hosting.HOSTED else '.')
 sys.path.insert(0,str(ROOT/'scripts'))
 from inspect_local import inspect
 from verify_pair import verify_pair
@@ -36,23 +39,39 @@ from monthly_demo import build_history
 from detect_change import compare as compare_change
 from register_research_ui import OUTPUT as RESEARCH_UI, verify_registration
 
-STATE=ROOT/'data/app'
+STATE=Path(tempfile.gettempdir())/'forestguard-hosted' if hosting.HOSTED else DATA_ROOT/'data/app'
 STATE.mkdir(parents=True,exist_ok=True)
 app=FastAPI(title='ForestGuard local API',docs_url=None,redoc_url=None)
-app.add_middleware(TrustedHostMiddleware,allowed_hosts=['127.0.0.1','localhost','testserver'])
+hosts=['127.0.0.1','localhost','testserver']
+if hosting.HOSTED:
+    hosts+=list(filter(None,os.environ.get('FORESTGUARD_ALLOWED_HOSTS','').split(',')))
+    hosts+=list(filter(None,[os.environ.get('VERCEL_URL'),os.environ.get('VERCEL_PROJECT_PRODUCTION_URL')]))
+app.add_middleware(TrustedHostMiddleware,allowed_hosts=hosts)
+
+
+def state_folder():
+    if not hosting.HOSTED:return STATE
+    current=hosting.current_session.get()
+    if not current:raise HTTPException(401,'Please sign in to the officer workspace')
+    folder=STATE/current['nonce']
+    folder.mkdir(parents=True,exist_ok=True)
+    if sum(p.stat().st_size for p in folder.rglob('*') if p.is_file())>64*1024**2:
+        raise HTTPException(507,'Temporary session storage is full. Export existing results and sign in again for a new workspace.')
+    return folder
 
 
 @contextmanager
 def database():
     # SQLite's transaction context does not close its Windows file handle.
-    with closing(sqlite3.connect(STATE/'activity.sqlite')) as connection:
+    with closing(sqlite3.connect(state_folder()/'activity.sqlite')) as connection:
         with connection:
             yield connection
 
 
 def officer_session(request):
     token=request.cookies.get('forestguard_session','')
-    if not token or not (STATE/'activity.sqlite').exists(): return False
+    if hosting.HOSTED:return hosting.session(token)
+    if not token or not (state_folder()/'activity.sqlite').exists(): return False
     with database() as db:
         db.execute('CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, expires REAL)')
         return db.execute('SELECT 1 FROM sessions WHERE token=? AND expires>?',
@@ -61,10 +80,20 @@ def officer_session(request):
 
 @app.middleware('http')
 async def require_officer(request,call_next):
-    if request.url.path.startswith('/api/') and request.url.path not in {'/api/login','/api/logout','/api/session','/api/health'}:
-        if not officer_session(request):response=JSONResponse({'detail':'Please sign in to the officer workspace'},status_code=401)
+    context=None
+    try:
+        if hosting.HOSTED and request.method not in {'GET','HEAD','OPTIONS'} and request.headers.get('origin') not in {None,str(request.base_url).rstrip('/')}:
+            raise HTTPException(403,'Use this website origin for officer actions')
+        if request.url.path.startswith('/api/') and request.url.path not in {'/api/login','/api/logout','/api/session','/api/health'}:
+            current=officer_session(request)
+            if not current:response=JSONResponse({'detail':'Please sign in to the officer workspace'},status_code=401)
+            else:
+                if hosting.HOSTED:context=hosting.current_session.set(current)
+                response=await call_next(request)
         else:response=await call_next(request)
-    else:response=await call_next(request)
+    except HTTPException as error:response=JSONResponse({'detail':error.detail},status_code=error.status_code)
+    finally:
+        if context is not None:hosting.current_session.reset(context)
     response.headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
     if request.url.path.startswith('/api/'): response.headers['Cache-Control']='no-store'
     return response
@@ -78,6 +107,12 @@ async def login(request:Request):
         if len(payload)>4096: raise HTTPException(413,'Login request too large')
     try: credentials=json.loads(payload)
     except ValueError: raise HTTPException(400,'Invalid login request')
+    if hosting.HOSTED:
+        if not isinstance(credentials,dict) or not isinstance(credentials.get('password'),str):raise HTTPException(400,'Invalid login request')
+        token,current=hosting.authenticate(credentials)
+        response=JSONResponse({'authenticated':True,'district':current['district'],'beat':current['beat'],'hosting':'vercel','temporary_storage':True})
+        response.set_cookie('forestguard_session',token,httponly=True,secure=True,samesite='strict',max_age=hosting.TTL)
+        return response
     if (not isinstance(credentials,dict) or credentials.get('district')!='Harda'
             or credentials.get('beat')!='Joga' or not isinstance(credentials.get('password'),str)
             or not hmac.compare_digest(credentials['password'].encode(),b'joga@123')):
@@ -95,11 +130,14 @@ async def login(request:Request):
 
 @app.get('/api/session')
 def session(request:Request):
-    return {'authenticated':officer_session(request),'district':'Harda','beat':'Joga'}
+    current=officer_session(request)
+    return {'authenticated':bool(current),'district':'Harda','beat':'Joga','hosting':'vercel' if hosting.HOSTED else 'local','temporary_storage':hosting.HOSTED}
 
 
 @app.post('/api/logout')
 def logout(request:Request):
+    if hosting.HOSTED:
+        response=JSONResponse({'authenticated':False});response.delete_cookie('forestguard_session',secure=True,httponly=True,samesite='strict');return response
     token=request.cookies.get('forestguard_session','')
     with database() as db:
         db.execute('CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, expires REAL)')
@@ -126,7 +164,7 @@ def catalog():
         record=read(RESEARCH_UI/'registered.json')
         items.append(dict(record,folder=RESEARCH_UI,boundary=read(RESEARCH_UI/'boundary.geojson'),boundary_crs='EPSG:4326',
                           views=[dict(v,folder=RESEARCH_UI/v['id']) for v in record['views']]))
-    pair=ROOT/'data/phase2/pair_version7'
+    pair=DATA_ROOT/'data/phase2/pair_version7'
     if (pair/'pair_report.json').exists():
         report=read(pair/'pair_report.json')
         views=[]
@@ -142,7 +180,7 @@ def catalog():
             'boundary':read(pair/'boundary_input.geojson'),'boundary_crs':'EPSG:4326',
             'attribution':'Contains modified Copernicus Sentinel data 2024 and 2025',
             'layers':['imagery','coverage','ndvi']})
-    demo=ROOT/'data/demo/fixture_v1'
+    demo=DATA_ROOT/'data/demo/fixture_v1'
     if (demo/'manifest.json').exists():
         report=read(demo/'manifest.json'); views=[]
         for sample in report['samples']:
@@ -157,7 +195,7 @@ def catalog():
             'views':views,'folder':demo,'boundary':{'type':'Feature','geometry':area['geometry'],'properties':{}},
             'boundary_crs':area['geometry_crs'],'attribution':'Project-generated synthetic data',
             'layers':['imagery','classes','coverage']})
-    imports=STATE/'imports'
+    imports=state_folder()/'imports'
     if imports.exists():
         for folder in sorted(imports.iterdir()):
             if re.fullmatch(r'import-[a-f0-9]{12}',folder.name) and (folder/'import_complete.json').exists():
@@ -225,17 +263,17 @@ def pixel_outline(item,geojson,crs):
 
 
 @app.get('/api/health')
-def health(): return {'status':'ok','operation':'local stored data','model_connected':False,'change_workflow_connected':True}
+def health(): return {'status':'ok','operation':'hosted saved data' if hosting.HOSTED else 'local stored data','model_connected':False,'change_workflow_connected':True}
 
 
-CHANGE_FIXTURE=ROOT/'data/phase4/synthetic_change_v1'
+CHANGE_FIXTURE=DATA_ROOT/'data/phase4/synthetic_change_v1'
 CHANGE_INPUTS=['before.tif','after.tif','study_mask.tif']
 CHANGE_FILES=CHANGE_INPUTS+['result/change.tif','result/change_report.json','result/transitions.csv']
 
 
 def change_run(identity):
     if not re.fullmatch(r'change-[a-f0-9]{12}',identity): raise HTTPException(404,'Change run not found')
-    folder=STATE/'change_runs'/identity
+    folder=state_folder()/'change_runs'/identity
     if not (folder/'dashboard_complete.json').exists(): raise HTTPException(404,'Change run not found')
     try:
         marker=folder/'dashboard_complete.json'
@@ -275,7 +313,7 @@ def save_png(target,rgba):
 
 @app.get('/api/change')
 def change_status():
-    runs=STATE/'change_runs'
+    runs=state_folder()/'change_runs'
     complete=[]
     for folder in runs.iterdir() if runs.exists() else []:
         if not re.fullmatch(r'change-[a-f0-9]{12}',folder.name):continue
@@ -293,7 +331,7 @@ def run_change():
     if not all((CHANGE_FIXTURE/name).exists() for name in CHANGE_INPUTS):
         raise HTTPException(409,'Saved synthetic comparison inputs are missing. Run scripts/check_change.py first.')
     identity='change-'+uuid.uuid4().hex[:12]
-    folder=STATE/'change_runs'/identity
+    folder=state_folder()/'change_runs'/identity
     try:
         folder.mkdir(parents=True)
         # Only the named project fixture is supported; no arbitrary files/model uploads.
@@ -364,7 +402,7 @@ def change_report(identity,format):
 
 
 def monthly_history():
-    path=ROOT/'data/demo/forest_fire_history_demo_v1.json'
+    path=DATA_ROOT/'data/demo/forest_fire_history_demo_v1.json'
     result=read(path) if path.exists() else build_history()
     if result.get('schema')!='forestguard-synthetic-history-v1' or len(result.get('months',[]))!=60:
         raise HTTPException(500,'Monthly demonstration data is incomplete')
@@ -388,7 +426,7 @@ def datasets(): return [public(d) for d in catalog()]
 
 @app.get('/api/activity')
 def activity():
-    if not (STATE/'activity.sqlite').exists(): return []
+    if not (state_folder()/'activity.sqlite').exists(): return []
     with database() as db:
         if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='activity'").fetchone() is None:
             return []
@@ -423,7 +461,7 @@ def image(identity,observation,layer):
     if layer=='imagery': return FileResponse(obs['folder']/'preview.png',media_type='image/png')
     if layer=='ndvi':
         values,valid,profile=vegetation(item,obs)
-        target=STATE/'previews'/f'{identity}-{observation}-ndvi.png'
+        target=state_folder()/'previews'/f'{identity}-{observation}-ndvi.png'
         rgba=np.zeros((4,*values.shape),dtype='uint8')
         level=np.clip((values+1)/2,0,1)
         rgba[0]=(190*(1-level)).astype('uint8'); rgba[1]=(70+140*level).astype('uint8')
@@ -432,7 +470,7 @@ def image(identity,observation,layer):
         return FileResponse(target,media_type='image/png')
     source=obs['folder']/('labels.tif' if layer=='classes' else item.get('usable_filename','usable.tif'))
     if layer=='coverage' and (identity=='sentinel' or item.get('common_mask')): source=item['folder']/'common_usable.tif'
-    target=STATE/'previews'/f'{identity}-{observation}-{layer}-{source.stat().st_mtime_ns}.png'
+    target=state_folder()/'previews'/f'{identity}-{observation}-{layer}-{source.stat().st_mtime_ns}.png'
     if not target.exists():
         with rasterio.open(source,driver='GTiff') as raster:
             if max(raster.shape)>512: raise HTTPException(400,'Only small crops supported')
@@ -506,11 +544,11 @@ async def import_sample(request:Request):
     payload=bytearray()
     async for chunk in request.stream():
         payload.extend(chunk)
-        if len(payload)>10*1024**2: raise HTTPException(413,'Sample ZIP limit is 10 MiB')
-    uploads=STATE/'uploads'; uploads.mkdir(exist_ok=True)
+        if len(payload)>(4 if hosting.HOSTED else 10)*1024**2: raise HTTPException(413,'Sample ZIP limit is 4 MiB when hosted, 10 MiB locally')
+    uploads=state_folder()/'uploads'; uploads.mkdir(exist_ok=True)
     source=uploads/f'{uuid.uuid4().hex}.zip'; source.write_bytes(payload)
     identity='import-'+hashlib.sha256(payload).hexdigest()[:12]
-    folder=STATE/'imports'/identity
+    folder=state_folder()/'imports'/identity
     try:
         verify(source)
         if not folder.exists():
@@ -563,7 +601,7 @@ def report(identity,format):
     return Response(content,media_type=mime,headers={'Content-Disposition':f'attachment; filename="forestguard-{identity}.{format}"'})
 
 
-PROXY_RESULT=ROOT/'data/phase3/research_proxy_map_v1'
+PROXY_RESULT=DATA_ROOT/'data/phase3/research_proxy_map_v1'
 PROXY_FILES={'classes':('proxy_classes.tif','image/tiff'),'votes':('tree_vote_share.tif','image/tiff'),
              'html':('map.html','text/html'),'json':('prediction_report.json','application/json')}
 

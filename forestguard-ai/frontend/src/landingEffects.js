@@ -51,11 +51,15 @@ export function startForestCursor(cursor) {
   const root = document.documentElement;
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const hide = () => { cursor.style.opacity = '0'; root.classList.remove('custom-cursor-active'); };
+  const cursors = () => [cursor, ...document.querySelectorAll('.modal-cursor')];
+  const hide = () => { cursors().forEach(node => { node.style.opacity = '0'; }); root.classList.remove('custom-cursor-active'); };
   const move = event => {
     if (event.pointerType === 'touch' || !fine.matches || reduced.matches) { hide(); return; }
-    cursor.style.transform = `translate(${event.clientX}px, ${event.clientY}px) translate(-50%, -50%)`;
-    cursor.style.opacity = '1'; root.classList.add('custom-cursor-active');
+    cursors().forEach(node => {
+      node.style.transform = `translate(${event.clientX}px, ${event.clientY}px) translate(-50%, -50%)`;
+      node.style.opacity = '1';
+    });
+    root.classList.add('custom-cursor-active');
   };
   document.addEventListener('pointermove', move); document.addEventListener('pointerleave', hide); addEventListener('blur', hide);
   fine.addEventListener('change', hide); reduced.addEventListener('change', hide);

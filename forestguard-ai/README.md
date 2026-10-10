@@ -1,5 +1,9 @@
 # ForestGuard AI
 
+For officer login and the current dashboard on Vercel, follow
+[full application deployment](docs/VERCEL_FULL_APP.md), rather than the older
+frontend-only instructions. Hosted imports/results use temporary storage.
+
 Current research-app reliability checkpoint and delivery instructions:
 [Phase 9 handoff](docs/PHASE9_DELIVERY.md). Scientific forest/fire/change validation
 remains separate; no evaluated real model is claimed.
