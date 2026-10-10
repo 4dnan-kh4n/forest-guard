@@ -1,5 +1,15 @@
 # Current development checkpoint — 10 October 2026
 
+A separate Inspection plan now replaces the duplicate Satellite images sidebar
+entry. It orders historical comparisons by possible-loss area, shows saved NASA
+fire counts with retrieval time, lets the officer select checklist items and exports
+those items as CSV. The view links to the correct annual image/change and fire feed.
+It does not infer inspection coordinates or incident causes. Selection is temporary;
+export it before leaving the section. Browser verification confirmed correct 2023
+navigation and a real three-row selected-items CSV download. Priority/CSV checks
+and the frontend production build passed. This addition still needs deployment.
+
+
 Officer UI now opens yearly forest changes and offers only four sections. Selecting
 2023 shows estimated net tree-cover decrease of 13.04 ha compared with 2022;
 2024 shows estimated net increase of 3.08 ha. Percentages use the same common

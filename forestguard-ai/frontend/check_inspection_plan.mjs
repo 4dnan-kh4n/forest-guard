@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {inspectionItems,inspectionCsv} from './src/inspectionPlan.js';
+const report=JSON.parse(fs.readFileSync(new URL('../deployment_data/data/annual/observations_v1/annual_changes.json',import.meta.url)));
+const items=inspectionItems(report);
+assert.equal(items.length,4);
+assert.deepEqual(items.map(item=>item.loss.toFixed(2)),['13.24','9.12','6.56','1.64']);
+assert.equal(items[0].after,'2023-10-08');
+assert.equal(inspectionItems(null).length,0);
+assert.equal(inspectionItems({comparisons:[{common_pixels:0}]}).length,0);
+assert.match(inspectionCsv(items.slice(0,1)),/13\.24/);
+assert.equal(inspectionCsv(items.slice(0,1)).split('\r\n').length,3);
+assert.match(inspectionCsv([{...items[0],title:'=malicious,"input"'}]),/'=malicious,""input""/);
+console.log('PASS: real-data priority order, missing comparisons, selected CSV rows and safe escaping.');

@@ -1,8 +1,8 @@
 import React,{useEffect,useState} from 'react';
 import {annualChange} from './annualChange';
 
-export default function ForestHistoryWorkspace({api}){
-  const [report,setReport]=useState(null),[year,setYear]=useState(2026),[error,setError]=useState('');
+export default function ForestHistoryWorkspace({api,initialYear=2026}){
+  const [report,setReport]=useState(null),[year,setYear]=useState(initialYear),[error,setError]=useState('');
   useEffect(()=>{let active=true;api('/api/forest-history').then(r=>{if(active)setReport(r);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[]);
   const row=report?.observations?.find(item=>item.year===year);
   const change=report?.comparisons?.find(item=>item.after_year===year);

@@ -782,3 +782,10 @@ Officer dashboard simplification — 10 October 2026:
 - [x] Disable wheel zoom on every Leaflet map; preserve zoom buttons and page scrolling.
 - [x] Pass arithmetic checks, frontend build, 112 hosted API checks and local browser verification.
 - [ ] Push/redeploy and verify this interface on Vercel.
+
+Inspection planning — 10 October 2026:
+- [x] Remove duplicate Satellite images navigation; retain source rasters and annual images.
+- [x] Add a separate Inspection plan with historical possible-loss priorities and saved fire-feed timestamp.
+- [x] Add selected-item checklist CSV export and links to the correct source year/fire view.
+- [x] Verify priority ordering, empty input handling, CSV escaping, actual selected CSV download, year navigation and frontend build.
+- [ ] Push/redeploy and verify the new section on Vercel.

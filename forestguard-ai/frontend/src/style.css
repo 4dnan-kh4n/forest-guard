@@ -44,3 +44,5 @@
 @media(max-width:760px){.annual-summary{padding:20px}.annual-summary h2{font-size:23px}.annual-summary>strong{font-size:27px}.year-selector{gap:7px}.year-selector .button{min-width:52px;flex:1;padding:10px}}
 
 .workspace-grid{grid-template-columns:minmax(0,1fr)}
+
+.inspection-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.inspection-heading label{display:flex;align-items:center;gap:8px;font-size:14px;min-height:44px}.inspection-heading input{width:18px;height:18px;accent-color:#27573f}.inspection-fire h2{font-size:24px}.inspection-item .button{min-height:44px}
