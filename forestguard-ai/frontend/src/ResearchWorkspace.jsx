@@ -24,7 +24,7 @@ export default function ResearchWorkspace({api}){
   async function refresh(){setBusy(true);setError('');setReport(null);try{setReport(await api('/api/research/proxy'));setRevision(n=>n+1);}catch(e){setError(e.message);}finally{setBusy(false);}}
   useEffect(()=>{refresh();},[]);
   return <section aria-label="Research tree-cover map">
-    <div className="sim-banner"><b>RESEARCH MODEL · NOT APPROVED FOR FOREST FINDINGS</b><span>Real satellite image · historical land-cover training reference · no forest-loss or fire result</span></div>
+    <div className="sim-banner"><b>RESEARCH TREE-COVER PROXY</b><span>Real satellite image · model trained on a historical map · independent forest accuracy not established</span></div>
     <div className="change-intro"><div><h2>Inspect our saved model's map.</h2><p>Compartment 279 research polygon, not the full Joga beat. Crops and shrubs may be mistaken for tree cover.</p></div><button className="button secondary" onClick={refresh} disabled={busy}>{busy?'Checking saved result…':'Refresh saved result'}</button></div>
     {error&&<div className="error-box" role="alert">{error}</div>}
     {!report?<p className="empty-state" role="status">{busy?'Opening the verified research map…':error?'Restore the verified output and retry.':'No result loaded.'}</p>:!report.available?<p className="empty-state">{report.detail}</p>:<>

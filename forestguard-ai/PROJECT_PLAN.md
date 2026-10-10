@@ -1,5 +1,17 @@
 # Progress checklist
 
+Connected Phase 0–5 prototype — 10 October 2026:
+- [x] Add explicit real-observation / synthetic-scenario selection, isolated
+  navigation, scoped datasets/reports and automatic stored-image analysis.
+- [x] Expose functional synthetic change comparison and monthly history without
+  requiring officer uploads; keep real observations as the default.
+- [x] Shorten repeated UI status messages while preserving data provenance,
+  scientific scope, input errors and synthetic labels.
+- [x] Verify synthetic data, real registry, offline model inference, change
+  arithmetic/guards, browser comparison run and actual 60-row CSV download.
+- [ ] Independent real forest labels/splits/evaluation and operational acceptance.
+See `docs/PHASE0_TO_5_PROTOTYPE.md` for deliverables and reproducible checks.
+
 Officer workflow correction — 10 October 2026:
 - [x] Replace wrapped mobile navigation with accessible collapsible navigation.
 - [x] Open real compartment 279 observations and automatically measured vegetation

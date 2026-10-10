@@ -12,8 +12,12 @@ indicators from its saved reflectance and masks, and displays those measurements
 with dated imagery, usable coverage and downloadable evidence. The Research map
 shows the stored experimental prediction with its validation limits. Reports
 contain the actual observation dates and provenance. Synthetic development
-examples are omitted from officer navigation and dataset selection; original
-fixtures and backend engineering checks remain preserved.
+examples are omitted from the default real-observation navigation and selection;
+original fixtures and backend engineering checks remain preserved.
+
+The explicitly labeled Data view selector opens a separate Synthetic scenario
+with generated maps, change comparison and monthly history. These fixtures are
+not compartment 279 observations. See `PHASE0_TO_5_PROTOTYPE.md`.
 
 Mobile navigation is collapsed behind a named Menu button, exposes its expanded
 state and closes after selecting a section. The four sections are Forest overview,

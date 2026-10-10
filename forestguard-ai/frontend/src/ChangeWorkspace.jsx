@@ -31,10 +31,10 @@ export default function ChangeWorkspace({api,onRun}){
   useEffect(()=>{refresh();},[]);
   async function run(){setBusy(true);setError('');try{setReport(await api('/api/change/run',{method:'POST'}));onRun();}catch(e){setError(e.message);}finally{setBusy(false);}}
   return <section className="change-workspace" aria-label="Forest-cover change analysis">
-    <div className="sim-banner"><b>SYNTHETIC PIPELINE CHECK</b><span>Fictional dates and class maps. These are not forest findings about Joga.</span></div>
+    <div className="sim-banner"><b>SYNTHETIC SCENARIO</b><span>Generated class maps and dates · fictional study area.</span></div>
     <div className="change-intro"><div><h2>Compare cover. Keep the evidence.</h2><p>Detect suspected tree-cover loss and gain where both observations are clear.</p></div><div className="change-actions"><button className="button secondary" onClick={refresh} disabled={busy}>Refresh saved result</button><button className="button primary" onClick={run} disabled={busy||!status?.available}>{busy?'Processing…':'Run saved comparison'}</button></div></div>
     {error&&<div className="error-box" role="alert">{error}</div>}
-    <p className="change-readiness">Real analysis is awaiting reviewed labels, an independently evaluated forest model and suitable observations. Fire monitoring is not connected.</p>
+    <p className="change-readiness">This comparison uses known synthetic classes. Real observation findings are shown separately when available.</p>
     {status&&!status.available&&<div className="error-box" role="alert">Comparison inputs are unavailable. Restore the saved fixture or run scripts/check_change.py locally.</div>}
     {!report?<div className="empty-state" role="status">{busy?'Opening saved comparison…':'Run the saved comparison to view its maps and reports.'}</div>:<>
       <div className="change-period"><span>Simulated dates: <strong>{report.before_date} → {report.after_date}</strong></span><span>Source: synthetic class maps</span></div>
