@@ -23,19 +23,32 @@ def password_hash(password):
 
 
 def settings():
+    def reject(reason):
+        raise HTTPException(503, 'Hosted configuration: '+reason+' Update Production environment variables and redeploy.')
+
     secret=os.environ.get('FORESTGUARD_SESSION_SECRET','')
+    if not secret:reject('FORESTGUARD_SESSION_SECRET is missing.')
+    if len(secret)<32:reject('FORESTGUARD_SESSION_SECRET must contain at least 32 characters.')
+    raw=os.environ.get('FORESTGUARD_OFFICERS','')
+    if not raw:reject('FORESTGUARD_OFFICERS is missing.')
     try:
-        officers=json.loads(os.environ.get('FORESTGUARD_OFFICERS',''))
-        assert len(secret)>=32 and isinstance(officers,list) and 1<=len(officers)<=20
-        ids=set()
-        for officer in officers:
-            assert set(officer)=={'id','district','beat','password_hash'}
-            assert re.fullmatch(r'[a-z0-9-]{1,40}',officer['id']) and officer['id'] not in ids
-            assert officer['district']=='Harda' and officer['beat']=='Joga'
-            assert re.fullmatch(r'[a-f0-9]{32}:[a-f0-9]{64}',officer['password_hash'])
-            ids.add(officer['id'])
-    except (ValueError,TypeError,AssertionError,KeyError):
-        raise HTTPException(503,'Hosted officer credentials are not configured. Set the server environment variables and redeploy.')
+        officers=json.loads(raw)
+    except ValueError:
+        reject('FORESTGUARD_OFFICERS is invalid JSON. Copy its decoded value using the clipboard command.')
+    if not isinstance(officers,list):
+        reject('FORESTGUARD_OFFICERS must be a JSON array, not a quoted string or the whole configuration file.')
+    if not 1<=len(officers)<=20:reject('FORESTGUARD_OFFICERS must contain 1 to 20 accounts.')
+    ids=set()
+    for officer in officers:
+        if not isinstance(officer,dict) or set(officer)!={'id','district','beat','password_hash'}:
+            reject('An officer record must contain exactly id, district, beat and password_hash.')
+        if not isinstance(officer['id'],str) or not re.fullmatch(r'[a-z0-9-]{1,40}',officer['id']) or officer['id'] in ids:
+            reject('Officer IDs must be unique lowercase letters, digits or hyphens, up to 40 characters.')
+        if officer['district']!='Harda' or officer['beat']!='Joga':
+            reject('The configured officer district and beat must be Harda and Joga.')
+        if not isinstance(officer['password_hash'],str) or not re.fullmatch(r'[a-f0-9]{32}:[a-f0-9]{64}',officer['password_hash']):
+            reject('An officer password_hash is invalid. Use the generated hash, not your password.')
+        ids.add(officer['id'])
     return secret.encode(),officers
 
 

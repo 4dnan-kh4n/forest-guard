@@ -83,6 +83,12 @@ its backups. No paid service, trial or credit-card-dependent addition is used.
 
 ## Verify after redeployment
 
+Login configuration errors name the missing variable or invalid field without
+printing values. If the old generic credentials message remains after pushing,
+check that Production points to the new commit. A JSON-array error commonly
+means the entire private file or its escaped string was pasted instead of the
+decoded `FORESTGUARD_OFFICERS` value; use the PowerShell clipboard instructions.
+
 `/api/health` must return JSON with `operation: "hosted saved data"`. Login must
 show blank fields, issue a Secure HttpOnly cookie and open the dashboard. Check
 Research map, Map workspace → Analyze/check data, CSV/HTML reports and Run saved
