@@ -21,6 +21,14 @@ deployment-directory allow rules in `.vercelignore` and explicit function
 inclusion in `vercel.json`. Do not bypass `check_deployment_data.py` when a build
 reports a missing artifact.
 
+`.gitattributes` disables Git line-ending conversion for this directory because
+the manifests verify exact original bytes. After adopting the rule, run
+`git add --renormalize deployment_data` from the project folder and commit the
+restaged files together with `.gitattributes`. Otherwise old LF-normalized Git
+blobs remain in the repository and fail checks on Linux even though local
+Windows files pass. Do not rewrite checksum manifests to hide this mismatch:
+the saved research map also has a pinned manifest checksum in the API.
+
 Preserve displayed attribution: contains modified Copernicus Sentinel data
 2024/2025 ([Sentinel licence](https://cds.climate.copernicus.eu/licences/ec-sentinel)).
 The research proxy was trained against the ESA WorldCover 2021 map; retain

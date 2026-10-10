@@ -1,0 +1,2 @@
+# Checksummed deployment artifacts must retain their original bytes on every OS.
+deployment_data/** -text
