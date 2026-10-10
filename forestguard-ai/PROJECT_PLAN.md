@@ -797,3 +797,16 @@ Officer PDF exports and NASA navigation - 10 October 2026:
 - [x] Verify actual browser PDF downloads, text/pagination, all rendered pages, authenticated offline routes, 117 hosted API checks and frontend build.
 - [x] Pin free PDF dependencies and ignore generated PDF/render outputs.
 - [ ] Redeploy and verify PDF generation in the actual Vercel runtime.
+
+Final release audit - 10 October 2026 (supersedes older deployment-pending entries):
+- [x] Verify annual/recent-fire PDF downloads on actual Vercel production.
+- [x] Download NASA archive request 820485 and preserve source/checksums.
+- [x] Connect measured 2022-2026 fire records, yearly markers and historical PDF.
+- [x] Reject missing/corrupt/oversized archive inputs and reproduce counts from CSV.
+- [x] Synchronize landing-page descriptions with annual changes, fire records and PDF reports.
+- [x] Pass 121 offline hosted API checks, UI arithmetic/export checks, build and failure tests.
+- [x] Preserve new PDF wheels for offline installation; expand the measured backup guard to 320 MiB.
+- [ ] Push/redeploy and verify the newly added historical fire features.
+- [ ] Independently review forest labels, freeze representative splits and evaluate forest accuracy.
+- [ ] Establish enough outcomes/weather/change labels before any operational forecasts.
+See docs/CURRENT_STATUS.md for the current limits; earlier checks are historical evidence.

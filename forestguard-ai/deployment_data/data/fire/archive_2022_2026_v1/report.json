@@ -1,0 +1,1049 @@
+{
+  "format": "forestguard-firms-history-v1",
+  "request_id": 820485,
+  "requested_start": "2022-01-01",
+  "requested_end": "2026-10-10",
+  "imported_at": "2026-10-10T12:24:10.363177+00:00",
+  "sensor": "NOAA-20",
+  "version": "VIIRS Collection 2 standard archive",
+  "archive_sha256": "e1e35b74629b9e622ec279c02f6e806aeb0895ea9dba8d33572e1b18defa7caa",
+  "source_url": "https://firms.modaps.eosdis.nasa.gov/data/download/DL_FIRE_J1V-C2_820485.zip",
+  "source": {
+    "regional_rows": 66,
+    "earliest_observation": "2022-02-05T08:24:00+00:00",
+    "latest_observation": "2026-05-04T08:59:00+00:00"
+  },
+  "observations": [
+    {
+      "year": 2022,
+      "detections": [
+        {
+          "latitude": 22.39729,
+          "longitude": 76.77866,
+          "observed_at": "2022-04-22T20:29:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 2.53,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39397,
+          "longitude": 76.77808,
+          "observed_at": "2022-04-22T20:29:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 1.33,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.3936,
+          "longitude": 76.77219,
+          "observed_at": "2022-04-22T08:00:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 8.69,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.3975,
+          "longitude": 76.77532,
+          "observed_at": "2022-04-22T08:00:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 4.42,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.4014,
+          "longitude": 76.77847,
+          "observed_at": "2022-04-22T08:00:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 4.42,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.40081,
+          "longitude": 76.77472,
+          "observed_at": "2022-04-22T08:00:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 4.42,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.40412,
+          "longitude": 76.77412,
+          "observed_at": "2022-04-22T08:00:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 13.04,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.38167,
+          "longitude": 76.79666,
+          "observed_at": "2022-03-28T19:57:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 1.34,
+          "scan_km": 0.32,
+          "track_km": 0.55,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.38134,
+          "longitude": 76.79985,
+          "observed_at": "2022-03-28T19:57:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 1.34,
+          "scan_km": 0.32,
+          "track_km": 0.55,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.38101,
+          "longitude": 76.80303,
+          "observed_at": "2022-03-28T19:57:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 1.93,
+          "scan_km": 0.32,
+          "track_km": 0.55,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.37663,
+          "longitude": 76.79602,
+          "observed_at": "2022-03-28T19:57:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 1.34,
+          "scan_km": 0.32,
+          "track_km": 0.55,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41341,
+          "longitude": 76.81041,
+          "observed_at": "2022-03-28T07:28:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 16.07,
+          "scan_km": 0.63,
+          "track_km": 0.54,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.4183,
+          "longitude": 76.80926,
+          "observed_at": "2022-03-28T07:28:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 16.07,
+          "scan_km": 0.63,
+          "track_km": 0.54,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41969,
+          "longitude": 76.81817,
+          "observed_at": "2022-03-24T08:44:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 3.02,
+          "scan_km": 0.4,
+          "track_km": 0.6,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        }
+      ],
+      "inside_count": 0,
+      "nearby_count": 14,
+      "requested_box_records": 16,
+      "partial_year": false
+    },
+    {
+      "year": 2023,
+      "detections": [
+        {
+          "latitude": 22.37852,
+          "longitude": 76.80647,
+          "observed_at": "2023-11-22T21:12:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 0.43,
+          "scan_km": 0.39,
+          "track_km": 0.59,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.3777,
+          "longitude": 76.81021,
+          "observed_at": "2023-11-22T21:12:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 0.84,
+          "scan_km": 0.39,
+          "track_km": 0.59,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.42384,
+          "longitude": 76.77403,
+          "observed_at": "2023-06-06T08:13:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 5.6,
+          "scan_km": 0.42,
+          "track_km": 0.38,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.4215,
+          "longitude": 76.77564,
+          "observed_at": "2023-04-19T08:13:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 9.21,
+          "scan_km": 0.42,
+          "track_km": 0.38,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.38364,
+          "longitude": 76.81741,
+          "observed_at": "2023-04-15T20:16:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 0.58,
+          "scan_km": 0.5,
+          "track_km": 0.41,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.37992,
+          "longitude": 76.81681,
+          "observed_at": "2023-04-15T20:16:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 0.58,
+          "scan_km": 0.5,
+          "track_km": 0.41,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41498,
+          "longitude": 76.77873,
+          "observed_at": "2023-03-25T07:41:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 3.09,
+          "scan_km": 0.4,
+          "track_km": 0.44,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41171,
+          "longitude": 76.83358,
+          "observed_at": "2023-03-12T20:53:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 0.28,
+          "scan_km": 0.39,
+          "track_km": 0.44,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        }
+      ],
+      "inside_count": 0,
+      "nearby_count": 8,
+      "requested_box_records": 10,
+      "partial_year": false
+    },
+    {
+      "year": 2024,
+      "detections": [],
+      "inside_count": 0,
+      "nearby_count": 0,
+      "requested_box_records": 1,
+      "partial_year": false
+    },
+    {
+      "year": 2025,
+      "detections": [
+        {
+          "latitude": 22.39964,
+          "longitude": 76.77591,
+          "observed_at": "2025-04-23T20:33:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 3.31,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39634,
+          "longitude": 76.7753,
+          "observed_at": "2025-04-23T20:33:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 3.31,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39574,
+          "longitude": 76.77901,
+          "observed_at": "2025-04-23T20:33:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 4.02,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.40443,
+          "longitude": 76.77702,
+          "observed_at": "2025-04-09T19:54:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 2.43,
+          "scan_km": 0.33,
+          "track_km": 0.55,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.40854,
+          "longitude": 76.77875,
+          "observed_at": "2025-04-08T07:45:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 15.53,
+          "scan_km": 0.51,
+          "track_km": 0.41,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41792,
+          "longitude": 76.78149,
+          "observed_at": "2025-04-04T19:48:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 1.44,
+          "scan_km": 0.42,
+          "track_km": 0.61,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41784,
+          "longitude": 76.78098,
+          "observed_at": "2025-03-27T08:10:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 5.12,
+          "scan_km": 0.42,
+          "track_km": 0.37,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41949,
+          "longitude": 76.81245,
+          "observed_at": "2025-03-25T08:48:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 4.79,
+          "scan_km": 0.5,
+          "track_km": 0.65,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        }
+      ],
+      "inside_count": 0,
+      "nearby_count": 8,
+      "requested_box_records": 12,
+      "partial_year": false
+    },
+    {
+      "year": 2026,
+      "detections": [
+        {
+          "latitude": 22.3976,
+          "longitude": 76.78149,
+          "observed_at": "2026-04-14T21:02:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 2.64,
+          "scan_km": 0.49,
+          "track_km": 0.48,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39467,
+          "longitude": 76.77707,
+          "observed_at": "2026-04-13T08:52:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 8.24,
+          "scan_km": 0.51,
+          "track_km": 0.66,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39569,
+          "longitude": 76.77999,
+          "observed_at": "2026-04-13T08:52:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 7.14,
+          "scan_km": 0.51,
+          "track_km": 0.66,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39528,
+          "longitude": 76.77489,
+          "observed_at": "2026-04-13T08:52:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 5.68,
+          "scan_km": 0.51,
+          "track_km": 0.66,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.38625,
+          "longitude": 76.77599,
+          "observed_at": "2026-04-01T07:37:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 5.3,
+          "scan_km": 0.49,
+          "track_km": 0.49,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39413,
+          "longitude": 76.76937,
+          "observed_at": "2026-04-01T07:37:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 14.2,
+          "scan_km": 0.49,
+          "track_km": 0.49,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.42096,
+          "longitude": 76.80217,
+          "observed_at": "2026-03-30T08:15:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 5.02,
+          "scan_km": 0.43,
+          "track_km": 0.38,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.38894,
+          "longitude": 76.77978,
+          "observed_at": "2026-03-29T08:34:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 4.81,
+          "scan_km": 0.5,
+          "track_km": 0.49,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39773,
+          "longitude": 76.80071,
+          "observed_at": "2026-03-25T08:08:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "inside",
+          "confidence": "nominal",
+          "frp_mw": 4.83,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.40104,
+          "longitude": 76.80016,
+          "observed_at": "2026-03-25T08:08:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "inside",
+          "confidence": "nominal",
+          "frp_mw": 4.83,
+          "scan_km": 0.39,
+          "track_km": 0.36,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41693,
+          "longitude": 76.77879,
+          "observed_at": "2026-03-24T08:27:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 5.96,
+          "scan_km": 0.4,
+          "track_km": 0.45,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.41867,
+          "longitude": 76.78175,
+          "observed_at": "2026-03-22T07:24:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "nominal",
+          "frp_mw": 2.51,
+          "scan_km": 0.39,
+          "track_km": 0.59,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.39207,
+          "longitude": 76.7754,
+          "observed_at": "2026-03-18T08:40:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "nearby",
+          "confidence": "low",
+          "frp_mw": 5.22,
+          "scan_km": 0.32,
+          "track_km": 0.55,
+          "daynight": "D",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        },
+        {
+          "latitude": 22.40145,
+          "longitude": 76.79967,
+          "observed_at": "2026-03-10T20:18:00+00:00",
+          "sensor": "NOAA-20",
+          "scope": "inside",
+          "confidence": "nominal",
+          "frp_mw": 1.15,
+          "scan_km": 0.49,
+          "track_km": 0.41,
+          "daynight": "N",
+          "instrument": "VIIRS",
+          "source": "NASA FIRMS"
+        }
+      ],
+      "inside_count": 3,
+      "nearby_count": 11,
+      "requested_box_records": 27,
+      "partial_year": true
+    }
+  ],
+  "boundary": {
+    "type": "FeatureCollection",
+    "bbox": [
+      76.78831296092488,
+      22.3915380704959,
+      76.82119381828602,
+      22.41331677386371
+    ],
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "MultiPolygon",
+          "coordinates": [
+            [
+              [
+                [
+                  76.81741455277746,
+                  22.39766275200064
+                ],
+                [
+                  76.81817512782239,
+                  22.39968443385081
+                ],
+                [
+                  76.8198374192286,
+                  22.39969363633929
+                ],
+                [
+                  76.82119381828602,
+                  22.4000013797098
+                ],
+                [
+                  76.82109028127107,
+                  22.40055753922946
+                ],
+                [
+                  76.82070495626364,
+                  22.4015239752105
+                ],
+                [
+                  76.82057553259409,
+                  22.4021346986204
+                ],
+                [
+                  76.81906020976575,
+                  22.40190772660087
+                ],
+                [
+                  76.81806766696565,
+                  22.40353699232215
+                ],
+                [
+                  76.81516797458112,
+                  22.40362488893517
+                ],
+                [
+                  76.81383220446601,
+                  22.40383244279851
+                ],
+                [
+                  76.8138327631732,
+                  22.40417933986301
+                ],
+                [
+                  76.813836263873,
+                  22.40635245497915
+                ],
+                [
+                  76.81383632364016,
+                  22.40638953501738
+                ],
+                [
+                  76.81390956700439,
+                  22.40705963716107
+                ],
+                [
+                  76.81400667965544,
+                  22.40794811895427
+                ],
+                [
+                  76.81419359144695,
+                  22.40965817137489
+                ],
+                [
+                  76.8145405676911,
+                  22.40967167307203
+                ],
+                [
+                  76.81448298942485,
+                  22.40973623056186
+                ],
+                [
+                  76.81414034689222,
+                  22.41011456445852
+                ],
+                [
+                  76.81356927653623,
+                  22.41044293035459
+                ],
+                [
+                  76.81352796144694,
+                  22.41055211991528
+                ],
+                [
+                  76.8134693388539,
+                  22.41070705060228
+                ],
+                [
+                  76.81349463525858,
+                  22.41087569263447
+                ],
+                [
+                  76.81351216931432,
+                  22.41099258587823
+                ],
+                [
+                  76.81349789261454,
+                  22.41126384464742
+                ],
+                [
+                  76.81342650863708,
+                  22.41134950516222
+                ],
+                [
+                  76.81329212609161,
+                  22.4113840606467
+                ],
+                [
+                  76.81317666518038,
+                  22.41141375057193
+                ],
+                [
+                  76.81277691572194,
+                  22.41155651836274
+                ],
+                [
+                  76.81243957759312,
+                  22.41163975746758
+                ],
+                [
+                  76.81222726002694,
+                  22.41169214740706
+                ],
+                [
+                  76.81178468042516,
+                  22.41182063812597
+                ],
+                [
+                  76.8110922576085,
+                  22.41212045034653
+                ],
+                [
+                  76.81038555761256,
+                  22.41230604808103
+                ],
+                [
+                  76.81028533392647,
+                  22.41230928109595
+                ],
+                [
+                  76.81003384049508,
+                  22.41231739376875
+                ],
+                [
+                  76.8099039357084,
+                  22.41234735386701
+                ],
+                [
+                  76.80982292849376,
+                  22.41236603665887
+                ],
+                [
+                  76.809656994787,
+                  22.41245152512136
+                ],
+                [
+                  76.80946552094879,
+                  22.41254924713799
+                ],
+                [
+                  76.80930036069515,
+                  22.41269446234358
+                ],
+                [
+                  76.80905759228051,
+                  22.41324354010159
+                ],
+                [
+                  76.8082547388392,
+                  22.4129652137508
+                ],
+                [
+                  76.80697126830934,
+                  22.41050426805313
+                ],
+                [
+                  76.80516490238,
+                  22.40953745602747
+                ],
+                [
+                  76.8010768110649,
+                  22.40795538547912
+                ],
+                [
+                  76.79812958244254,
+                  22.41173474635084
+                ],
+                [
+                  76.79675104002183,
+                  22.41270154308222
+                ],
+                [
+                  76.79342352383588,
+                  22.41331677386371
+                ],
+                [
+                  76.7895255763026,
+                  22.41309704889683
+                ],
+                [
+                  76.78878788475585,
+                  22.41278906412846
+                ],
+                [
+                  76.79044135739714,
+                  22.40914979737682
+                ],
+                [
+                  76.7913402231148,
+                  22.4069125465176
+                ],
+                [
+                  76.79134502508164,
+                  22.40426741125159
+                ],
+                [
+                  76.79134997797695,
+                  22.40153622712381
+                ],
+                [
+                  76.79135481795358,
+                  22.39886529885009
+                ],
+                [
+                  76.79003919710163,
+                  22.39570515665398
+                ],
+                [
+                  76.7889675631704,
+                  22.39313097077692
+                ],
+                [
+                  76.78831296092488,
+                  22.39155848840431
+                ],
+                [
+                  76.79260558978366,
+                  22.3915380704959
+                ],
+                [
+                  76.79511871718887,
+                  22.39169321928323
+                ],
+                [
+                  76.79728200430259,
+                  22.39215999860387
+                ],
+                [
+                  76.79805666407128,
+                  22.39239167957819
+                ],
+                [
+                  76.79881252270049,
+                  22.39297813357888
+                ],
+                [
+                  76.79977702347215,
+                  22.39382523311554
+                ],
+                [
+                  76.8020207202838,
+                  22.3939131350599
+                ],
+                [
+                  76.80454963208021,
+                  22.39408893896509
+                ],
+                [
+                  76.80601373932383,
+                  22.39439659549414
+                ],
+                [
+                  76.80747784656747,
+                  22.39470425202316
+                ],
+                [
+                  76.81025394612335,
+                  22.39482731461068
+                ],
+                [
+                  76.81010716032472,
+                  22.39431159722154
+                ],
+                [
+                  76.8100638016888,
+                  22.39415926104994
+                ],
+                [
+                  76.81099550663771,
+                  22.39401861726033
+                ],
+                [
+                  76.81191927251695,
+                  22.39391185513162
+                ],
+                [
+                  76.81221242712974,
+                  22.39387797389476
+                ],
+                [
+                  76.81352441839181,
+                  22.39445812753541
+                ],
+                [
+                  76.8140395004677,
+                  22.39612449688874
+                ],
+                [
+                  76.8155098653379,
+                  22.39589443455385
+                ],
+                [
+                  76.81712933718836,
+                  22.3956410420234
+                ],
+                [
+                  76.8174620889841,
+                  22.39665190098829
+                ],
+                [
+                  76.81741455277746,
+                  22.39766275200064
+                ]
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "Range": "HANDIA",
+          "COMPT_NO": "279",
+          "LGL_Status": "PF",
+          "AREA_HA": "523.391065",
+          "source_sha256": "60b45c21637d7d19bb70953715c87e662f58fd5f6d63eaedb60234eb4d197f2a",
+          "source_kind": "user_provided_kml_origin_unverified",
+          "study_id": "handia-compartment-279",
+          "study_area_version": "compartment-279-user-kml-v1",
+          "name": "Compartment 279 study area",
+          "study_area_status": "user_selected_provisional_research_geometry",
+          "geometry_selection_confirmed": true,
+          "selection_date": "2026-10-08",
+          "current_boundary_verified": false,
+          "administrative_membership_verified": false,
+          "forest_ground_truth": false,
+          "boundary_registration_verified": false
+        }
+      }
+    ]
+  },
+  "attribution": "NASA FIRMS / VIIRS NOAA-20 Collection 2; detection centres filtered to compartment 279 and its 2 km surroundings.",
+  "limits": "Counts are satellite detection pixels, not confirmed fire incidents or burned area. Zero detections do not prove no fire. Only NOAA-20 is used for consistent yearly comparison. The 2026 archive is partial; standard data may arrive months late. Last detected date is not a coverage-completeness date."
+}

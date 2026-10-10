@@ -1,4 +1,5 @@
 """Verify the delivery backup and restore without writing to the live application."""
+import sys
 import errno
 import json
 import shutil
@@ -18,11 +19,11 @@ def reject(action):
     raise AssertionError('Invalid backup accepted')
 
 
-archive=delivery.ROOT/'data/backups/research_delivery_v2.zip'
+archive=Path(sys.argv[1]) if len(sys.argv)>1 else delivery.ROOT/'data/backups/research_delivery_v2.zip'
 receipt=json.loads(archive.with_suffix('.receipt.json').read_text())
 checksum=receipt['sha256']
 manifest=delivery.verify(archive,checksum)
-destination=delivery.ROOT/'data/recovery/phase9_release_v2'
+destination=delivery.ROOT/'data/recovery'/('verified_'+archive.stem)
 result=delivery.restore(archive,checksum,destination)
 assert result['files']==len(manifest['files'])
 assert any(n.endswith('model.zip') for n in manifest['files'])

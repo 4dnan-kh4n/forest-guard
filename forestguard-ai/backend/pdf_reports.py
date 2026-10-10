@@ -65,3 +65,14 @@ def dataset_pdf(item,rows):
     return build('Saved satellite observations',[paragraph(item['title']),paragraph(item['scope']),paragraph('Synthetic test data' if item['kind']=='synthetic' else 'Saved satellite observations'),Spacer(1,14),
       table([['Image date','Clear coverage %','Usable pixels'],*[[r['date'],f"{r['coverage_percent']:.1f}",r['usable_pixels']] for r in rows]],[170,170,170]),
       Spacer(1,14),paragraph('Clear coverage describes image visibility, not forest density or accuracy.'),paragraph(item.get('limits','')),paragraph(item['attribution'])])
+
+
+def fire_history_pdf(report):
+    contents=[paragraph('Joga - compartment 279 mapped area'),paragraph('NASA NOAA-20 archive, requested 1 January 2022 through 10 October 2026. 2026 is a partial archive.'),Spacer(1,14),
+      table([['Year','Inside mapped area','Nearby (2 km)'],*[[str(row['year'])+(' (partial)' if row['partial_year'] else ''),row['inside_count'],row['nearby_count']] for row in report['observations']]],[130,190,190]),
+      Spacer(1,14),paragraph(report['limits']),paragraph(report['attribution']),Spacer(1,14),paragraph('Detection records','Heading2')]
+    events=[event for row in report['observations'] for event in row['detections']]
+    if events:
+        contents.append(table([['Time (IST)','Latitude, longitude','Position'],*[[datetime.fromisoformat(event['observed_at']).astimezone(timezone(timedelta(hours=5,minutes=30))).strftime('%d %b %Y %H:%M'),f"{event['latitude']:.5f}, {event['longitude']:.5f}",'Inside mapped area' if event['scope']=='inside' else 'Nearby'] for event in events]],[170,190,150]))
+    contents += [Spacer(1,14),paragraph('NASA archive request: '+str(report['request_id'])),paragraph(report['source_url'])]
+    return build('Fire history 2022-2026',contents)

@@ -11,6 +11,18 @@
     "bytes": 11838,
     "sha256": "f8bfe0046fcdb4a98672780a9a665ccfa860efebeff7dbb2d4faf6b693cf0a49"
   },
+  "data/fire/archive_2022_2026_v1/report.json": {
+    "bytes": 30121,
+    "sha256": "24978d889d1dded110a876d4d0b504e63febf26967af82f15d7f459f6ef8a11f"
+  },
+  "data/fire/archive_2022_2026_v1/checksums.json": {
+    "bytes": 172,
+    "sha256": "fd49af6bd3e35144640243a78fedca664ff263a524604a707af80953ec8f0ac9"
+  },
+  "data/fire/archive_2022_2026_v1/source.csv": {
+    "bytes": 5434,
+    "sha256": "ce808908b5decd75026e695fddd571fe03c70c733d96986a44164647d72c35c6"
+  },
   "data/annual/observations_v1/annual_report.json": {
     "bytes": 3857,
     "sha256": "9b55eb78dc6a2e152b8c28ddbf7956164c764cfcd82570a957002f1e64cdf951"

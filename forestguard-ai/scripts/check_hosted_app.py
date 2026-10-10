@@ -58,6 +58,8 @@ async def check():
             await request('/api/fire',status=401)
             await request('/api/forest-history',status=401)
             await request('/api/fire/report/pdf',status=401)
+            await request('/api/fire/history',status=401)
+            await request('/api/fire/history/report/pdf',status=401)
             await request('/api/forest-history/report/pdf',status=401)
             credentials={'district':'Harda','beat':'Joga','password':'wrong'}
             await request('/api/login',credentials,status=401)
@@ -74,6 +76,12 @@ async def check():
             assert fire['available'] and fire['sources'] and fire['inside_count']==sum(e['scope']=='inside' for e in fire['detections'])
             assert all(s['url'] in api.FIRE_SOURCES.values() for s in fire['sources'])
             await request('/api/fire/report/json')
+            body,_=await request('/api/fire/history');archive=json.loads(body)
+            assert archive['available'] and archive['source']['regional_rows']==66
+            assert [(row['inside_count'],row['nearby_count']) for row in archive['observations']]==[(0,14),(0,8),(0,0),(0,8),(3,11)]
+            assert archive['observations'][-1]['partial_year'] is True
+            body,headers=await request('/api/fire/history/report/pdf')
+            assert body.startswith(b'%PDF-') and headers[b'content-type']==b'application/pdf'
             for url in ['/api/fire/report/pdf','/api/forest-history/report/pdf','/api/datasets/compartment-279/report/pdf']:
                 body,headers=await request(url)
                 assert body.startswith(b'%PDF-') and body.rstrip().endswith(b'%%EOF')

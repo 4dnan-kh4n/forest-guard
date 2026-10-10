@@ -82,8 +82,8 @@ Satellite observations are not continuous surveillance or verified incident repo
 [NASA FIRMS source and attribution](https://firms.modaps.eosdis.nasa.gov/active_fire/).
 NASA archive request 820485 was submitted successfully on 10 October 2026 for
 NOAA-20 VIIRS C2, 1 January 2022 through 10 October 2026, custom bounds
-[76.76, 22.37, 76.85, 22.44], CSV output. It awaits NASA processing; no archived
-counts have been inferred from recent feeds. The requested box provides context;
+[76.76, 22.37, 76.85, 22.44], CSV output. It was processed and downloaded: 66 source records, 44 detection centres in the
+polygon/2 km context. Verified yearly counts are documented in CURRENT_STATUS.md. The requested box provides context;
 actual reporting must still filter centres using the compartment polygon.
 
 ## Reproduce and deploy
@@ -105,7 +105,7 @@ actual reporting must still filter centres using the compartment polygon.
    Vercel configuration. Newly added features have been checked locally, not on the
    updated production deployment until that push occurs.
 
-104 selected deployment files total 37,885,734 bytes, below the 40 MiB guard.
+107 selected deployment files total 37,921,461 bytes, below the 40 MiB guard.
 Only annual PNG previews, reports and hashes are packaged; full raster/model data
 remains local. Git ignores private notebooks, downloaded rasters and training artifacts.
 
@@ -118,6 +118,6 @@ passed. Browser checks verified actual 2022/2023/2026 image views, the new
 passed with five image endpoints and four comparisons. Hosted checks block networking
 and verify authentication, saved fire data and unavailable-refresh preservation.
 
-Next: download and verify the processed NASA archive; independently evaluate
-forest references before operational claims; push and redeploy the new data/views.
+Next: push/redeploy the historical fire additions; independently evaluate forest
+references before operational claims. Recent and annual PDFs passed actual Vercel downloads.
 No new software dependency, paid API or local training stack was introduced.

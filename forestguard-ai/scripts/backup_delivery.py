@@ -9,7 +9,8 @@ import backup_research as backup
 
 ROOT=backup.ROOT
 FORMAT='forestguard-research-delivery-v1'
-LIMIT=256*1024**2
+# Annual imagery and deployable data increased the measured release to 281 MiB.
+LIMIT=320*1024**2
 DATA_DIRS=[
     'data/study/compartment_279_v1/research_v2_20261008',
     'data/study/compartment_279_v1/december_2024_v1',
@@ -29,10 +30,13 @@ DATA_DIRS=[
     'data/phase3/offline_prediction_run1', 'data/phase3/inference_wheels',
     'data/phase4/synthetic_change_v1', 'data/phase4/comparison_run1',
     'data/tooling/wheels/windows-cp311', 'data/app/change_runs',
+    'data/annual/observations_v1','data/annual/2022_pc_v1','data/annual/2022_2026_v1',
+    'data/fire/recent_v1','data/fire/archive_2022_2026_v1',
 ]
-CODE_DIRS=['backend','scripts','cloud','config','docs','notebooks','frontend/src','frontend/public','frontend/dist']
+CODE_DIRS=['backend','scripts','cloud','config','docs','notebooks','frontend/src','frontend/public','frontend/dist','deployment_data']
 ROOT_FILES=['.gitignore','.env.example','AGENTS.md','README.md','PROJECT_PLAN.md','start_ui.ps1',
             'requirements-lock.txt','requirements-ui-lock.txt','requirements-inference.txt',
+            'pyproject.toml','app.py','vercel.json','.vercelignore','.gitattributes','requirements-ui.txt','requirements.txt',
             'frontend/index.html','frontend/package.json','frontend/pnpm-lock.yaml','frontend/vite.config.js',
             'data/phase5/offline_install_v1/wheel_inventory.json']
 

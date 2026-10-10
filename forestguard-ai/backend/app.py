@@ -778,6 +778,32 @@ def download_fire_pdf():
     return Response(fire_pdf(report),media_type='application/pdf',headers={'Content-Disposition':'attachment; filename="joga-fire-report.pdf"'})
 
 
+@app.get('/api/fire/history')
+def fire_history():
+    folder=DATA_ROOT/'data/fire/archive_2022_2026_v1'
+    if not (folder/'report.json').exists():return {'available':False}
+    try:
+        hashes=read(folder/'checksums.json')
+        for name in ['report.json','source.csv']:
+            path=folder/name
+            if path.is_symlink() or path.stat().st_size>128*1024 or hashlib.sha256(path.read_bytes()).hexdigest()!=hashes[name]:raise ValueError('Archive integrity mismatch')
+        report=read(folder/'report.json')
+        if report['format']!='forestguard-firms-history-v1' or [row['year'] for row in report['observations']]!=list(range(2022,2027)):raise ValueError('Unsupported history')
+        for row in report['observations']:
+            if len(row['detections'])>200 or [row['inside_count'],row['nearby_count']]!=[sum(event['scope']==scope for event in row['detections']) for scope in ['inside','nearby']]:raise ValueError('Invalid historical counts')
+    except (OSError,ValueError,KeyError,TypeError) as error:raise HTTPException(503,'Historical fire files failed verification') from error
+    context=fire_report()
+    return dict(report,available=True,image_bounds=context['image_bounds'],background_date=context['background_date'])
+
+
+@app.get('/api/fire/history/report/pdf')
+def download_fire_history_pdf():
+    from backend.pdf_reports import fire_history_pdf
+    report=fire_history()
+    if not report.get('available'):raise HTTPException(404,'No historical fire report available')
+    return Response(fire_history_pdf(report),media_type='application/pdf',headers={'Content-Disposition':'attachment; filename="joga-fire-history-2022-2026.pdf"'})
+
+
 @app.get('/api/forest-history')
 def annual_history():
     path=DATA_ROOT/'data/annual/observations_v1/annual_report.json'
