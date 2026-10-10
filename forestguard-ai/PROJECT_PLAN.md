@@ -1,5 +1,24 @@
 # Progress checklist
 
+Officer workflow correction — 10 October 2026:
+- [x] Replace wrapped mobile navigation with accessible collapsible navigation.
+- [x] Open real compartment 279 observations and automatically measured vegetation
+  indicators after login; omit synthetic fixtures from officer navigation.
+- [x] Remove officer uploads and use team-managed missing-data recovery wording.
+- [x] Verify local login, saved image, automatic indicators, phone-width navigation,
+  no file inputs, no horizontal overflow and no observed console errors.
+- [ ] Verify the updated deployed mobile view after the user's push.
+See `docs/OFFICER_WORKFLOW.md`; acquisition updates remain the team's pipeline.
+
+Resume checkpoint — 10 October 2026:
+- [x] Inspect current engineering deliverables and scientific acceptance gaps.
+- [x] Re-audit the seven saved compartment 279 labels: zero independent reviewed
+  examples, all seven splits unassigned; no labels changed or generated.
+- [x] Record the current scope and next evidence gate in `docs/CURRENT_STATUS.md`.
+- [x] User confirms deployed officer login works after credential correction.
+- [ ] Obtain evidence-supported independent reference review and freeze splits.
+- [ ] Verify all deployed dashboard features; login success alone is insufficient.
+
 Vercel full research application:
 - [x] Remove automatic landing-only mode; add FastAPI entrypoint/configuration,
   bounded deployable data, server-side officer authentication and temporary state.

@@ -6,3 +6,23 @@
 
 .research-map{height:440px}@media(max-width:680px){.research-map{height:300px}}
 .hosting-note{margin-bottom:20px;padding:14px 18px;background:#edf2e8;border:1px solid #d8dfd2;border-radius:7px;color:#3e5846;font-size:12px;line-height:1.7}
+.officer-brand-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.officer-menu-toggle{display:none}
+@media(max-width:760px){
+  .app-shell{display:block}
+  .sidebar{position:sticky;top:0;inset:auto;z-index:30;width:100%;padding:14px 16px}
+  .sidebar .brand{font-size:20px}.sidebar .brand span{font-size:7px}
+  .sidebar .workspace-label,.sidebar-note,.sidebar-footer{display:none}
+  .officer-menu-toggle{display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 12px;border:1px solid #779684;border-radius:8px;background:#254d3e;color:#f1f5e9;font-size:13px}
+  .officer-menu-toggle span{font-size:20px}.officer-menu-toggle:focus-visible{outline:2px solid #c3e99b;outline-offset:3px}
+  .sidebar nav{display:none;margin:14px 0 0}
+  .sidebar nav.is-open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .sidebar nav button{font-size:13px;min-height:44px;padding:12px;gap:8px}
+  .sidebar nav button svg{width:18px;height:18px}.sidebar nav i{display:none}
+  .main-shell{margin:0;width:100%;min-width:0}
+  .topbar{height:auto;min-height:60px;padding:10px 16px;gap:12px}
+  .breadcrumb{min-width:0;font-size:12px}.breadcrumb span{margin:0 5px}.breadcrumb strong{overflow-wrap:anywhere}
+  .topbar-right{gap:8px;flex-shrink:0}.topbar-right .officer-label,.topbar-right .local-badge{display:none}
+  .topbar-right .button{min-height:44px;padding:10px 14px}
+  main{padding:20px 16px}.hosting-note{font-size:12px;padding:12px;margin-bottom:18px}
+}

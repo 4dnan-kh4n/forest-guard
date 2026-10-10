@@ -54,6 +54,12 @@ Vercel no longer automatically enables landing-only mode in the Vite build.
 
 ## What is available
 
+The officer interface now opens the real compartment 279 observation overview,
+automatically computes stored-data vegetation indicators and provides dated
+images/reports without upload controls. Synthetic checks and imports below remain
+backend development capabilities; they are not the officer's navigation or tasks.
+See `OFFICER_WORKFLOW.md` for the current interface and local mobile verification.
+
 Landing page, officer login/logout, saved map/date comparison, coverage and NDVI,
 input integrity checks, CSV/HTML reports, the stored research proxy and its four
 exports, monthly simulated illustrations, synthetic change runs/layers/exports,

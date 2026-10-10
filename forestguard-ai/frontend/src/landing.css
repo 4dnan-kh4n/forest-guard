@@ -26,3 +26,6 @@ html:has(.officer-dialog[open]) .page-cursor{visibility:hidden}
 .officer-dialog>.modal-cursor{position:fixed}
 .officer-dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
 .officer-dialog>.forest-logo{display:block}
+.officer-dialog select{color-scheme:dark}
+.officer-dialog select option{color:#eef5e7;background:#08150e}
+.officer-dialog select option:disabled,.officer-dialog select:disabled{color:#b9cbb0;background:#15251a;opacity:1}
