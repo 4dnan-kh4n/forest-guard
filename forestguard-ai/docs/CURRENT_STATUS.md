@@ -40,14 +40,20 @@ synthetic-inference resource check: 1.965 seconds, peak process working set 135.
 this does not measure browser use or full-scene workloads.
 
 The current Vercel annual and recent-fire PDFs were downloaded and parsed successfully
-(four pages and one page). The new fire-history/landing changes are local and need
-push/redeployment. The deployable data package has 107 files / 37,921,461 bytes.
+(four pages and one page). The new fire-history/landing changes are deployed. Year selection (2022, 2024,
+2026), markers, zero-record handling, return to recent monitoring and the three-page
+historical PDF were verified on actual Vercel production. The deployable data package has 107 files / 37,921,461 bytes.
 An updated backup preserves annual/fire data, deployment data, models, code and
-Windows offline wheels; retain its receipt checksum separately.
+Windows offline wheels; retain its receipt checksum separately. A full 773-file
+restore passed integrity/registration and fault checks. A new isolated environment
+installed only from saved wheels and passed all 121 API checks; the restored checkout
+also passed these checks. Windows blocked moving an extracted directory; the live
+recovery helper now retries briefly and uses a verified copy to its new recovery
+folder. Copy failures clean up only that newly created folder. Regression tests pass.
 
 ## Remaining evidence and external steps
 
-1. Push the new changes including deployment_data and verify the archived fire view on Vercel.
+1. Push the final local recovery-helper fix and its regression test. The dashboard and archived fire deployment are verified.
 2. Credible independent forest/non-forest review and representative frozen evaluation
    splits are still unavailable. Seven existing records are unassigned, with zero
    independently reviewed forest labels. No forest-accuracy claim is justified.

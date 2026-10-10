@@ -810,3 +810,13 @@ Final release audit - 10 October 2026 (supersedes older deployment-pending entri
 - [ ] Independently review forest labels, freeze representative splits and evaluate forest accuracy.
 - [ ] Establish enough outcomes/weather/change labels before any operational forecasts.
 See docs/CURRENT_STATUS.md for the current limits; earlier checks are historical evidence.
+
+Final live/recovery verification - 10 October 2026:
+- [x] Verify historical-fire year selection, real markers, zero-record view and latest-feed action on actual Vercel.
+- [x] Download and parse the deployed three-page fire-history PDF.
+- [x] Restore all 773 base-release files and reject overwrite, disk-full and unsafe-path cases.
+- [x] Fresh UI installation from saved wheels only; 121 checks pass with all networking blocked.
+- [x] Restored application passes those 121 checks in the fresh environment.
+- [x] Fix Windows recovery-directory move failure; verify copy fallback and partial-copy cleanup.
+- [ ] Push the final recovery-helper source/test changes (no application redeployment required for this local helper).
+Scientific forest accuracy, forecasts and operational shared-user storage/security remain explicit evidence/product gates.

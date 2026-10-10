@@ -3,7 +3,9 @@ import argparse
 import hashlib
 import json
 import shutil
+import sys
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
@@ -95,7 +97,27 @@ def restore(archive, trusted_sha256, destination, files=ALLOWED, backup_format='
                     shutil.copyfileobj(source, output, length=64*1024)
                 if digest(target) != manifest['files'][name]['sha256']:
                     raise ValueError('Recovered file integrity failure: '+name)
-        folder.rename(destination)
+        # Windows scanners can briefly hold newly extracted files open.
+        for attempt in range(5):
+            try:
+                if destination.exists():raise ValueError('Restore destination appeared; do not overwrite it.')
+                folder.rename(destination)
+                break
+            except PermissionError:
+                if sys.platform!='win32':raise
+                if attempt==4:
+                    # Publish only to our new recovery folder; never touch live data.
+                    destination.mkdir()
+                    try:
+                        shutil.copytree(folder,destination,dirs_exist_ok=True)
+                        for name,record in manifest['files'].items():
+                            if digest(destination/name)!=record['sha256']:raise ValueError('Copied recovery integrity failure')
+                    except Exception:
+                        if destination.is_symlink() or not destination.resolve().is_relative_to((ROOT/'data').resolve()):raise ValueError('Unsafe recovery cleanup path')
+                        shutil.rmtree(destination)
+                        raise
+                    break
+                time.sleep(.5)
     return {'status':'PASS', 'files':len(manifest['files']), 'destination':str(destination)}
 
 

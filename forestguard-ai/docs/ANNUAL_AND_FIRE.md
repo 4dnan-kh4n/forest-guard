@@ -118,6 +118,7 @@ passed. Browser checks verified actual 2022/2023/2026 image views, the new
 passed with five image endpoints and four comparisons. Hosted checks block networking
 and verify authentication, saved fire data and unavailable-refresh preservation.
 
-Next: push/redeploy the historical fire additions; independently evaluate forest
-references before operational claims. Recent and annual PDFs passed actual Vercel downloads.
+The historical fire additions and their PDF passed actual Vercel checks. Next:
+independently evaluate forest references before operational claims. Recent and
+annual PDFs also passed actual Vercel downloads.
 No new software dependency, paid API or local training stack was introduced.

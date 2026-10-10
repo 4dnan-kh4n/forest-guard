@@ -4,16 +4,18 @@ For officer login and the current dashboard on Vercel, follow
 [full application deployment](docs/VERCEL_FULL_APP.md), rather than the older
 frontend-only instructions. Hosted imports/results use temporary storage.
 
-Current research-app reliability checkpoint and delivery instructions:
-[Phase 9 handoff](docs/PHASE9_DELIVERY.md). Scientific forest/fire/change validation
-remains separate; no evaluated real model is claimed.
+Current release: real 2022-2026 imagery, estimated cover changes, recent and
+historical NASA fire detections, inspection checklist and PDF reports. See
+[the current checkpoint](docs/CURRENT_STATUS.md) and [delivery instructions](docs/PHASE9_DELIVERY.md).
+Independent forest accuracy and operational forecasts remain unvalidated.
 
 Clean implementation started on 6 October 2026. No code, notebooks, downloaded
 data, saved outputs or models from the earlier implementation are used here.
 
 First product: local forest-cover mapping and suspected cover-change detection.
-Pilot: Joga forest beat, Harda, Madhya Pradesh. The official beat boundary is
-unverified. The research box below is only for checking our data pipeline.
+Pilot: Joga, Harda, Madhya Pradesh. Current reports use the user-confirmed
+compartment 279 polygon; the whole beat boundary remains unverified. The earlier
+research box below is retained only for reproducing pipeline checks.
 
 Budget: INR 0 for software, datasets, APIs, model services and hosting. Heavy
 processing/training runs in a free hosted CPU notebook when available. The
