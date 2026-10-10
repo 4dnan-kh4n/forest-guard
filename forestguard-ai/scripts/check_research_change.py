@@ -11,6 +11,7 @@ import numpy as np
 import rasterio
 
 from predict_research_change import ROOT, BEFORE, AFTER, MODEL, predict, transitions
+from check_deployment_data import check as check_deployment
 
 sys.path.insert(0, str(ROOT))
 from backend import app as api
@@ -27,6 +28,27 @@ else:
     raise AssertionError('Invalid observable classes accepted')
 source_hashes = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in [BEFORE, AFTER, MODEL]}
 saved = ROOT / 'data/phase4/research_proxy_change_v1'
+assert check_deployment(ROOT/'deployment_data')['files']==94
+with tempfile.TemporaryDirectory(prefix='deployment_check_') as temporary:
+    folder=Path(temporary)
+    names=['data/app/registered/compartment-279/registered.json',
+           'data/phase3/research_proxy_map_v1/checksums.json',
+           'data/phase4/research_proxy_change_v1/checksums.json']
+    manifest={}
+    for name in names:
+        path=folder/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b'{}')
+        manifest[name]={'bytes':2,'sha256':hashlib.sha256(b'{}').hexdigest()}
+    (folder/'manifest.json').write_text(json.dumps(manifest))
+    assert check_deployment(folder)['files']==3
+    for broken in ['corrupt','missing','unsafe']:
+        changed=dict(manifest)
+        if broken=='corrupt':changed[names[0]]={'bytes':2,'sha256':'0'*64}
+        elif broken=='missing':changed.pop(names[0])
+        else:changed['../outside.json']={'bytes':2,'sha256':'0'*64}
+        (folder/'manifest.json').write_text(json.dumps(changed))
+        try:check_deployment(folder)
+        except ValueError:pass
+        else:raise AssertionError('Unsafe deployment manifest accepted: '+broken)
 with tempfile.TemporaryDirectory(prefix='change_check_', dir=ROOT / 'data/phase4') as temporary:
     output = Path(temporary) / 'result'
     with patch.object(socket, 'socket', side_effect=AssertionError('Networking forbidden')):
