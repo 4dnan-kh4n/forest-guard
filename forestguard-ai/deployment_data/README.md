@@ -1,6 +1,6 @@
 # Selected website data
 
-Prepared by `scripts/prepare_vercel_data.py`: 81 selected files, 35,874,408 bytes.
+Prepared by `scripts/prepare_vercel_data.py`: 94 selected files, 37,702,102 bytes.
 `manifest.json` retains original hashes. These are bounded existing crops and
 saved results, not new downloaded scenes. Include this directory in Git for the
 full Vercel application. Original local data remains outside Git.
@@ -9,6 +9,17 @@ Includes compartment 279 registered observations and verification sources,
 the historical March pipeline pair, synthetic sandbox/change inputs, and the
 saved unapproved December tree-cover proxy. No officer accounts, SQLite files,
 credentials, original private KML, training models or field photos are included.
+
+Also includes the real December 2024/2025 research proxy change comparison and
+its source previews, common-coverage mask and downloadable reports. Independent
+forest accuracy remains unmeasured.
+
+Deployment exclusions must be root-anchored (`/data/`, not `data/`) so the
+`deployment_data/data/` subtree survives source filtering. The ZIP required to
+verify registered observations is already tracked in Git. Keep both the
+deployment-directory allow rules in `.vercelignore` and explicit function
+inclusion in `vercel.json`. Do not bypass `check_deployment_data.py` when a build
+reports a missing artifact.
 
 Preserve displayed attribution: contains modified Copernicus Sentinel data
 2024/2025 ([Sentinel licence](https://cds.climate.copernicus.eu/licences/ec-sentinel)).
