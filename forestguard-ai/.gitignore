@@ -76,3 +76,7 @@ coverage/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Generated officer PDF reports and rendering checks
+output/pdf/
+tmp/pdfs/

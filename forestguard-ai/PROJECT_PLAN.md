@@ -789,3 +789,11 @@ Inspection planning — 10 October 2026:
 - [x] Add selected-item checklist CSV export and links to the correct source year/fire view.
 - [x] Verify priority ordering, empty input handling, CSV escaping, actual selected CSV download, year navigation and frontend build.
 - [ ] Push/redeploy and verify the new section on Vercel.
+
+Officer PDF exports and NASA navigation - 10 October 2026:
+- [x] Replace the officer-facing JSON fire download with PDF.
+- [x] Add annual forest-change PDF with all five images and a saved-observation PDF; retain CSV for spreadsheets.
+- [x] Centre NASA FIRMS on the actual mapped boundary's bounding-box centre, zoom 14, seven-day observations.
+- [x] Verify actual browser PDF downloads, text/pagination, all rendered pages, authenticated offline routes, 117 hosted API checks and frontend build.
+- [x] Pin free PDF dependencies and ignore generated PDF/render outputs.
+- [ ] Redeploy and verify PDF generation in the actual Vercel runtime.

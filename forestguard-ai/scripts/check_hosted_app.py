@@ -57,6 +57,8 @@ async def check():
             await request('/api/research/change',status=401)
             await request('/api/fire',status=401)
             await request('/api/forest-history',status=401)
+            await request('/api/fire/report/pdf',status=401)
+            await request('/api/forest-history/report/pdf',status=401)
             credentials={'district':'Harda','beat':'Joga','password':'wrong'}
             await request('/api/login',credentials,status=401)
             credentials['password']='test-only-officer-a'
@@ -72,6 +74,10 @@ async def check():
             assert fire['available'] and fire['sources'] and fire['inside_count']==sum(e['scope']=='inside' for e in fire['detections'])
             assert all(s['url'] in api.FIRE_SOURCES.values() for s in fire['sources'])
             await request('/api/fire/report/json')
+            for url in ['/api/fire/report/pdf','/api/forest-history/report/pdf','/api/datasets/compartment-279/report/pdf']:
+                body,headers=await request(url)
+                assert body.startswith(b'%PDF-') and body.rstrip().endswith(b'%%EOF')
+                assert headers[b'content-type']==b'application/pdf' and b'.pdf' in headers[b'content-disposition']
             with patch.object(api,'fetch_fires',side_effect=ValueError('fixture offline')),patch.object(api,'datetime') as clock:
                 clock.fromisoformat.return_value.timestamp.return_value=0
                 await request('/api/fire/refresh',{},status=503)

@@ -1,5 +1,16 @@
 # Current development checkpoint — 10 October 2026
 
+Officer-facing fire evidence now downloads as a one-page PDF; Reports also has a
+four-page annual change PDF containing all five dated images, and a PDF summary
+of older observations. JSON remains a technical API format but has no officer
+export button. ReportLab exports run locally/offline with explicit dependency pins.
+Actual PDF downloads, extracted content and all rendered pages passed verification;
+authenticated hosted-mode checks now total 117. A 200-event table rendering fixture
+was tested in memory only and is not an observed fire result. NASA's map link was
+verified at the mapped Joga centre, 76.805 E / 22.402 N, zoom 14, seven-day window.
+New PDF routes/dependencies and frontend links require a fresh Vercel deployment.
+
+
 A separate Inspection plan now replaces the duplicate Satellite images sidebar
 entry. It orders historical comparisons by possible-loss area, shows saved NASA
 fire counts with retrieval time, lets the officer select checklist items and exports

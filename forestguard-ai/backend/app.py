@@ -597,7 +597,10 @@ def report(identity,format):
         values,valid,_=vegetation(original,obs)
         row['ndvi_median']=round(float(np.median(values[valid])),4) if valid.any() else ''
         row['ndvi_valid_pixels']=int(valid.sum())
-    if format=='csv':
+    if format=='pdf':
+        from backend.pdf_reports import dataset_pdf
+        content=dataset_pdf(item,rows); mime='application/pdf'
+    elif format=='csv':
         buffer=io.StringIO(); writer=csv.DictWriter(buffer,fieldnames=list(rows[0])); writer.writeheader()
         for row in rows:
             writer.writerow({k:("'"+v if isinstance(v,str) and v.startswith(('=','+','-','@')) else v) for k,v in row.items()})
@@ -767,6 +770,14 @@ def download_fire_report():
     return Response(json.dumps(report,indent=2),media_type='application/json',headers={'Content-Disposition':'attachment; filename="forestguard-satellite-fire-report.json"'})
 
 
+@app.get('/api/fire/report/pdf')
+def download_fire_pdf():
+    from backend.pdf_reports import fire_pdf
+    report=fire_report()
+    if not report.get('available'):raise HTTPException(404,'No fire report available')
+    return Response(fire_pdf(report),media_type='application/pdf',headers={'Content-Disposition':'attachment; filename="joga-fire-report.pdf"'})
+
+
 @app.get('/api/forest-history')
 def annual_history():
     path=DATA_ROOT/'data/annual/observations_v1/annual_report.json'
@@ -789,6 +800,14 @@ def annual_image(year:int):
     if year not in [2022,2023,2024,2025,2026] or not any(row['year']==year for row in report.get('observations',[])):
         raise HTTPException(404,'This year has no acquired satellite crop')
     return FileResponse(DATA_ROOT/f'data/annual/observations_v1/{year}/preview.png',media_type='image/png')
+
+
+@app.get('/api/forest-history/report/pdf')
+def download_annual_pdf():
+    from backend.pdf_reports import annual_pdf
+    report=annual_history()
+    if not report.get('available'):raise HTTPException(404,'No annual report available')
+    return Response(annual_pdf(report,DATA_ROOT/'data/annual/observations_v1'),media_type='application/pdf',headers={'Content-Disposition':'attachment; filename="joga-annual-forest-report.pdf"'})
 
 
 DIST=ROOT/'frontend/dist'

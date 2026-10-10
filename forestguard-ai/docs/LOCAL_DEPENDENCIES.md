@@ -30,3 +30,12 @@ wheel solely by the Python package's core license.
 
 This phase distributes project code and dependency pins, not a repackaged native
 runtime. The Windows wheel archive remains a local offline-reinstall resource.
+
+## Officer PDF exports - 10 October 2026
+
+ReportLab 4.4.10 (BSD), Pillow 12.3.0 (MIT-CMU) and charset-normalizer 3.5.2
+(MIT) are pinned in the local UI lock and Vercel pyproject. Official PyPI metadata
+and installed wheel licenses were checked. About 9.4 MB of wheels were downloaded;
+there is no commercial ReportLab add-on, external PDF service or browser-print
+requirement. Package distributions retain their license files. Reports are created
+from saved data in memory and authenticated downloads work with networking blocked.
