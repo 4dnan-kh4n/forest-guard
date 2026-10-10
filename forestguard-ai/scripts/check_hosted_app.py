@@ -51,6 +51,8 @@ async def check():
     with tempfile.TemporaryDirectory(prefix='hosted_check_',dir=ROOT/'data/phase5') as temporary:
         state=Path(temporary)/'state';state.mkdir()
         with patch.object(api,'STATE',state),patch.object(socket.socket,'connect',side_effect=AssertionError('Network forbidden')),patch.object(socket.socket,'connect_ex',side_effect=AssertionError('Network forbidden')),patch.object(socket,'getaddrinfo',side_effect=AssertionError('DNS forbidden')):
+            body,headers=await request('/')
+            assert headers[b'cache-control']==b'no-store' and b'id="root"' in body
             await request('/api/datasets',status=401)
             await request('/api/research/change',status=401)
             credentials={'district':'Harda','beat':'Joga','password':'wrong'}
@@ -92,6 +94,7 @@ async def check():
             await request('/api/research/change/image/bad',status=404)
             await request('/api/research/change/download/bad',status=404)
             body,_=await request('/api/change/run',{});identity=json.loads(body)['run_id']
+            assert identity==api.SAVED_CHANGE
             for layer in ['before','after','change','loss','gain','coverage']:await request(f'/api/change/runs/{identity}/image/{layer}')
             for fmt in ['json','csv','html','geotiff']:await request(f'/api/change/runs/{identity}/report/{fmt}')
             source=api.DATA_ROOT/'data/phase2/pair_version7/date_1/forestguard_phase0.zip'
@@ -100,9 +103,10 @@ async def check():
             boundary=json.loads((api.DATA_ROOT/'data/study/compartment_279_v1/boundary.geojson').read_bytes())
             await request('/api/datasets/compartment-279/boundary',boundary)
             credentials['password']='test-only-officer-b';await request('/api/login',credentials)
-            await request(f'/api/datasets/{imported}/analyze',{},status=404)
-            await request(f'/api/change/runs/{identity}/report/json',status=404)
             body,_=await request('/api/activity');assert json.loads(body)==[]
+            await request(f'/api/datasets/{imported}/analyze',{},status=404)
+            await request(f'/api/change/runs/{identity}/report/json')
+            await request('/api/change/runs/change-000000000000/report/json',status=404)
             cookie=first_cookie
             restarted=Path(temporary)/'restarted';restarted.mkdir()
             with patch.object(api,'STATE',restarted):
@@ -110,14 +114,15 @@ async def check():
                 body,_=await request('/api/datasets');assert len(json.loads(body))==3
                 await request('/api/research/proxy/image')
                 await request('/api/research/change')
-                await request(f'/api/change/runs/{identity}/report/json',status=404)
+                await request(f'/api/change/runs/{identity}/report/json')
+                for layer in ['before','after','change','loss','gain','coverage']:await request(f'/api/change/runs/{identity}/image/{layer}')
             await request('/api/logout',{});await request('/api/datasets',status=401)
             with patch.dict(os.environ,{'FORESTGUARD_SESSION_SECRET':''}):await request('/api/login',credentials,status=503)
     result={'status':'PASS','http_checks':calls,'hosted_login_secure_cookie':True,'forged_expired_tokens_rejected':True,
             'cross_origin_mutations_and_bad_hosts_rejected':True,'three_bundled_datasets_maps_analysis_validation_reports':True,
             'research_exports_byte_identical':True,'real_proxy_change_images_exports':True,'change_run_images_exports':True,'sample_boundary_imports':True,
             'sessions_isolated':True,'auth_and_bundled_data_survive_new_instance':True,
-            'new_uploads_and_runs_are_ephemeral':True,'external_networking_blocked':True,
+            'new_uploads_are_ephemeral':True,'bundled_synthetic_comparison_survives_new_instance':True,'external_networking_blocked':True,
             'actual_vercel_deployment_tested':False}
     output=ROOT/'data/deployment';output.mkdir(parents=True,exist_ok=True)
     (output/'hosted_verification.json').write_text(json.dumps(result,indent=2)+'\n')

@@ -3,10 +3,13 @@
 Real-image research change is now implemented: December 2024/2025 proxy
 comparison, 94.37% common coverage, 2.40 ha suspected tree-proxy loss and
 12.36 ha suspected tree-proxy gain. See [outputs and evaluation protocol](REAL_IMAGE_CHANGE.md).
-Independent forest accuracy remains unmeasured. Actual hosted login was checked;
-the deployed officer view cannot find its saved observations/map. Explicit bundle
-inclusion and build integrity checks are prepared; push/redeployment and live
-acceptance of the updated results remain pending.
+Independent forest accuracy remains unmeasured. Actual Vercel saved observations,
+analysis, source verification, research map, real-image change layers and reports
+now work. Ten research/change downloads matched the local SHA-256 checksums.
+The missing-data and Git line-ending deployment problems are resolved in the
+current deployment. Stale cached HTML was observed; a tested no-store HTML
+response patch is prepared locally for the next push. Use a hard refresh or
+the verification URL if an old cached page is blank.
 
 Resume scientific Phase 2 before approving forest classification or observed
 cover changes. The foundation and research application are usable; they do not
@@ -20,7 +23,7 @@ establish independent model accuracy.
 | Evaluation splits | All seven records unassigned | Freeze representative location/date splits before sampling |
 | Model | Our exported Random Forest and real saved proxy map | Independent forest evaluation; historical map agreement is not forest accuracy |
 | Change detection | Synthetic workflow plus computed real December tree-proxy transitions | Independent forest validation and reviewed seasonal/alignment errors |
-| Application | Local real-image change/images/exports; 89 isolated hosted API checks pass; live login checked | Redeploy bundled-data fix; verify actual hosted features; durable activity remains unsupported |
+| Application | Real-image changes/images/exports verified on Vercel; 90 isolated hosted API checks pass | Deploy the small HTML cache patch; durable hosted activity remains unsupported |
 | Fire and future loss | Presentation history is explicitly synthetic | Credible event/weather and multi-year change data; assess feasibility before training |
 
 ## Current audited deliverable

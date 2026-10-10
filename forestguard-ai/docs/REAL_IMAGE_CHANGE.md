@@ -112,16 +112,20 @@ overwrite rejection and corrupt-output rejection. Hosted-mode API checks passed
 images, change exports, sessions and invalid formats. The frontend build passed.
 The selected deployment bundle is 94 files / 37,702,102 bytes (below 40 MiB).
 
-The actual production landing page and user-completed login were checked. Its
-officer view currently reports saved observations and the research map unavailable.
-The new comparison is not on that deployment yet. `vercel.json` now explicitly
-includes `deployment_data/**`, `frontend/dist/**` and the native library directory.
-Build-time manifest verification rejects missing/corrupt selected datasets.
+The actual production landing page and user-completed login were checked.
+The saved-data failure was fixed by root-anchoring deployment exclusions,
+explicit function bundle inclusion and disabling Git line-ending conversion
+for checksummed artifacts. The current Vercel deployment serves saved observations,
+analysis, source verification, both December evidence images and the change map.
+All six change exports and four research-map exports were downloaded through the
+live officer UI and matched the original SHA-256 checksums. Observation CSV/HTML
+exports and the 60-row synthetic monthly CSV also downloaded successfully.
 
-Push the updated source, `vercel.json` and **all `deployment_data/` files**, then
-redeploy. If the Vercel UI has a Build Command override, disable it so the updated
-command in `vercel.json` takes effect. Keep the existing officer environment values.
-Check `/api/health`: `saved_observations_available` and `research_change_available`
-should both be true. Then verify authenticated Overview, both satellite dates,
-Research map, Estimated change's three layers/six exports, Reports and mobile
-navigation. These live checks remain pending the new deployment.
+Production `/api/health` returns 200 with `saved_observations_available` and
+`research_change_available` both true. Mobile navigation works. Cached old HTML
+was observed loading obsolete asset names and displaying a blank page; opening
+`https://forest-guard-nu.vercel.app/?verify=20261010` loaded the current build.
+A local patch makes root/index HTML responses `Cache-Control: no-store`; 90
+isolated hosted API checks including that header passed. Push this small patch
+on the next update. Until then, hard-refresh stale pages. Saved research results
+are reproducible, but hosted activity and newly generated jobs remain temporary.

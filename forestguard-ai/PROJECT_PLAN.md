@@ -751,7 +751,8 @@ saved real March 2024/2025 imagery remains available under Satellite map.
 - [x] Pass frontend build and 89 isolated hosted-mode API checks.
 - [x] Prepare bounded deployment data and explicit Vercel bundle inclusion.
 - [x] Check actual hosted login; identify missing saved-data deployment failure.
-- [ ] Push/redeploy and verify the updated production saved-data workflow.
+- [x] Push/redeploy and verify production saved observations, real change results and exports.
+- [ ] Push the tested HTML no-store response patch to prevent stale entry pages.
 - [ ] Independently assess forest definition and accuracy; review apparent changes.
 
 See [the deliverable and public-reference evaluation protocol](docs/REAL_IMAGE_CHANGE.md).

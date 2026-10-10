@@ -95,7 +95,7 @@ async def require_officer(request,call_next):
     finally:
         if context is not None:hosting.current_session.reset(context)
     response.headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
-    if request.url.path.startswith('/api/'): response.headers['Cache-Control']='no-store'
+    if request.url.path.startswith('/api/') or request.url.path in {'/','/index.html'}: response.headers['Cache-Control']='no-store'
     return response
 
 
@@ -271,16 +271,25 @@ def health(): return {'status':'ok','operation':'hosted saved data' if hosting.H
 CHANGE_FIXTURE=DATA_ROOT/'data/phase4/synthetic_change_v1'
 CHANGE_INPUTS=['before.tif','after.tif','study_mask.tif']
 CHANGE_FILES=CHANGE_INPUTS+['result/change.tif','result/change_report.json','result/transitions.csv']
+SAVED_CHANGE='synthetic-saved-v1'
 
 
 def change_run(identity):
-    if not re.fullmatch(r'change-[a-f0-9]{12}',identity): raise HTTPException(404,'Change run not found')
-    folder=state_folder()/'change_runs'/identity
-    if not (folder/'dashboard_complete.json').exists(): raise HTTPException(404,'Change run not found')
+    bundled=hosting.HOSTED and identity==SAVED_CHANGE
+    if not bundled and not re.fullmatch(r'change-[a-f0-9]{12}',identity): raise HTTPException(404,'Change run not found')
+    folder=CHANGE_FIXTURE if bundled else state_folder()/'change_runs'/identity
+    if not bundled and not (folder/'dashboard_complete.json').exists(): raise HTTPException(404,'Change run not found')
     try:
-        marker=folder/'dashboard_complete.json'
-        if marker.stat().st_size>8192:raise ValueError('Invalid completion marker')
-        manifest=read(marker)
+        if bundled:
+            marker=DATA_ROOT/'manifest.json'
+            if marker.stat().st_size>256*1024:raise ValueError('Invalid deployment manifest')
+            files=read(marker)
+            manifest={'status':'complete','synthetic_fixture':True,'files':{name:files['data/phase4/synthetic_change_v1/'+name] for name in CHANGE_FILES}}
+            if read(folder/'result/change_report.json')['synthetic_fixture'] is not True:raise ValueError('Expected synthetic comparison')
+        else:
+            marker=folder/'dashboard_complete.json'
+            if marker.stat().st_size>8192:raise ValueError('Invalid completion marker')
+            manifest=read(marker)
         if not isinstance(manifest,dict) or manifest.get('status')!='complete' or manifest.get('synthetic_fixture') is not True or not isinstance(manifest.get('files'),dict) or set(manifest['files'])!=set(CHANGE_FILES):
             raise ValueError('Missing integrity record')
         for name in CHANGE_FILES:
@@ -297,7 +306,7 @@ def change_run(identity):
 
 def change_result(folder):
     with rasterio.open(folder/'result/change.tif') as raster:
-        return dict(read(folder/'result/change_report.json'),run_id=folder.name,width=raster.width,height=raster.height)
+        return dict(read(folder/'result/change_report.json'),run_id=SAVED_CHANGE if hosting.HOSTED and folder==CHANGE_FIXTURE else folder.name,width=raster.width,height=raster.height)
 
 
 def save_png(target,rgba):
@@ -315,6 +324,9 @@ def save_png(target,rgba):
 
 @app.get('/api/change')
 def change_status():
+    if hosting.HOSTED:
+        return {'available':True,'source':'bundled synthetic engineering check','real_analysis_ready':False,
+                'latest':change_result(change_run(SAVED_CHANGE))}
     runs=state_folder()/'change_runs'
     complete=[]
     for folder in runs.iterdir() if runs.exists() else []:
@@ -330,6 +342,7 @@ def change_status():
 
 @app.post('/api/change/run')
 def run_change():
+    if hosting.HOSTED:return change_result(change_run(SAVED_CHANGE))
     if not all((CHANGE_FIXTURE/name).exists() for name in CHANGE_INPUTS):
         raise HTTPException(409,'Saved synthetic comparison inputs are missing. Run scripts/check_change.py first.')
     identity='change-'+uuid.uuid4().hex[:12]
@@ -366,7 +379,7 @@ def run_change():
 def change_image(identity,layer):
     folder=change_run(identity)
     if layer not in {'before','after','change','loss','gain','coverage'}: raise HTTPException(404,'Change layer not found')
-    target=folder/(layer+'.png')
+    target=state_folder()/'previews'/(identity+'-'+layer+'.png') if hosting.HOSTED and identity==SAVED_CHANGE else folder/(layer+'.png')
     if not target.exists():
         source=folder/(layer+'.tif') if layer in {'before','after'} else folder/'result/change.tif'
         with rasterio.open(source) as raster:
