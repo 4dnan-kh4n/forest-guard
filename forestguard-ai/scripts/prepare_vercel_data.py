@@ -6,7 +6,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 FOLDERS=['data/app/registered/compartment-279','data/phase2/pair_version7',
-         'data/demo/fixture_v1','data/phase3/research_proxy_map_v1','data/phase4/synthetic_change_v1']
+         'data/demo/fixture_v1','data/phase3/research_proxy_map_v1','data/phase4/synthetic_change_v1',
+         'data/phase4/research_proxy_change_v1']
 FILES=['data/study/compartment_279_v1/research_v2_20261008/forestguard_279_research.zip',
        'data/study/compartment_279_v1/boundary.geojson']
 

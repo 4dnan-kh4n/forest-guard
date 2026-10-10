@@ -1,5 +1,13 @@
 # Current development checkpoint — 10 October 2026
 
+Real-image research change is now implemented: December 2024/2025 proxy
+comparison, 94.37% common coverage, 2.40 ha suspected tree-proxy loss and
+12.36 ha suspected tree-proxy gain. See [outputs and evaluation protocol](REAL_IMAGE_CHANGE.md).
+Independent forest accuracy remains unmeasured. Actual hosted login was checked;
+the deployed officer view cannot find its saved observations/map. Explicit bundle
+inclusion and build integrity checks are prepared; push/redeployment and live
+acceptance of the updated results remain pending.
+
 Resume scientific Phase 2 before approving forest classification or observed
 cover changes. The foundation and research application are usable; they do not
 establish independent model accuracy.
@@ -11,8 +19,8 @@ establish independent model accuracy.
 | Reference labels | Fresh audit: seven records, zero forest, three non-forest interpretations, four unknown | Independent evidence-supported review; the three interpretations are not independently reviewed |
 | Evaluation splits | All seven records unassigned | Freeze representative location/date splits before sampling |
 | Model | Our exported Random Forest and real saved proxy map | Independent forest evaluation; historical map agreement is not forest accuracy |
-| Change detection | Verified synthetic workflow and aligned real observations | Accepted forest maps and reviewed seasonal/alignment errors |
-| Application | Local maps, checks, exports and research output; user reports hosted login works | Live hosted feature acceptance and durable hosted state remain unverified |
+| Change detection | Synthetic workflow plus computed real December tree-proxy transitions | Independent forest validation and reviewed seasonal/alignment errors |
+| Application | Local real-image change/images/exports; 89 isolated hosted API checks pass; live login checked | Redeploy bundled-data fix; verify actual hosted features; durable activity remains unsupported |
 | Fire and future loss | Presentation history is explicitly synthetic | Credible event/weather and multi-year change data; assess feasibility before training |
 
 ## Current audited deliverable

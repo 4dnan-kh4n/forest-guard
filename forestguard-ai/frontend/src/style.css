@@ -10,7 +10,7 @@
 .officer-menu-toggle{display:none}
 .data-mode-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
 .data-mode-bar label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:#34523d}
-.data-mode-bar select{max-width:100%;min-height:44px;border:1px solid #c5d3be;border-radius:8px;background:#fff;color:#234532;padding:8px 12px;font-size:12px}
+.data-mode-bar select,.change-tools select{max-width:100%;min-height:44px;border:1px solid #c5d3be;border-radius:8px;background:#fff;color:#234532;padding:8px 12px;font-size:12px}
 .data-mode-bar>span{font-size:11px;color:#58745c}
 @media(max-width:760px){.data-mode-bar label{display:grid;gap:6px;width:100%}.data-mode-bar select{width:100%}}
 @media(max-width:760px){

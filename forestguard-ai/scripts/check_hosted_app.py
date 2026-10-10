@@ -52,6 +52,7 @@ async def check():
         state=Path(temporary)/'state';state.mkdir()
         with patch.object(api,'STATE',state),patch.object(socket.socket,'connect',side_effect=AssertionError('Network forbidden')),patch.object(socket.socket,'connect_ex',side_effect=AssertionError('Network forbidden')),patch.object(socket,'getaddrinfo',side_effect=AssertionError('DNS forbidden')):
             await request('/api/datasets',status=401)
+            await request('/api/research/change',status=401)
             credentials={'district':'Harda','beat':'Joga','password':'wrong'}
             await request('/api/login',credentials,status=401)
             credentials['password']='test-only-officer-a'
@@ -78,6 +79,18 @@ async def check():
             for fmt,(name,mime) in api.PROXY_FILES.items():
                 body,_=await request('/api/research/proxy/download/'+fmt)
                 assert hashlib.sha256(body).hexdigest()==hashes[name]
+            body,_=await request('/api/research/change');comparison=json.loads(body)
+            assert comparison['transition_pixels']=={'0':3359,'1':8634,'2':60,'3':309}
+            assert comparison['synthetic'] is False and comparison['forest_loss_ha'] is None
+            hashes=json.loads((api.RESEARCH_CHANGE/'checksums.json').read_text())
+            for layer in ['before','after','changes']:
+                body,_=await request('/api/research/change/image/'+layer)
+                assert hashlib.sha256(body).hexdigest()==hashes[layer+'.svg']
+            for fmt,(name,mime) in api.RESEARCH_CHANGE_EXPORTS.items():
+                body,_=await request('/api/research/change/download/'+fmt)
+                assert hashlib.sha256(body).hexdigest()==hashes[name]
+            await request('/api/research/change/image/bad',status=404)
+            await request('/api/research/change/download/bad',status=404)
             body,_=await request('/api/change/run',{});identity=json.loads(body)['run_id']
             for layer in ['before','after','change','loss','gain','coverage']:await request(f'/api/change/runs/{identity}/image/{layer}')
             for fmt in ['json','csv','html','geotiff']:await request(f'/api/change/runs/{identity}/report/{fmt}')
@@ -96,12 +109,13 @@ async def check():
                 body,_=await request('/api/session');assert json.loads(body)['authenticated']
                 body,_=await request('/api/datasets');assert len(json.loads(body))==3
                 await request('/api/research/proxy/image')
+                await request('/api/research/change')
                 await request(f'/api/change/runs/{identity}/report/json',status=404)
             await request('/api/logout',{});await request('/api/datasets',status=401)
             with patch.dict(os.environ,{'FORESTGUARD_SESSION_SECRET':''}):await request('/api/login',credentials,status=503)
     result={'status':'PASS','http_checks':calls,'hosted_login_secure_cookie':True,'forged_expired_tokens_rejected':True,
             'cross_origin_mutations_and_bad_hosts_rejected':True,'three_bundled_datasets_maps_analysis_validation_reports':True,
-            'research_exports_byte_identical':True,'change_run_images_exports':True,'sample_boundary_imports':True,
+            'research_exports_byte_identical':True,'real_proxy_change_images_exports':True,'change_run_images_exports':True,'sample_boundary_imports':True,
             'sessions_isolated':True,'auth_and_bundled_data_survive_new_instance':True,
             'new_uploads_and_runs_are_ephemeral':True,'external_networking_blocked':True,
             'actual_vercel_deployment_tested':False}

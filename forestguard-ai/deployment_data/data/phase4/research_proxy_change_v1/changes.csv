@@ -1,0 +1,5 @@
+transition,pixels,estimated_proxy_area_ha,before_date,after_date,independently_validated
+stable other-cover proxy,3359,134.36,2024-12-16,2025-12-09,False
+stable tree-cover proxy,8634,345.36,2024-12-16,2025-12-09,False
+suspected tree-cover proxy loss,60,2.4,2024-12-16,2025-12-09,False
+suspected tree-cover proxy gain,309,12.36,2024-12-16,2025-12-09,False

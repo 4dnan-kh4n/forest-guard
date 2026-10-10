@@ -742,3 +742,17 @@ wired. This monthly dataset is synthetic only: no 60 monthly satellite images,
 reference forest boundaries, fire detections or training data were supplied.
 No simulated value is presented as a finding about Joga or any real area. The
 saved real March 2024/2025 imagery remains available under Satellite map.
+# Real-image research change — 10 October 2026
+
+- [x] Compute December 2024/2025 tree-proxy transitions on common clear coverage.
+- [x] Preserve actual dates/source/model hashes, nodata and explicit research scope.
+- [x] Add officer Estimated change view with both source images and six exports.
+- [x] Verify offline reproduction, conservation and corrupt-output rejection.
+- [x] Pass frontend build and 89 isolated hosted-mode API checks.
+- [x] Prepare bounded deployment data and explicit Vercel bundle inclusion.
+- [x] Check actual hosted login; identify missing saved-data deployment failure.
+- [ ] Push/redeploy and verify the updated production saved-data workflow.
+- [ ] Independently assess forest definition and accuracy; review apparent changes.
+
+See [the deliverable and public-reference evaluation protocol](docs/REAL_IMAGE_CHANGE.md).
+

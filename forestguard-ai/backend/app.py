@@ -263,7 +263,9 @@ def pixel_outline(item,geojson,crs):
 
 
 @app.get('/api/health')
-def health(): return {'status':'ok','operation':'hosted saved data' if hosting.HOSTED else 'local stored data','model_connected':False,'change_workflow_connected':True}
+def health(): return {'status':'ok','operation':'hosted saved data' if hosting.HOSTED else 'local stored data','model_connected':False,'change_workflow_connected':True,
+                      'saved_observations_available':(RESEARCH_UI/'registered.json').is_file(),
+                      'research_change_available':(DATA_ROOT/'data/phase4/research_proxy_change_v1/checksums.json').is_file()}
 
 
 CHANGE_FIXTURE=DATA_ROOT/'data/phase4/synthetic_change_v1'
@@ -650,6 +652,54 @@ def research_proxy_download(format:str):
     if not research_proxy_status()['available']:raise HTTPException(404,'Research map unavailable')
     name,mime=PROXY_FILES[format]
     return FileResponse(PROXY_RESULT/name,media_type=mime,filename='forestguard-research-'+name)
+
+
+RESEARCH_CHANGE=DATA_ROOT/'data/phase4/research_proxy_change_v1'
+RESEARCH_CHANGE_EXPORTS={'csv':('changes.csv','text/csv'),'json':('change_report.json','application/json'),
+                         'html':('report.html','text/html'),'classes':('change_classes.tif','image/tiff'),
+                         'before':('before_classes.tif','image/tiff'),'after':('after_classes.tif','image/tiff')}
+
+
+def research_change_status():
+    if not RESEARCH_CHANGE.exists():return {'available':False,'detail':'Saved research comparison unavailable.'}
+    try:
+        checksum_file=RESEARCH_CHANGE/'checksums.json'
+        if checksum_file.is_symlink() or checksum_file.stat().st_size>4096:raise ValueError('Invalid checksum manifest')
+        raw=checksum_file.read_bytes()
+        if hashlib.sha256(raw).hexdigest()!='7c9f5fd11c7131e3b0d8af0aea63ffae695417f40f0957d3a719db9917be7f19':
+            raise ValueError('Unexpected research comparison')
+        for name,digest in json.loads(raw).items():
+            path=RESEARCH_CHANGE/name
+            if path.is_symlink() or path.stat().st_size>4*1024**2 or hashlib.sha256(path.read_bytes()).hexdigest()!=digest:
+                raise ValueError('Research comparison integrity failure')
+        report=json.loads((RESEARCH_CHANGE/'change_report.json').read_bytes())
+        if (report['format']!='forestguard-research-proxy-change-v1' or report['synthetic'] is not False
+                or report['operational_use_approved'] is not False or report['independent_forest_accuracy_measured'] is not False
+                or any(report[key] is not None for key in ['forest_area_ha','forest_loss_ha','forest_gain_ha'])):
+            raise ValueError('Unexpected research scope')
+        return dict(report,available=True)
+    except (OSError,ValueError,KeyError,TypeError):
+        raise HTTPException(503,'Saved research comparison failed verification. Restore the checked outputs.')
+
+
+@app.get('/api/research/change')
+def research_change():
+    return research_change_status()
+
+
+@app.get('/api/research/change/image/{layer}')
+def research_change_image(layer:str):
+    if layer not in {'before','after','changes'}:raise HTTPException(404,'Image layer unsupported')
+    if not research_change_status()['available']:raise HTTPException(404,'Research comparison unavailable')
+    return FileResponse(RESEARCH_CHANGE/(layer+'.svg'),media_type='image/svg+xml')
+
+
+@app.get('/api/research/change/download/{format}')
+def research_change_download(format:str):
+    if format not in RESEARCH_CHANGE_EXPORTS:raise HTTPException(404,'Research export format unsupported')
+    if not research_change_status()['available']:raise HTTPException(404,'Research comparison unavailable')
+    name,mime=RESEARCH_CHANGE_EXPORTS[format]
+    return FileResponse(RESEARCH_CHANGE/name,media_type=mime,filename='forestguard-research-'+name)
 
 
 DIST=ROOT/'frontend/dist'

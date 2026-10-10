@@ -1,0 +1,76 @@
+{
+  "status": "PASS_DATA_CHECKS",
+  "grid_alignment": "PASS",
+  "study_area_version": "compartment-279-user-kml-v1",
+  "crs": "EPSG:32643",
+  "resolution_m": 20,
+  "shape": [
+    123,
+    172
+  ],
+  "calendar_season_gap_days": 7,
+  "study_mask_pixels": 13099,
+  "common_observable_pixels": 12362,
+  "common_usable_fraction": 0.9437361630658829,
+  "observations": [
+    {
+      "date": "2024-12-16",
+      "scene_id": "S2A_T43QFE_20241216T053216_L2A",
+      "source_license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "attribution": "Contains modified Copernicus Sentinel data 2024",
+      "usable_pixels": 12405,
+      "common_pixel_median_ndvi": 0.5984
+    },
+    {
+      "date": "2025-12-09",
+      "scene_id": "S2B_T43QFE_20251209T053610_L2A",
+      "source_license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "attribution": "Contains modified Copernicus Sentinel data 2025",
+      "usable_pixels": 12362,
+      "common_pixel_median_ndvi": 0.6062
+    }
+  ],
+  "source_sha256": {
+    "before": "c072df3555fa446f8e8e7af5557b1993abb22f8088b6f4bc9298157adb9adc5b",
+    "after": "bdc1f3b07c91446bfd6bcf504f4fbed516ec104509e4993b5e0504073558fbfb"
+  },
+  "verified_source_files": [
+    12,
+    27
+  ],
+  "phenology_weather_comparability_reviewed": false,
+  "forest_area_ha": null,
+  "forest_loss_ha": null,
+  "forest_gain_ha": null,
+  "limits": "Real images and model predictions, not confirmed forest changes. Before-date northern pixels were used in training; after-date southern pixels were used in model selection. This is not an independent accuracy test. Crop/shrub confusion, seasonal conditions and alignment uncertainty can produce apparent changes.",
+  "format": "forestguard-research-proxy-change-v1",
+  "model_version": "weak-proxy-14f032e581bf4ab5",
+  "model_sha256": "8bf0858faaee969b35e003c466de19ab1767a96c5c8ed9098cb8010f13d3a6b8",
+  "dataset_sha256": "b4d93e7db778b51addcea7e9c574e1f593b56c48786778a1629cf3921cf7f8ec",
+  "model_kind": "exploratory_weak_map_proxy",
+  "class_mapping": {
+    "0": "stable other-cover proxy",
+    "1": "stable tree-cover proxy",
+    "2": "suspected tree-cover proxy loss",
+    "3": "suspected tree-cover proxy gain"
+  },
+  "transition_pixels": {
+    "0": 3359,
+    "1": 8634,
+    "2": 60,
+    "3": 309
+  },
+  "transition_area_ha": {
+    "0": 134.36,
+    "1": 345.36,
+    "2": 2.4,
+    "3": 12.36
+  },
+  "common_observable_area_ha": 494.48,
+  "before_tree_proxy_ha": 347.76,
+  "after_tree_proxy_ha": 357.72,
+  "operational_use_approved": false,
+  "independent_forest_accuracy_measured": false,
+  "synthetic": false,
+  "local_training_performed": false
+}
