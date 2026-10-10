@@ -36,7 +36,7 @@ def blind_cases(document, reference_report):
     return result
 
 
-def prepare(research, reference, cases, output, blind=False):
+def prepare(research, reference, cases, output, blind=False, patch_side_m=120, mask_selected=False):
     output = Path(output)
     if output.exists():
         raise FileExistsError('Keep previous reviews; choose a new output folder.')
@@ -97,17 +97,18 @@ def prepare(research, reference, cases, output, blind=False):
                    for n,(feature,item) in enumerate(zip(document['features'],coverage),1))
     page = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     page += '<title>Compartment 279 dated reference comparison</title><style>body{font:16px system-ui;margin:24px;color:#17372c;background:#f4f7f3}h1{font-size:25px}.panels{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}h2{font-size:19px}svg{width:100%;background:#15251c}td,th{padding:9px;border-bottom:1px solid #bbb;text-align:left}table{border-collapse:collapse;width:100%}@media(max-width:800px){.panels{grid-template-columns:1fr}}</style>'
-    page += '<h1>Compartment 279: dated reference comparison</h1><p>Same numbered 120 m footprints on each image, projected onto each saved grid. This script generates no labels. Differences in colour, season and sensor do not establish forest loss.</p>'
-    page += ('<p>Blind review: earlier interpretations and class hints are hidden. Edit reviewer_cases.geojson only after inspecting permitted evidence. This pack uses convenience-selected locations; it is not an independent test set.</p>' if blind else '<p>Recorded AI-assisted interpretations are displayed; they have no field or forest-staff validation.</p>')
-    page += f'<div class="panels">{"".join(panels)}</div><h2>Reference availability by patch</h2><p>Nonzero pixels are candidates only: no cloud validation or field height evidence. Historical WorldCover hints selected these convenience cases; they are not independent test samples.</p>'
+    page += f'<h1>Compartment 279: dated reference comparison</h1><p>Same numbered {patch_side_m} m footprints on each image, projected onto each saved grid. This script generates no labels. Differences in colour, season and sensor do not establish forest loss.</p>'
+    selection_note=('Spatial candidates selected from common clear study masks only; no spectral values, vegetation indices, weak-map classes or predictions were used.' if mask_selected else 'Historical WorldCover hints selected these convenience cases.')
+    page += (f'<p>Blind review: no class hints are shown. Edit reviewer_cases.geojson only after inspecting permitted evidence. {selection_note} This is not an independent test set.</p>' if blind else '<p>Recorded AI-assisted interpretations are displayed; they have no field or forest-staff validation.</p>')
+    page += f'<div class="panels">{"".join(panels)}</div><h2>Reference availability by patch</h2><p>Nonzero pixels are candidates only: no cloud validation or field height evidence. {selection_note} These are not independent test samples.</p>'
     hint_heading = '' if blind else '<th>2021 weak hint</th>'
     page += f'<table><tr><th>Number</th><th>Case</th>{hint_heading}<th>Nonzero reference</th><th>Interpretation</th></tr>{rows}</table>'
     if blind:
         page += '<h2>Required review record</h2><p>For each footprint, record forest / non_forest / unknown, reviewer and review date, confidence, evidence source/date and reuse permission, canopy assessment, height or supported height potential, stand extent and forest versus agricultural use. Our forest target requires a stand above 0.5 ha, canopy above 10%, and height or supported height potential above 5 m, excluding agricultural orchards/crops. Use unknown when evidence is insufficient. No field photographs are requested.</p><p>Leave split unassigned. Do not mark reference_independent true merely because this page hides hints; source independence and reviewer provenance need a separate assessment. Fill the JSON template and run audit_labels.py before proposing model splits.</p>'
     for number, panels_for_case in enumerate(details, 1):
         note = document['features'][number-1]['properties'].get('uncertainty_notes') or 'Awaiting interpretation.'
-        page += f'<h2>Case {number}: approximately 360 m context; yellow outline is the 120 m patch</h2><p>{html.escape(note)}</p><div class="panels">{"".join(panels_for_case)}</div>'
-    page += '<p>ISRO-IRS. Contains modified Copernicus Sentinel data 2025. WorldCover 2021 hints: CC BY 4.0. All original sources and checksums retained.</p></html>'
+        page += f'<h2>Case {number}: approximately {patch_side_m*3} m context; yellow outline is the {patch_side_m} m patch</h2><p>{html.escape(note)}</p><div class="panels">{"".join(panels_for_case)}</div>'
+    page += '<p>ISRO-IRS. Contains modified Copernicus Sentinel data 2025. '+('' if mask_selected else 'WorldCover 2021 hints: CC BY 4.0. ')+'All original sources and checksums retained.</p></html>'
     output.mkdir(parents=True)
     (output/'comparison.html').write_text(page, encoding='utf-8')
     if blind:

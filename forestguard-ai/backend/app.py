@@ -1,5 +1,6 @@
 """Local saved-data API. No external inference, tiles or model claims."""
 import csv
+import errno
 import hashlib
 import hmac
 import html
@@ -11,6 +12,7 @@ import secrets
 import shutil
 import time
 import sys
+import tempfile
 import uuid
 import zipfile
 from datetime import datetime, timezone
@@ -60,8 +62,10 @@ def officer_session(request):
 @app.middleware('http')
 async def require_officer(request,call_next):
     if request.url.path.startswith('/api/') and request.url.path not in {'/api/login','/api/logout','/api/session','/api/health'}:
-        if not officer_session(request): return JSONResponse({'detail':'Please sign in to the officer workspace'},status_code=401)
-    response=await call_next(request)
+        if not officer_session(request):response=JSONResponse({'detail':'Please sign in to the officer workspace'},status_code=401)
+        else:response=await call_next(request)
+    else:response=await call_next(request)
+    response.headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
     if request.url.path.startswith('/api/'): response.headers['Cache-Control']='no-store'
     return response
 
@@ -226,12 +230,28 @@ def health(): return {'status':'ok','operation':'local stored data','model_conne
 
 CHANGE_FIXTURE=ROOT/'data/phase4/synthetic_change_v1'
 CHANGE_INPUTS=['before.tif','after.tif','study_mask.tif']
+CHANGE_FILES=CHANGE_INPUTS+['result/change.tif','result/change_report.json','result/transitions.csv']
 
 
 def change_run(identity):
     if not re.fullmatch(r'change-[a-f0-9]{12}',identity): raise HTTPException(404,'Change run not found')
     folder=STATE/'change_runs'/identity
     if not (folder/'dashboard_complete.json').exists(): raise HTTPException(404,'Change run not found')
+    try:
+        marker=folder/'dashboard_complete.json'
+        if marker.stat().st_size>8192:raise ValueError('Invalid completion marker')
+        manifest=read(marker)
+        if not isinstance(manifest,dict) or manifest.get('status')!='complete' or manifest.get('synthetic_fixture') is not True or not isinstance(manifest.get('files'),dict) or set(manifest['files'])!=set(CHANGE_FILES):
+            raise ValueError('Missing integrity record')
+        for name in CHANGE_FILES:
+            path=folder/name;record=manifest['files'][name]
+            if path.stat().st_size>30*1024**2 or path.stat().st_size!=record['bytes']:
+                raise ValueError('Changed file size')
+            with path.open('rb') as stream:
+                if hashlib.file_digest(stream,'sha256').hexdigest()!=record['sha256']:
+                    raise ValueError('Changed file checksum')
+    except (OSError,ValueError,KeyError,TypeError) as error:
+        raise HTTPException(409,'Saved comparison is incomplete or has changed. Preserve it and run a new comparison.') from error
     return folder
 
 
@@ -240,11 +260,28 @@ def change_result(folder):
         return dict(read(folder/'result/change_report.json'),run_id=folder.name,width=raster.width,height=raster.height)
 
 
+def save_png(target,rgba):
+    try:
+        target.parent.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='preview_',dir=target.parent) as temporary:
+            path=Path(temporary)/'preview.png'
+            with rasterio.open(path,'w',driver='PNG',height=rgba.shape[1],width=rgba.shape[2],count=4,dtype='uint8') as saved:
+                saved.write(rgba)
+            path.replace(target)
+    except (OSError,rasterio.errors.RasterioError) as error:
+        raise HTTPException(507 if getattr(error,'errno',None)==errno.ENOSPC else 400,
+                            'Preview could not be saved. Check free disk space and permissions, then retry.') from error
+
+
 @app.get('/api/change')
 def change_status():
     runs=STATE/'change_runs'
-    complete=[f for f in runs.iterdir() if re.fullmatch(r'change-[a-f0-9]{12}',f.name) and (f/'dashboard_complete.json').exists()] if runs.exists() else []
-    latest=max(complete,key=lambda f:f.stat().st_mtime_ns) if complete else None
+    complete=[]
+    for folder in runs.iterdir() if runs.exists() else []:
+        if not re.fullmatch(r'change-[a-f0-9]{12}',folder.name):continue
+        try:complete.append(change_run(folder.name))
+        except HTTPException:continue
+    latest=max(complete,key=lambda f:(f/'dashboard_complete.json').stat().st_mtime_ns) if complete else None
     return {'available':all((CHANGE_FIXTURE/name).exists() for name in CHANGE_INPUTS),
             'source':'synthetic engineering check','real_analysis_ready':False,
             'latest':change_result(latest) if latest else None,
@@ -257,8 +294,8 @@ def run_change():
         raise HTTPException(409,'Saved synthetic comparison inputs are missing. Run scripts/check_change.py first.')
     identity='change-'+uuid.uuid4().hex[:12]
     folder=STATE/'change_runs'/identity
-    folder.mkdir(parents=True)
     try:
+        folder.mkdir(parents=True)
         # Only the named project fixture is supported; no arbitrary files/model uploads.
         for name in CHANGE_INPUTS:
             source=CHANGE_FIXTURE/name
@@ -266,11 +303,22 @@ def run_change():
             shutil.copyfile(source,folder/name)
         result=compare_change(*(folder/name for name in CHANGE_INPUTS),folder/'result')
         if result['synthetic_fixture'] is not True: raise ValueError('Expected synthetic engineering inputs')
-        (folder/'dashboard_complete.json').write_text(json.dumps({'status':'complete','synthetic_fixture':True})+'\n')
+        manifest={}
+        for name in CHANGE_FILES:
+            path=folder/name
+            with path.open('rb') as stream:
+                manifest[name]={'bytes':path.stat().st_size,'sha256':hashlib.file_digest(stream,'sha256').hexdigest()}
+        marker=folder/'dashboard_complete.tmp'
+        marker.write_text(json.dumps({'status':'complete','synthetic_fixture':True,'files':manifest})+'\n')
+        marker.rename(folder/'dashboard_complete.json')
     except (OSError,ValueError,KeyError,TypeError,rasterio.errors.RasterioError) as error:
-        history('Change comparison',identity,'failed','Saved comparison input validation failed')
+        try:history('Change comparison',identity,'failed','Saved comparison did not complete')
+        except (OSError,sqlite3.Error):pass
+        if isinstance(error,OSError) and error.errno==errno.ENOSPC:
+            raise HTTPException(507,'Not enough disk space; no completed result published. Free space and run a new comparison.') from error
         raise HTTPException(400,'Saved comparison failed validation; no completed result published') from error
-    history('Change comparison',identity,'passed','Synthetic maps compared over common valid coverage')
+    try:history('Change comparison',identity,'passed','Synthetic maps compared over common valid coverage')
+    except (OSError,sqlite3.Error):pass
     return change_result(folder)
 
 
@@ -294,7 +342,7 @@ def change_image(identity,layer):
             for label,color in colors.items():
                 for channel,value in enumerate(color):rgba[channel,values==label]=value
                 rgba[3,values==label]=255
-            with rasterio.open(target,'w',driver='PNG',width=raster.width,height=raster.height,count=4,dtype='uint8') as preview:preview.write(rgba)
+            save_png(target,rgba)
     return FileResponse(target,media_type='image/png')
 
 
@@ -376,18 +424,16 @@ def image(identity,observation,layer):
     if layer=='ndvi':
         values,valid,profile=vegetation(item,obs)
         target=STATE/'previews'/f'{identity}-{observation}-ndvi.png'
-        target.parent.mkdir(exist_ok=True)
         rgba=np.zeros((4,*values.shape),dtype='uint8')
         level=np.clip((values+1)/2,0,1)
         rgba[0]=(190*(1-level)).astype('uint8'); rgba[1]=(70+140*level).astype('uint8')
         rgba[2]=(65+15*level).astype('uint8'); rgba[3,valid]=255
-        with rasterio.open(target,'w',driver='PNG',height=profile['height'],width=profile['width'],count=4,dtype='uint8') as saved: saved.write(rgba)
+        save_png(target,rgba)
         return FileResponse(target,media_type='image/png')
     source=obs['folder']/('labels.tif' if layer=='classes' else item.get('usable_filename','usable.tif'))
     if layer=='coverage' and (identity=='sentinel' or item.get('common_mask')): source=item['folder']/'common_usable.tif'
     target=STATE/'previews'/f'{identity}-{observation}-{layer}-{source.stat().st_mtime_ns}.png'
     if not target.exists():
-        target.parent.mkdir(exist_ok=True)
         with rasterio.open(source,driver='GTiff') as raster:
             if max(raster.shape)>512: raise HTTPException(400,'Only small crops supported')
             values=raster.read(1); rgba=np.zeros((4,*raster.shape),dtype='uint8')
@@ -398,8 +444,7 @@ def image(identity,observation,layer):
             else:
                 for channel,value in enumerate([103,189,154]): rgba[channel,values==1]=value
                 rgba[3,values==1]=255
-            with rasterio.open(target,'w',driver='PNG',height=raster.height,width=raster.width,
-                               count=4,dtype='uint8',transform=raster.transform,crs=raster.crs) as saved: saved.write(rgba)
+            save_png(target,rgba)
     return FileResponse(target,media_type='image/png')
 
 
@@ -516,6 +561,57 @@ def report(identity,format):
     else: raise HTTPException(404,'Report format not supported')
     history('Report exported',identity,'passed',format.upper()+' report')
     return Response(content,media_type=mime,headers={'Content-Disposition':f'attachment; filename="forestguard-{identity}.{format}"'})
+
+
+PROXY_RESULT=ROOT/'data/phase3/research_proxy_map_v1'
+PROXY_FILES={'classes':('proxy_classes.tif','image/tiff'),'votes':('tree_vote_share.tif','image/tiff'),
+             'html':('map.html','text/html'),'json':('prediction_report.json','application/json')}
+
+
+def research_proxy_status():
+    if not PROXY_RESULT.exists():return {'available':False,'detail':'No saved research proxy map is available.'}
+    try:
+        names={'proxy_classes.tif','tree_vote_share.tif','proxy_preview.svg','map.html','prediction_report.json'}
+        checksum_file=PROXY_RESULT/'checksums.json'
+        if checksum_file.stat().st_size>4096:raise ValueError('Oversized checksum manifest')
+        checksum_raw=checksum_file.read_bytes()
+        if hashlib.sha256(checksum_raw).hexdigest()!='37406a53929df37c0cb09f57e982df8d28d359ae0a60d65622412fb38c93d2af':
+            raise ValueError('Unexpected saved research manifest')
+        hashes=json.loads(checksum_raw)
+        if not isinstance(hashes,dict) or set(hashes)!=names:raise ValueError('Unexpected research files')
+        for name,digest in hashes.items():
+            path=PROXY_RESULT/name
+            if path.is_symlink() or path.stat().st_size>4*1024**2 or hashlib.sha256(path.read_bytes()).hexdigest()!=digest:
+                raise ValueError('Research artifact integrity failure')
+        report=json.loads((PROXY_RESULT/'prediction_report.json').read_bytes())
+        if (report['format']!='forestguard-research-proxy-result-v1' or report['model_kind']!='exploratory_weak_map_proxy'
+                or report['operational_use_approved'] is not False or report['independent_forest_accuracy_measured'] is not False
+                or any(report[key] is not None for key in ['forest_area_ha','forest_loss_ha','forest_gain_ha'])
+                or report['model_sha256']!='8bf0858faaee969b35e003c466de19ab1767a96c5c8ed9098cb8010f13d3a6b8'
+                or report['shape']!=[123,172] or report['predicted_pixels']!=12362):
+            raise ValueError('Unexpected research scope')
+        return dict(report,available=True)
+    except (OSError,ValueError,KeyError,TypeError):
+        raise HTTPException(503,'Saved research map failed integrity or scope checks. Restore the verified research output.')
+
+
+@app.get('/api/research/proxy')
+def research_proxy():
+    return research_proxy_status()
+
+
+@app.get('/api/research/proxy/image')
+def research_proxy_image():
+    if not research_proxy_status()['available']:raise HTTPException(404,'Research map unavailable')
+    return FileResponse(PROXY_RESULT/'proxy_preview.svg',media_type='image/svg+xml')
+
+
+@app.get('/api/research/proxy/download/{format}')
+def research_proxy_download(format:str):
+    if format not in PROXY_FILES:raise HTTPException(404,'Research export format unsupported')
+    if not research_proxy_status()['available']:raise HTTPException(404,'Research map unavailable')
+    name,mime=PROXY_FILES[format]
+    return FileResponse(PROXY_RESULT/name,media_type=mime,filename='forestguard-research-'+name)
 
 
 DIST=ROOT/'frontend/dist'

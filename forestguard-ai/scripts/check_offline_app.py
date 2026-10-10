@@ -72,6 +72,7 @@ async def main():
             await asyncio.wait_for(app(scope, receive, send), timeout=30)
             start = next(m for m in messages if m['type']=='http.response.start')
             assert start['status'] == expected, (path, start['status'])
+            assert b"connect-src 'self'" in dict(start['headers'])[b'content-security-policy']
             for key,value in start['headers']:
                 if key == b'set-cookie': cookie = value.decode().split(';')[0]
             return b''.join(m.get('body',b'') for m in messages if m['type']=='http.response.body')
@@ -107,6 +108,7 @@ async def main():
                   'browser_checked':False, 'real_registered_files_verified':14,
                   'real_source_files_verified':27, 'map_layers_served':6,
                   'static_assets_served':len(assets), 'login_logout_authorization_checked':True,
+                  'same_origin_content_security_policy_checked':True,
                   'analysis_checks_reports_passed':True, 'forest_accuracy_measured':False}
         (ROOT/'offline_app_verification.json').write_text(json.dumps(result, indent=2)+'\n')
         print(json.dumps(result, indent=2))

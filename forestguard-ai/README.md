@@ -1,5 +1,9 @@
 # ForestGuard AI
 
+Current research-app reliability checkpoint and delivery instructions:
+[Phase 9 handoff](docs/PHASE9_DELIVERY.md). Scientific forest/fire/change validation
+remains separate; no evaluated real model is claimed.
+
 Clean implementation started on 6 October 2026. No code, notebooks, downloaded
 data, saved outputs or models from the earlier implementation are used here.
 
@@ -29,6 +33,7 @@ inference remains to be connected; synthetic class layers are labeled.
 Officer login now opens the computed synthetic change dashboard, with before/after
 maps, loss/gain layers, coverage and four export formats.
 [Change dashboard instructions and checks](docs/CHANGE_DASHBOARD.md).
+[Saved-result integrity and interruption recovery](docs/CHANGE_RECOVERY.md).
 Map workspace now defaults to the real compartment 279 observations from April
 and December 2025, with 94.19% common usable coverage and no forest-model claim.
 [Real observations, registration and limits](docs/COMPARTMENT_279_DASHBOARD.md).

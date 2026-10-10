@@ -24,20 +24,22 @@ def digest(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def verify(archive, trusted_sha256):
+def verify(archive, trusted_sha256, files=ALLOWED, backup_format='forestguard-279-imagery-backup-v1', limit=LIMIT):
     archive = Path(archive)
-    if archive.stat().st_size > LIMIT or digest(archive) != trusted_sha256:
+    if archive.stat().st_size > limit or digest(archive) != trusted_sha256:
         raise ValueError('Backup size/checksum differs from the separately retained SHA-256.')
     with zipfile.ZipFile(archive) as saved:
         items = saved.infolist()
-        if (len(items) != len(ALLOWED)+1 or {i.filename for i in items} != ALLOWED|{'backup_manifest.json'}
-                or sum(i.file_size for i in items) > LIMIT
-                or saved.getinfo('backup_manifest.json').file_size > 64*1024):
+        if (len(items) != len(files)+1 or {i.filename for i in items} != files|{'backup_manifest.json'}
+                or sum(i.file_size for i in items) > limit
+                or saved.getinfo('backup_manifest.json').file_size > 512*1024):
             raise ValueError('Unexpected backup members or expanded size.')
         manifest = json.loads(saved.read('backup_manifest.json'))
-        if manifest.get('format') != 'forestguard-279-imagery-backup-v1' or set(manifest['files']) != ALLOWED:
+        if not isinstance(manifest,dict) or manifest.get('format') != backup_format or not isinstance(manifest.get('files'),dict) or set(manifest['files']) != files:
             raise ValueError('Unexpected backup manifest.')
         for name, record in manifest['files'].items():
+            if not isinstance(record,dict) or not isinstance(record.get('bytes'),int) or not isinstance(record.get('sha256'),str):
+                raise ValueError('Invalid file record: '+name)
             with saved.open(name) as stream:
                 checksum = hashlib.file_digest(stream, 'sha256').hexdigest()
             if saved.getinfo(name).file_size != record['bytes'] or checksum != record['sha256']:
@@ -45,20 +47,20 @@ def verify(archive, trusted_sha256):
     return manifest
 
 
-def create(archive):
+def create(archive, files=ALLOWED, scope='Selected compartment 279 imagery only; no labels, models, application code or sessions.', backup_format='forestguard-279-imagery-backup-v1', limit=LIMIT):
     archive = Path(archive)
     if archive.exists():
         raise ValueError('Backup already exists; preserve it.')
     verify_registration(OUTPUT)
-    paths = {name: ROOT/name for name in sorted(ALLOWED)}
+    paths = {name: ROOT/name for name in sorted(files)}
     total = sum(p.stat().st_size for p in paths.values())
-    if total > LIMIT:
-        raise ValueError('Research backup exceeds the 64 MiB limit.')
+    if total > limit:
+        raise ValueError('Backup exceeds the bounded size limit.')
     archive.parent.mkdir(parents=True, exist_ok=True)
-    if shutil.disk_usage(archive.parent).free < total*2+LIMIT:
+    if shutil.disk_usage(archive.parent).free < total*2+limit:
         raise ValueError('Insufficient free space for a verified backup.')
-    manifest = {'format':'forestguard-279-imagery-backup-v1',
-                'scope':'Selected compartment 279 imagery only; no labels, models, application code or sessions.',
+    manifest = {'format':backup_format,
+                'scope':scope,
                 'files':{name:{'bytes':p.stat().st_size, 'sha256':digest(p)} for name,p in paths.items()}}
     with tempfile.TemporaryDirectory(prefix='backup_', dir=archive.parent) as temporary:
         candidate = Path(temporary)/'research.zip'
@@ -67,21 +69,21 @@ def create(archive):
                 saved.write(p, name)
             saved.writestr('backup_manifest.json', json.dumps(manifest, indent=2)+'\n')
         checksum = digest(candidate)
-        verify(candidate, checksum)
+        verify(candidate, checksum, files, backup_format, limit)
         candidate.rename(archive)
     return {'status':'PASS', 'files':len(paths), 'bytes':archive.stat().st_size, 'sha256':checksum}
 
 
-def restore(archive, trusted_sha256, destination):
+def restore(archive, trusted_sha256, destination, files=ALLOWED, backup_format='forestguard-279-imagery-backup-v1', limit=LIMIT):
     destination = Path(destination).resolve()
     # shortcut: recovery stays in a new local data folder; move verified copies manually to a fresh checkout.
     if not destination.is_relative_to((ROOT/'data').resolve()) or destination == (ROOT/'data').resolve():
         raise ValueError('Restore into a new folder inside this project data directory.')
     if destination.exists():
         raise ValueError('Restore destination exists; no files will be overwritten.')
-    manifest = verify(archive, trusted_sha256)
+    manifest = verify(archive, trusted_sha256, files, backup_format, limit)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    if shutil.disk_usage(destination.parent).free < LIMIT:
+    if shutil.disk_usage(destination.parent).free < limit:
         raise ValueError('Insufficient free space for recovery.')
     with tempfile.TemporaryDirectory(prefix='restore_', dir=destination.parent) as temporary:
         folder = Path(temporary)

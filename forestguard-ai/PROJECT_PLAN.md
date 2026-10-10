@@ -1,5 +1,145 @@
 # Progress checklist
 
+Local research dashboard — 10 October 2026:
+- [x] Add an officer-only research view with real saved proxy map, scope, date,
+  coverage, pixel counts, model/dataset version and four actual export links.
+- [x] Pin/check saved-result integrity; reject corrupt files and unsupported formats;
+  preserve production forest/change approval gates and existing dataset access.
+- [x] Pass frontend build and isolated offline API/auth/download checks.
+- [x] Verify live login, research navigation, displayed data, map zoom and Fit map.
+- [ ] Complete browser panning/download and keyboard/mobile delivery checks.
+See [startup, measured verification and limits](docs/RESEARCH_DASHBOARD.md).
+
+Offline research inference — 10 October 2026:
+- [x] Generate a saved December 2025 tree-cover proxy map from our own cloud model,
+  plus uncalibrated decision-tree probability values and georeferenced outputs.
+- [x] Verify 12,362 usable pixels, class/vote nodata, grid/source/dependency identity,
+  offline operation, unchanged originals and the exact saved validation matrix.
+- [x] Preserve explicit research scope and false operational approval; production
+  forest loader rejects the model. No forest area/change/fire result is produced.
+- [x] Display the saved output in a separated local application research view.
+See [working map and reproducible inference](docs/RESEARCH_PROXY_MAP.md).
+
+Current handoff — 10 October 2026:
+- [x] Close the December exploratory model and disagreement-inspection milestone.
+- [x] Retain reproducible source, cloud notebooks, real inputs, model exports,
+  evaluation, offline checks, error contexts and measured limitations.
+- [ ] Scientific Phase 2: independent reviewed labels and frozen evaluation splits.
+- [ ] Scientific Phase 3: independently evaluated forest classifier approved for use.
+No additional training or error-case generation is required to close this exploratory
+scope. See [handoff and acceptance decision](docs/EXPLORATORY_PHASE_HANDOFF.md).
+
+December proxy error inspection — 10 October 2026:
+- [x] Generate nine actual shrub/crop/tree reference disagreements with dated
+  image contexts and preserved central-pixel coordinates/provenance.
+- [x] Verify 27 embedded views, selection/spacing, source preservation, offline
+  generation and zero reviewed labels; inspect three representative figure rows.
+- [x] Document unresolved texture, study-edge and mixed-pixel interpretation limits.
+- [ ] Independent current land-use/forest reference evidence and evaluated test set.
+See [inspection deliverables and limits](docs/PROXY_ERROR_INSPECTION.md).
+
+Exploratory December comparison — 10 October 2026:
+- [x] Prepare 4,939 December 2024 training and 6,067 December 2025 validation
+  pixels using separated regions and explicitly historical map targets.
+- [x] Verify actual date-specific features, targets, calibration/grid provenance,
+  offline operation, original records, private embedding and hosted-only guards.
+- [x] Prepare a private cloud notebook with the verified small dataset embedded.
+- [x] Bind model-export verification to the expected dataset; actual earlier
+  artifacts are accepted for their original dataset and rejected for December.
+- [x] Receive and preserve the user's completed cloud comparison export; verify
+  it belongs to the December experiment before loading either model.
+- [x] Reproduce both models' confusion matrices and metrics offline; Random Forest
+  F1 0.977588 is historical map agreement, not independent forest accuracy.
+- [x] Report class errors: 69/78 shrub and 69/244 crop proxy targets disagreed.
+Cloud UI version/runtime remain unverified. Production forest use is unapproved.
+See [minimal handoff and reproduction](docs/DECEMBER_WEAK_EXPERIMENT.md).
+
+Phase 2 — calendar-matched observations, 10 October 2026:
+- [x] Acquire the bounded December 2024 crop privately in Kaggle CPU; preserve
+  scene metadata, product calibration, source attribution and downloaded archive.
+- [x] Verify 12 new source files and the unchanged 27-file 2025 source; align the
+  December pair on the same 20 m grid with 12,362 common clear pixels (94.37%).
+- [x] Check calendar gap, source integrity, offline operation, date/overwrite guards
+  and both embedded images in the saved HTML comparison.
+- [ ] Review weather/vegetation-cycle comparability and independent forest evidence.
+- [x] Run the exploratory calendar-matched weak-reference comparison; verify export.
+See [observations, reproducible checks and limits](docs/SAME_SEASON_OBSERVATIONS.md).
+This passes the data assessment; it does not complete scientific Phase 2/3 gates.
+
+Exploratory weak-reference experiment, 10 October 2026:
+- [x] Prepare verified real-image feature samples with explicitly historical
+  WorldCover proxy targets; preserve reference licenses/source hashes and age limits.
+- [x] Separate north/April training and south/December validation before extraction,
+  with a 200 m excluded strip; no independent test set or current forest truth claimed.
+- [x] Fit baseline and Random Forest privately in Kaggle CPU with Internet off;
+  successful 19.2-second version 356844511, no local fitting.
+- [x] Download and checksum-verify both fitted artifacts; reproduce cloud predictions
+  offline and confirm the production forest loader rejects the proxy export.
+- [x] Document failed Random Forest transfer and constant-baseline selection; retain
+  unapproved status, actual feature diagnostics and original review/training gates.
+- [ ] Qualified current reference review and scientifically evaluated forest model.
+See [measured exploratory result](docs/WEAK_PROXY_EXPERIMENT.md). This is not a
+completed Phase 2/3 forest-classification release.
+
+Phase 2 — mask-based spatial candidates, 10 October 2026:
+- [x] Select 14 unlabeled 100 m patches from 16 spatial blocks using only verified
+  study/common-clear masks; retain excluded blocks and selection provenance.
+- [x] Verify 25 clear pixels per patch, nonoverlap, at least 100 m separation,
+  embedded dated views, proposal form and compatibility with the earlier pack.
+- [x] Preserve original seven cases/registry and pass offline, mask, geometry,
+  spacing, form, source-preservation and overwrite checks.
+- [ ] Independent reviewed forest/non-forest references and frozen representative splits.
+User confirmed no independent reviewer currently available. More candidate generation
+will not close this scientific gate; training remains unapproved.
+See [spatial candidates, measured checks and limits](docs/PHASE2_SPATIAL_REVIEW.md).
+
+Phase 2 — offline review form, 10 October 2026:
+- [x] Reuse the blind comparison to make a self-contained proposal form for seven
+  unchanged cases with 24 saved-image views; originals remain untouched.
+- [x] Export reviewer/date/class/confidence/uncertainty and forest-evidence fields;
+  retain source provenance, geometry, unassigned splits and false independence.
+- [x] Pass offline generation, hypothetical parser cases, unsupported forest,
+  provenance/geometry/split/independence changes and overwrite checks.
+- [x] Verify actual browser export and Python validation: seven unknown/unassigned
+  cases, no independent reviewed labels and no training approval.
+- [ ] Obtain evidence-supported human review and assess source independence.
+- [ ] Expand representative reference locations/acquisition dates and freeze evaluation splits.
+See [review form instructions and scientific limits](docs/PHASE2_REVIEW_FORM.md).
+
+Phase 9 — current research-application engineering checkpoint, 9 October 2026:
+- [x] Fresh UI/inference runtime installed from retained local wheels; dependency checks pass.
+- [x] Browser login, real maps, comparison, integrity and vegetation controls work with
+  external Python connections/DNS denied and same-origin browser resource policy.
+- [x] Preserve a bounded release backup covering code/build, current research inputs,
+  two LISS-4 reference crops, historical height predictions, unresolved review records,
+  synthetic model exports, saved results and runtime wheels; verify isolated restoration.
+- [x] Verify corrupted/invalid inputs, trusted-model/scope gates, overwritten-output
+  prevention, injected disk-full failures and actual owned-process termination/recovery.
+- [x] Publish generated PNG previews atomically; failed/interrupted previews stay unpublished.
+- [x] Measure small real-crop inspection plus synthetic inference: 133.82 MiB peak
+  working set, 2.222 seconds on the observed laptop; not a full-product benchmark.
+- [x] Document startup, fresh installation, backup/restoration and cloud retraining.
+- [x] Preserve a checksum-matching backup outside the workspace on E:; E: and C:
+  are on the same physical disk, so physical-drive failure is not covered.
+- [ ] Re-run release checks with the future independently evaluated real models.
+- [ ] Optional disaster-recovery validation: physical power loss, OS-wide Internet
+  disconnection and a backup on an existing separate physical device.
+This completes the engineering acceptance scope for the current research application,
+not scientific model validation or final-product Phase 9 certification.
+See [delivery scope, instructions and limitations](docs/PHASE9_DELIVERY.md).
+
+Reliability — interrupted change analysis, 9 October 2026:
+- [x] Publish completion markers atomically with six input/output size and SHA-256 records.
+- [x] Verify integrity before display/export; preserve incomplete, corrupt and legacy
+  artifacts while excluding them from latest completed results.
+- [x] Order saved results by completion time rather than preview-cache folder changes.
+- [x] Pass four injected interruptions, missing/corrupt/malformed-marker rejection
+  and fresh-process recovery; original fixture inputs remain unchanged.
+- [x] Pass authenticated change API and existing imagery/UI regressions after the fix.
+- [x] Validate owned-process termination and injected disk-full handling.
+- [ ] Physical power-loss durability remains unclaimed.
+See [recovery behavior and compatibility](docs/CHANGE_RECOVERY.md).
+
 Reliability — fresh offline installation, 9 October 2026:
 - [x] Create a clean Python 3.11 environment; install all 22 locked UI packages
   from local wheels with no package index; verify nine historical wheel hashes,
@@ -10,7 +150,8 @@ Reliability — fresh offline installation, 9 October 2026:
   checks, two frontend assets and CSV/HTML exports with outbound connections/DNS blocked.
 - [x] Start the fresh Uvicorn application on loopback and verify HTTP health/index;
   stop the temporary server without replacing the existing dashboard.
-- [ ] Check browser startup with OS Internet disconnected; broader recovery remains pending.
+- [x] Check browser operation with application external connections blocked; broader
+  release recovery checked. OS Internet was not disabled globally.
 See [fresh installation evidence and reproduction](docs/OFFLINE_INSTALL_CHECK.md).
 
 Reliability — compartment 279 imagery recovery, 9 October 2026:
@@ -21,9 +162,10 @@ Reliability — compartment 279 imagery recovery, 9 October 2026:
   preserve live sources. Retain recovery evidence and reproduction instructions.
 - [x] Resolve all 22 locked UI dependencies using retained wheels with no package index.
 - [x] Complete fresh installation from retained local wheels and application checks.
-- [ ] Complete disconnected-browser startup checks.
-- [ ] Preserve remaining labels/reference/model/results artifacts and verify broader recovery.
-- [ ] Place backup on separate existing storage for protection against drive failure.
+- [x] Verify browser stored-data operation with external application networking blocked.
+- [x] Preserve current labels/references/synthetic models/results and verify release recovery.
+- [x] Copy backup outside workspace to E: and verify its hash; physical-disk protection
+  still requires existing separate physical storage.
 See [imagery recovery instructions](docs/RESEARCH_BACKUP.md). Phase 9 remains in progress.
 
 Phase 5 real compartment 279 observations, 9 October 2026:
@@ -51,7 +193,8 @@ Phase 5 change-dashboard integration, 9 October 2026:
 - [x] Pass new API checks and existing regression checks after the fix; build UI.
 - [x] Verify browser login/run/layers/fit/refresh and desktop/mobile layouts.
 - [ ] Integrate and evaluate real forest model and independently reviewed changes.
-- [ ] Complete broader jobs/recovery, offline installation and backup restoration.
+- [x] Complete current research-app interruption/recovery, offline installation and
+  backup restoration checks; repeat with evaluated real models before final release.
 See [dashboard handoff](docs/CHANGE_DASHBOARD.md). Synthetic integration is not
 real forest/change validation or a completed operational release.
 

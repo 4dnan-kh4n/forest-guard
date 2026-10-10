@@ -4,6 +4,7 @@ import hashlib
 import io
 import json
 import math
+from datetime import datetime
 import zipfile
 import sys
 from pathlib import Path
@@ -42,7 +43,15 @@ def verify(path):
         seasons=[item['season'] for item in report['acquisitions']]
         if len(seasons)!=len(set(seasons)) or not set(seasons)<={'dry','wet','post_monsoon'}:
             raise ValueError('Invalid accepted seasons.')
-        expected_status='COMPLETE_DATA_SCREENING' if len(seasons)==3 else 'PARTIAL_DATA_SCREENING'
+        windows=dict(report['season_windows'])
+        if not windows or len(windows)!=len(report['season_windows']) or not set(seasons)<=set(windows) or not set(windows)<={'dry','wet','post_monsoon'}:
+            raise ValueError('Invalid declared observation windows.')
+        for item in report['acquisitions']:
+            start,end=[datetime.fromisoformat(value.replace('Z','+00:00')) for value in windows[item['season']].split('/')]
+            acquired=datetime.fromisoformat(item['acquisition'].replace('Z','+00:00'))
+            if start.tzinfo is None or end.tzinfo is None or acquired.tzinfo is None or not start<=acquired<=end:
+                raise ValueError('Acquisition falls outside its declared observation window.')
+        expected_status='COMPLETE_DATA_SCREENING' if len(seasons)==len(windows) else 'PARTIAL_DATA_SCREENING'
         if report['status']!=expected_status:
             raise ValueError('Screening status does not match acquired seasons.')
         checked=[]

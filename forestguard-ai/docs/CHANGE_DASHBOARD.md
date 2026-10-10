@@ -77,6 +77,9 @@ Screenshots and a browser-check record are preserved in
 
 ## Remaining work
 
+Saved runs now have atomic integrity markers and tested fresh-process recovery;
+see [interruption checks and legacy-run behavior](CHANGE_RECOVERY.md).
+
 Real training and independent change evaluation remain blocked by reference
 evidence/split readiness. This milestone integrates Phase 4 engineering with the
 application; it does not complete the scientific phases or the full Phase 5
