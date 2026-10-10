@@ -58,6 +58,7 @@ __pycache__/
 htmlcov/
 
 # Frontend dependencies and generated builds
+runtime_libs/*.so*
 node_modules/
 dist/
 build/

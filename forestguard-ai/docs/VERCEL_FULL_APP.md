@@ -21,6 +21,10 @@ Vercel no longer automatically enables landing-only mode in the Vite build.
    installs frontend packages with the existing frozen pnpm lockfile
    and builds `frontend/dist`. Python dependencies and Python 3.12 are configured
    in `pyproject.toml`; no local heavy stack or model training is added.
+   The build also copies `libexpat.so.1` from the Linux build image into
+   `runtime_libs/`. Root `app.py` loads it before Rasterio, because Vercel's
+   function image lacks this native dependency. The generated binary stays out
+   of Git; `runtime_libs/EXPAT_LICENSE.txt` preserves its MIT license notice.
 4. Delete `VITE_FORESTGUARD_LANDING_ONLY` from Vercel environment settings, or
    set it to `false`. A remaining `true` explicitly requests the old public-only
    page. Do not set `FORESTGUARD_DATA_ROOT` on Vercel; the prepared directory is

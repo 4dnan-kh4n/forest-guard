@@ -682,6 +682,15 @@ Startup and reproducible checks: [local UI](docs/UI_STARTUP.md).
 
 ## Presentation UI update
 
+### Hosted runtime repair (2026-10-10)
+
+- [x] Diagnose live HTTP 500 from the supplied traceback: Rasterio cannot load
+  `libexpat.so.1` in Vercel's function image.
+- [x] Add build-time native library packaging, explicit bundle inclusion,
+  startup preload and Expat license notice; preserve Windows behavior.
+- [x] Verify byte-preserving packaging and missing-library rejection locally.
+- [ ] Verify Linux native loading and live login after deploying this repair.
+
 - [x] Reference-inspired forest landing page, trees-and-shield logo, cycling
   headline, animated satellite/forest workflow, section reveals and FAQ controls.
 - [x] Harda/Joga login with requested local demo password, server-side sessions,
