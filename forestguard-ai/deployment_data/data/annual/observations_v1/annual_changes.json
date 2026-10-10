@@ -1,0 +1,59 @@
+{
+  "comparisons": [
+    {
+      "before_year": 2023,
+      "after_year": 2024,
+      "before_date": "2023-10-08",
+      "after_date": "2024-10-02",
+      "common_pixels": 9614,
+      "common_area_ha": 384.56,
+      "common_coverage_percent": 73.39491564241546,
+      "suspected_tree_proxy_loss_ha": 1.6400000000000001,
+      "suspected_tree_proxy_gain_ha": 4.72,
+      "transition_pixels": {
+        "0": 1849,
+        "1": 7606,
+        "2": 41,
+        "3": 118
+      },
+      "independent_forest_accuracy_measured": false
+    },
+    {
+      "before_year": 2024,
+      "after_year": 2025,
+      "before_date": "2024-10-02",
+      "after_date": "2025-10-02",
+      "common_pixels": 6810,
+      "common_area_ha": 272.4,
+      "common_coverage_percent": 51.988701427589895,
+      "suspected_tree_proxy_loss_ha": 6.5600000000000005,
+      "suspected_tree_proxy_gain_ha": 8.16,
+      "transition_pixels": {
+        "0": 1224,
+        "1": 5218,
+        "2": 164,
+        "3": 204
+      },
+      "independent_forest_accuracy_measured": false
+    },
+    {
+      "before_year": 2025,
+      "after_year": 2026,
+      "before_date": "2025-10-02",
+      "after_date": "2026-10-02",
+      "common_pixels": 6829,
+      "common_area_ha": 273.16,
+      "common_coverage_percent": 52.13375066798992,
+      "suspected_tree_proxy_loss_ha": 9.120000000000001,
+      "suspected_tree_proxy_gain_ha": 6.6000000000000005,
+      "transition_pixels": {
+        "0": 1245,
+        "1": 5191,
+        "2": 228,
+        "3": 165
+      },
+      "independent_forest_accuracy_measured": false
+    }
+  ],
+  "limits": "Research tree-class transitions on common clear coverage, not independently validated deforestation or regrowth."
+}

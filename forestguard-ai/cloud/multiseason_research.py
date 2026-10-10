@@ -16,6 +16,7 @@ SEASONS = [('dry','2025-02-01T00:00:00Z/2025-04-30T23:59:59Z'),
            ('post_monsoon','2025-10-01T00:00:00Z/2025-12-31T23:59:59Z')]
 SCL_SCREEN_LIMIT = 12
 PROCESS_LIMIT = 3
+MIN_FEATURE_COVERAGE = .9
 
 
 def scl_coverage(classes, inside):
@@ -150,9 +151,9 @@ def run_research(boundary, base_run, feature_builder, reference_builder=None):
                 usable = inside & (support>=.999999) & np.isfinite(stack).all(axis=0) & ~np.ma.getmaskarray(visible).any(axis=0)
                 features,feature_valid,names = feature_builder(stack,band_order,usable)
                 fraction = float(feature_valid.sum()/inside.sum())
-                if fraction < .9:
+                if fraction < MIN_FEATURE_COVERAGE:
                     failures.append({'season':season,'scene_id':source['id'],'stage':'quality',
-                                     'usable_fraction_inside_study':fraction,'error':'Below 90% feature-coverage screening target.'})
+                                     'usable_fraction_inside_study':fraction,'error':f'Below {MIN_FEATURE_COVERAGE:.0%} feature-coverage screening target.'})
                     continue
                 folder = output/season
                 folder.mkdir()
@@ -201,7 +202,8 @@ def run_research(boundary, base_run, feature_builder, reference_builder=None):
             failures.append({'stage':'weak_reference','error':str(error)})
     report = {'study_id':'handia-compartment-279','status':'COMPLETE_DATA_SCREENING' if len(results)==len(SEASONS) else 'PARTIAL_DATA_SCREENING',
               'acquisitions':results,'failed_attempts':failures,'quality_screens':screens,'season_windows':SEASONS,
-              'scl_screen_limit_per_season':SCL_SCREEN_LIMIT,'candidate_limit_per_season':PROCESS_LIMIT,'weak_reference':reference,
+              'scl_screen_limit_per_season':SCL_SCREEN_LIMIT,'candidate_limit_per_season':PROCESS_LIMIT,
+              'minimum_feature_coverage':MIN_FEATURE_COVERAGE,'weak_reference':reference,
               'labels_reviewed':0,'model_trained':False,'independent_model_accuracy_measured':False,
               'cloud_runtime':{'python':platform.python_version(),'numpy':np.__version__,'rasterio':rasterio.__version__,'gdal':rasterio.__gdal_version__}}
     (output/'research_report.json').write_text(json.dumps(report,indent=2))

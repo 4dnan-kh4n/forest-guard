@@ -55,6 +55,8 @@ async def check():
             assert headers[b'cache-control']==b'no-store' and b'id="root"' in body
             await request('/api/datasets',status=401)
             await request('/api/research/change',status=401)
+            await request('/api/fire',status=401)
+            await request('/api/forest-history',status=401)
             credentials={'district':'Harda','beat':'Joga','password':'wrong'}
             await request('/api/login',credentials,status=401)
             credentials['password']='test-only-officer-a'
@@ -66,6 +68,26 @@ async def check():
             assert current['id']=='officer-a' and hosting.session(token+'bad') is None
             with patch.object(hosting.time,'time',return_value=current['expires']+1):assert hosting.session(token) is None
             body,_=await request('/api/session');assert json.loads(body)['authenticated']
+            body,_=await request('/api/fire');fire=json.loads(body)
+            assert fire['available'] and fire['sources'] and fire['inside_count']==sum(e['scope']=='inside' for e in fire['detections'])
+            assert all(s['url'] in api.FIRE_SOURCES.values() for s in fire['sources'])
+            await request('/api/fire/report/json')
+            with patch.object(api,'fetch_fires',side_effect=ValueError('fixture offline')),patch.object(api,'datetime') as clock:
+                clock.fromisoformat.return_value.timestamp.return_value=0
+                await request('/api/fire/refresh',{},status=503)
+            body,_=await request('/api/fire');assert json.loads(body)['fetched_at']==fire['fetched_at']
+            with patch.object(api,'fetch_fires',return_value={k:v for k,v in fire.items() if k not in ['available','image_bounds','background_date']}),patch.object(api,'datetime') as clock:
+                clock.fromisoformat.return_value.timestamp.return_value=0
+                await request('/api/fire/refresh',{})
+            body,_=await request('/api/fire');assert json.loads(body)['fetched_at']==fire['fetched_at']
+            body,_=await request('/api/forest-history');annual=json.loads(body)
+            assert annual['available'] and [row['year'] for row in annual['observations']]==[2023,2024,2025,2026]
+            assert len(annual['comparisons'])==3
+            for row in annual['observations']:
+                body,_=await request(f'/api/forest-history/{row["year"]}/image')
+                assert body.startswith(b'\x89PNG')
+            await request('/api/forest-history/2022/image',status=404)
+            await request('/api/forest-history/2030/image',status=404)
             body,_=await request('/api/datasets');items=json.loads(body);assert {d['id'] for d in items}=={'compartment-279','sentinel','demo'}
             for item in items:
                 identity=item['id']
@@ -123,7 +145,7 @@ async def check():
             'research_exports_byte_identical':True,'real_proxy_change_images_exports':True,'change_run_images_exports':True,'sample_boundary_imports':True,
             'sessions_isolated':True,'auth_and_bundled_data_survive_new_instance':True,
             'new_uploads_are_ephemeral':True,'bundled_synthetic_comparison_survives_new_instance':True,'external_networking_blocked':True,
-            'actual_vercel_deployment_tested':False}
+            'fire_offline_snapshot_and_failed_refresh_preservation':True,'actual_vercel_deployment_tested':False}
     output=ROOT/'data/deployment';output.mkdir(parents=True,exist_ok=True)
     (output/'hosted_verification.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,indent=2))

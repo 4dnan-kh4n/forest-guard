@@ -29,6 +29,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from backend import hosting
+from backend.fire_monitor import fetch as fetch_fires, SOURCES as FIRE_SOURCES
 ROOT=Path(__file__).resolve().parents[1]
 DATA_ROOT=Path(hosting.DATA_ROOT) if hosting.DATA_ROOT else ROOT/('deployment_data' if hosting.HOSTED else '.')
 sys.path.insert(0,str(ROOT/'scripts'))
@@ -713,6 +714,81 @@ def research_change_download(format:str):
     if not research_change_status()['available']:raise HTTPException(404,'Research comparison unavailable')
     name,mime=RESEARCH_CHANGE_EXPORTS[format]
     return FileResponse(RESEARCH_CHANGE/name,media_type=mime,filename='forestguard-research-'+name)
+
+
+def fire_report():
+    local=state_folder()/'fire_report.json'
+    path=local if local.exists() else DATA_ROOT/'data/fire/recent_v1/report.json'
+    if not path.exists():return {'available':False,'detail':'No saved satellite fire report is available.'}
+    if path.is_symlink() or path.stat().st_size>128*1024:raise HTTPException(503,'Saved fire report failed size checks')
+    try:report=read(path)
+    except (OSError,ValueError) as error:raise HTTPException(503,'Saved fire report could not be read') from error
+    if (not isinstance(report,dict) or report.get('format')!='forestguard-firms-recent-v1' or len(report.get('detections',[]))>200
+            or not report.get('sources')
+            or any(source.get('url') not in FIRE_SOURCES.values() for source in report.get('sources',[]))):
+        raise HTTPException(503,'Saved fire report failed source checks')
+    try:
+        datetime.fromisoformat(report['fetched_at'])
+        counts=[sum(event['scope']==scope for event in report['detections']) for scope in ['inside','nearby']]
+        if counts!=[report['inside_count'],report['nearby_count']]:raise ValueError('Invalid counts')
+    except (KeyError,TypeError,ValueError) as error:raise HTTPException(503,'Saved fire report failed measurement checks') from error
+    item=dataset('compartment-279');obs=next(v for v in item['views'] if v['id']=='post_monsoon')
+    from rasterio.warp import transform_bounds
+    with rasterio.open(obs['folder']/'reflectance.tif') as raster:
+        west,south,east,north=transform_bounds(raster.crs,'EPSG:4326',*raster.bounds)
+    return dict(report,available=True,image_bounds=[[south,west],[north,east]],background_date=obs['date'])
+
+
+@app.get('/api/fire')
+def saved_fire_report():return fire_report()
+
+
+@app.post('/api/fire/refresh')
+def refresh_fire_report():
+    current=fire_report()
+    if current.get('available') and time.time()-datetime.fromisoformat(current['fetched_at']).timestamp()<600:
+        return current
+    try:
+        boundary=read(DATA_ROOT/'data/study/compartment_279_v1/boundary.geojson')
+        report=fetch_fires(boundary)
+        with tempfile.TemporaryDirectory(prefix='fire_refresh_',dir=state_folder()) as temporary:
+            path=Path(temporary)/'report.json'
+            path.write_bytes((json.dumps(report,indent=2)+'\n').encode())
+            path.replace(state_folder()/'fire_report.json')
+    except (OSError,ValueError) as error:
+        raise HTTPException(503,'NASA refresh unavailable. The last saved report remains accessible.') from error
+    return fire_report()
+
+
+@app.get('/api/fire/report/json')
+def download_fire_report():
+    report=fire_report()
+    if not report.get('available'):raise HTTPException(404,'No fire report available')
+    return Response(json.dumps(report,indent=2),media_type='application/json',headers={'Content-Disposition':'attachment; filename="forestguard-satellite-fire-report.json"'})
+
+
+@app.get('/api/forest-history')
+def annual_history():
+    path=DATA_ROOT/'data/annual/observations_v1/annual_report.json'
+    if not path.exists():return {'available':False,'years_requested':[2022,2023,2024,2025,2026]}
+    try:
+        checks=read(path.parent/'ui_checksums.json')
+        for name in ['annual_report.json','annual_changes.json']+[f'{year}/preview.png' for year in range(2022,2027) if f'{year}/preview.png' in checks]:
+            saved=path.parent/name
+            if saved.is_symlink() or saved.stat().st_size>2*1024**2 or hashlib.sha256(saved.read_bytes()).hexdigest()!=checks[name]:raise ValueError('Corrupt annual file')
+        report=read(path)
+    except (OSError,KeyError,ValueError) as error:raise HTTPException(503,'Annual observation files failed integrity checks') from error
+    if report.get('format')!='forestguard-annual-observations-v1' or report.get('independent_forest_accuracy_measured') is not False:
+        raise HTTPException(503,'Annual observation report failed scope checks')
+    return dict(report,available=True,comparisons=read(path.parent/'annual_changes.json')['comparisons'])
+
+
+@app.get('/api/forest-history/{year}/image')
+def annual_image(year:int):
+    report=annual_history()
+    if year not in [2022,2023,2024,2025,2026] or not any(row['year']==year for row in report.get('observations',[])):
+        raise HTTPException(404,'This year has no acquired satellite crop')
+    return FileResponse(DATA_ROOT/f'data/annual/observations_v1/{year}/preview.png',media_type='image/png')
 
 
 DIST=ROOT/'frontend/dist'

@@ -1,5 +1,12 @@
 # Current development checkpoint — 10 October 2026
 
+New local milestone: actual 2023–2026 annual images and weak-reference tree-cover
+estimates, three common-coverage annual comparisons, and refreshed real NASA FIRMS
+observations are connected. The bounded deployment package is prepared but this
+update still requires the user's push/redeploy. See [annual/fire evidence](ANNUAL_AND_FIRE.md).
+2022 calibration/acquisition, historical fire records and independent forest
+evaluation remain open; no missing year has been filled with generated results.
+
 Real-image research change is now implemented: December 2024/2025 proxy
 comparison, 94.37% common coverage, 2.40 ha suspected tree-proxy loss and
 12.36 ha suspected tree-proxy gain. See [outputs and evaluation protocol](REAL_IMAGE_CHANGE.md).
@@ -7,9 +14,14 @@ Independent forest accuracy remains unmeasured. Actual Vercel saved observations
 analysis, source verification, research map, real-image change layers and reports
 now work. Ten research/change downloads matched the local SHA-256 checksums.
 The missing-data and Git line-ending deployment problems are resolved in the
-current deployment. Stale cached HTML was observed; a tested no-store HTML
-response patch is prepared locally for the next push. Use a hard refresh or
-the verification URL if an old cached page is blank.
+current deployment. A temporary synthetic run lost one image during live testing;
+the subsequent deployment uses its checked bundled comparison. Its before,
+after, change and coverage images and four exports were verified live without
+the earlier image failure. All six layers survive fresh temporary storage in
+tests. A no-store response patch is deployed for app-served HTML, although Vercel
+serves the public entry page with its own revalidation cache policy. The in-app
+browser retained an old cached entry page; the verification URL loads the current
+build. Use a fresh link or clear stale browser cache if an old page is blank.
 
 Resume scientific Phase 2 before approving forest classification or observed
 cover changes. The foundation and research application are usable; they do not
@@ -23,8 +35,8 @@ establish independent model accuracy.
 | Evaluation splits | All seven records unassigned | Freeze representative location/date splits before sampling |
 | Model | Our exported Random Forest and real saved proxy map | Independent forest evaluation; historical map agreement is not forest accuracy |
 | Change detection | Synthetic workflow plus computed real December tree-proxy transitions | Independent forest validation and reviewed seasonal/alignment errors |
-| Application | Real-image changes/images/exports verified on Vercel; 90 isolated hosted API checks pass | Deploy the small HTML cache patch; durable hosted activity remains unsupported |
-| Fire and future loss | Presentation history is explicitly synthetic | Credible event/weather and multi-year change data; assess feasibility before training |
+| Application | Real-image changes/images/exports and bundled synthetic workflow verified on Vercel; 97 isolated hosted API checks pass | Independent scientific evaluation; durable hosted activity remains unsupported; stale browser cache may require refresh |
+| Fire and future loss | Real recent NOAA-20/21 FIRMS feed connected locally; annual real proxy changes acquired | Archived fire records, credible weather and independent change labels; assess forecasting feasibility before training |
 
 ## Current audited deliverable
 

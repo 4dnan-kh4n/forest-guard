@@ -1,5 +1,19 @@
 # Progress checklist
 
+Annual imagery and recent fire milestone — 10 October 2026:
+- [x] Diagnose/download first cloud export, preserve its empty acquisition report.
+- [x] Rerun privately on Kaggle CPU; acquire and verify real 2023–2026 imagery.
+- [x] Keep original pixel masks and 90% default training screen; use measured partial
+  coverage for annual viewing only.
+- [x] Register dated images, proxy extent and three comparisons over common clear coverage.
+- [x] Connect real NOAA-20/21 NASA fire feeds, refresh and saved offline fallback.
+- [x] Verify local interface, exports, geometry/parser failures and bounded deployment data.
+- [ ] Verify 2022 calibration and acquire an accepted crop.
+- [ ] Acquire 2022–2026 archived fire history.
+- [ ] Push/redeploy and verify these additions on actual Vercel production.
+- [ ] Independently evaluate forest labels/model and operational change claims.
+See `docs/ANNUAL_AND_FIRE.md`.
+
 Connected Phase 0–5 prototype — 10 October 2026:
 - [x] Add explicit real-observation / synthetic-scenario selection, isolated
   navigation, scoped datasets/reports and automatic stored-image analysis.
@@ -752,7 +766,8 @@ saved real March 2024/2025 imagery remains available under Satellite map.
 - [x] Prepare bounded deployment data and explicit Vercel bundle inclusion.
 - [x] Check actual hosted login; identify missing saved-data deployment failure.
 - [x] Push/redeploy and verify production saved observations, real change results and exports.
-- [ ] Push the tested HTML no-store response patch to prevent stale entry pages.
+- [x] Deploy the tested no-store app HTML response patch; Vercel entry-page caching remains provider-controlled.
+- [x] Deploy and verify the bundled synthetic comparison patch after a temporary-job image failure.
 - [ ] Independently assess forest definition and accuracy; review apparent changes.
 
 See [the deliverable and public-reference evaluation protocol](docs/REAL_IMAGE_CHANGE.md).

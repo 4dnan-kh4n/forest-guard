@@ -125,7 +125,14 @@ Production `/api/health` returns 200 with `saved_observations_available` and
 `research_change_available` both true. Mobile navigation works. Cached old HTML
 was observed loading obsolete asset names and displaying a blank page; opening
 `https://forest-guard-nu.vercel.app/?verify=20261010` loaded the current build.
-A local patch makes root/index HTML responses `Cache-Control: no-store`; 90
-isolated hosted API checks including that header passed. Push this small patch
-on the next update. Until then, hard-refresh stale pages. Saved research results
-are reproducible, but hosted activity and newly generated jobs remain temporary.
+A local patch makes root/index HTML responses `Cache-Control: no-store`. A live
+synthetic temporary job lost one image, so the hosted synthetic workflow now
+uses its checksummed bundled comparison instead of per-instance job storage.
+97 isolated hosted API checks passed, including image/export access after fresh
+temporary storage and app HTML cache headers. Both patches were subsequently
+deployed. The bundled synthetic result, image controls and four exports passed
+live checks. Vercel serves the public entry HTML with its own revalidation policy;
+the in-app browser still retained an old cached copy at the bare URL. The fresh
+verification link loads the current build. Clear stale browser cache if needed.
+Saved research results are reproducible, but hosted activity and uploaded data
+remain temporary. These application checks do not establish forest accuracy.

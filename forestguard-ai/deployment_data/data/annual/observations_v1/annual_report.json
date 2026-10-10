@@ -1,0 +1,81 @@
+{
+  "format": "forestguard-annual-observations-v1",
+  "years_requested": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "study_area_version": "compartment-279-user-kml-v1",
+  "observations": [
+    {
+      "year": 2023,
+      "date": "2023-10-08",
+      "scene_id": "S2B_T43QFE_20231008T052542_L2A",
+      "usable_pixels": 9744,
+      "study_pixels": 13099,
+      "coverage_fraction": 0.7438735781357355,
+      "tree_cover_proxy_percent": 79.1564039408867,
+      "tree_cover_proxy_ha": 308.52,
+      "median_ndvi": 0.7007827758789062,
+      "model_version": "weak-proxy-14f032e581bf4ab5",
+      "attribution": "Contains modified Copernicus Sentinel data 2023",
+      "license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "canopy_density_percent": null,
+      "synthetic": false
+    },
+    {
+      "year": 2024,
+      "date": "2024-10-02",
+      "scene_id": "S2B_T43QFE_20241002T052816_L2A",
+      "usable_pixels": 9772,
+      "study_pixels": 13099,
+      "coverage_fraction": 0.7460111458889992,
+      "tree_cover_proxy_percent": 79.89152681129758,
+      "tree_cover_proxy_ha": 312.28000000000003,
+      "median_ndvi": 0.7418224215507507,
+      "model_version": "weak-proxy-14f032e581bf4ab5",
+      "attribution": "Contains modified Copernicus Sentinel data 2024",
+      "license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "canopy_density_percent": null,
+      "synthetic": false
+    },
+    {
+      "year": 2025,
+      "date": "2025-10-02",
+      "scene_id": "S2C_T43QFE_20251002T053254_L2A",
+      "usable_pixels": 6870,
+      "study_pixels": 13099,
+      "coverage_fraction": 0.5244675166043209,
+      "tree_cover_proxy_percent": 79.28675400291121,
+      "tree_cover_proxy_ha": 217.88,
+      "median_ndvi": 0.7760137319564819,
+      "model_version": "weak-proxy-14f032e581bf4ab5",
+      "attribution": "Contains modified Copernicus Sentinel data 2025",
+      "license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "canopy_density_percent": null,
+      "synthetic": false
+    },
+    {
+      "year": 2026,
+      "date": "2026-10-02",
+      "scene_id": "S2B_T43QFE_20261002T052420_L2A",
+      "usable_pixels": 10428,
+      "study_pixels": 13099,
+      "coverage_fraction": 0.7960913046797465,
+      "tree_cover_proxy_percent": 75.38358266206367,
+      "tree_cover_proxy_ha": 314.44,
+      "median_ndvi": 0.7461905479431152,
+      "model_version": "weak-proxy-14f032e581bf4ab5",
+      "attribution": "Contains modified Copernicus Sentinel data 2026",
+      "license_url": "https://cds.climate.copernicus.eu/licences/ec-sentinel",
+      "canopy_density_percent": null,
+      "synthetic": false
+    }
+  ],
+  "model_sha256": "8bf0858faaee969b35e003c466de19ab1767a96c5c8ed9098cb8010f13d3a6b8",
+  "model_available": true,
+  "independent_forest_accuracy_measured": false,
+  "limits": "Percentages describe predicted tree-cover class extent within each year's clear observed area, not canopy density. Differences in annual percentages are not automatically forest loss; pairwise common coverage and seasonal review are required. Missing images remain missing. Model transfer to these years/seasons has not been independently evaluated."
+}

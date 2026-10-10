@@ -28,7 +28,7 @@ else:
     raise AssertionError('Invalid observable classes accepted')
 source_hashes = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in [BEFORE, AFTER, MODEL]}
 saved = ROOT / 'data/phase4/research_proxy_change_v1'
-assert check_deployment(ROOT/'deployment_data')['files']==94
+assert check_deployment(ROOT/'deployment_data')['files']>=94
 with tempfile.TemporaryDirectory(prefix='deployment_check_') as temporary:
     folder=Path(temporary)
     names=['data/app/registered/compartment-279/registered.json',

@@ -7,6 +7,42 @@
     "bytes": 9476,
     "sha256": "3212df8ac0dc7b3868fd3798151bca0992fcdf74125d3eeb319755317c20aa34"
   },
+  "data/fire/recent_v1/report.json": {
+    "bytes": 11838,
+    "sha256": "f8bfe0046fcdb4a98672780a9a665ccfa860efebeff7dbb2d4faf6b693cf0a49"
+  },
+  "data/annual/observations_v1/annual_report.json": {
+    "bytes": 3216,
+    "sha256": "aab1d42243a519e14acca4f21d3def867850ebbc04017370a3ff169aba514401"
+  },
+  "data/annual/observations_v1/ui_checksums.json": {
+    "bytes": 548,
+    "sha256": "7139b3b184e4aa7ecd0561ac7d32ad0193d574cac9638335e57f700e69ec665a"
+  },
+  "data/annual/observations_v1/import_record.json": {
+    "bytes": 157,
+    "sha256": "d12f50dca1a3183ca2e26a9466b4d8e133ff749c3517fde430d774ec462e6e1c"
+  },
+  "data/annual/observations_v1/annual_changes.json": {
+    "bytes": 1705,
+    "sha256": "a55615fc21345d5f90d812194d68fe59746cf565d6d310c47a0f7f56a7382b75"
+  },
+  "data/annual/observations_v1/2023/preview.png": {
+    "bytes": 34002,
+    "sha256": "59bd3be29f0e0730f4c7dc0db8b2d1659ae43745cf844c35414e237eadbb7906"
+  },
+  "data/annual/observations_v1/2024/preview.png": {
+    "bytes": 32320,
+    "sha256": "dd1ce6a6459982b645ded22e26f770fff55ae1841a0d45c6082950230842809c"
+  },
+  "data/annual/observations_v1/2025/preview.png": {
+    "bytes": 29474,
+    "sha256": "2211f899048a9cc682f6e73d48373f3a9b228f5c5e0ab5f0f5d57cd75eed57ea"
+  },
+  "data/annual/observations_v1/2026/preview.png": {
+    "bytes": 34581,
+    "sha256": "cf3b2f1bfa9b99b4a4d1dd66d04fdabe11858ba33701f37d661b931d111af446"
+  },
   "data/app/registered/compartment-279/boundary.geojson": {
     "bytes": 9476,
     "sha256": "3212df8ac0dc7b3868fd3798151bca0992fcdf74125d3eeb319755317c20aa34"

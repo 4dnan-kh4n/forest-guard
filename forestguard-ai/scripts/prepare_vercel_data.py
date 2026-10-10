@@ -9,11 +9,15 @@ FOLDERS=['data/app/registered/compartment-279','data/phase2/pair_version7',
          'data/demo/fixture_v1','data/phase3/research_proxy_map_v1','data/phase4/synthetic_change_v1',
          'data/phase4/research_proxy_change_v1']
 FILES=['data/study/compartment_279_v1/research_v2_20261008/forestguard_279_research.zip',
-       'data/study/compartment_279_v1/boundary.geojson']
+       'data/study/compartment_279_v1/boundary.geojson','data/fire/recent_v1/report.json']
 
 
 def prepare():
     paths=[ROOT/name for name in FILES]
+    annual=ROOT/'data/annual/observations_v1'
+    if annual.exists():
+        paths.extend([annual/'annual_report.json',annual/'ui_checksums.json',annual/'import_record.json',annual/'annual_changes.json'])
+        paths.extend(annual.glob('*/preview.png'))
     for name in FOLDERS:
         paths.extend(p for p in (ROOT/name).rglob('*') if p.is_file())
     paths=[p for p in paths if p.suffix.lower() in {'.tif','.png','.json','.geojson','.zip','.svg','.html','.csv','.xml'}]
@@ -31,7 +35,7 @@ def prepare():
         assert hashlib.sha256(saved.read_bytes()).hexdigest()==checksum
         manifest[name]={'bytes':saved.stat().st_size,'sha256':checksum}
     # The manifest is reviewed, versioned deployment data, not an unbounded upload directory.
-    (target/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+    (target/'manifest.json').write_bytes((json.dumps(manifest,indent=2)+'\n').encode())
     print(json.dumps({'status':'PASS','files':len(manifest),'bytes':sum(r['bytes'] for r in manifest.values())}))
 
 
