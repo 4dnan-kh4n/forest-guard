@@ -16,7 +16,9 @@ Vercel no longer automatically enables landing-only mode in the Vite build.
    `app.py` and `vercel.json` are directly at the repository root.
 3. Choose **FastAPI** as the framework. Remove old Vite build/output/install
    overrides. Let `vercel.json` supply the build command; leave Output Directory
-   unset. It installs frontend packages with the existing frozen pnpm lockfile
+   unset. The build command explicitly runs pnpm 10.18.3 through npx, so the
+   Python builder's default pnpm cannot reject our version 9 lockfile. It
+   installs frontend packages with the existing frozen pnpm lockfile
    and builds `frontend/dist`. Python dependencies and Python 3.12 are configured
    in `pyproject.toml`; no local heavy stack or model training is added.
 4. Delete `VITE_FORESTGUARD_LANDING_ONLY` from Vercel environment settings, or
