@@ -17,3 +17,13 @@ html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.workflow-flow-drop{display:none}}
 .landing{overflow:clip}.landing-nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px)}.landing-section{scroll-margin-top:112px}@media(max-width:760px){.landing-section{scroll-margin-top:102px}}
 .workflow-flow-line{z-index:0}.workflow-flow-drop{z-index:2}.workflow-orbit{position:relative;z-index:3}
+
+/* Reference shield/tree/leaf mark: white ink on dark surfaces. */
+.forest-logo{flex-shrink:0}.landing .forest-logo,.officer-dialog .forest-logo,.sidebar .forest-logo{--logo-ink:#f3f5e9;--logo-cutout:#102015}.sidebar .brand-mark{background:transparent}
+/* A native modal sits above the custom cursor, so restore the system cursor. */
+html.custom-cursor-active:has(.officer-dialog[open]),html.custom-cursor-active:has(.officer-dialog[open]) *{cursor:auto!important}
+html.custom-cursor-active:has(.officer-dialog[open]) button{cursor:pointer!important}
+html.custom-cursor-active:has(.officer-dialog[open]) input{cursor:text!important}
+.landing:has(.officer-dialog[open]) .motion-cursor{visibility:hidden}
+.officer-dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
+.officer-dialog>.forest-logo{display:block}

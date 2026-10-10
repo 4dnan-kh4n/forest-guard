@@ -5,7 +5,15 @@ import {startForestCursor, startForestScroll} from './landingEffects';
 const landingOnly = __FORESTGUARD_LANDING_ONLY__;
 
 export function ForestLogo({size=42}) {
-  return <svg width={size} height={size} viewBox="0 0 48 52" fill="none" aria-label="ForestGuard trees and shield"><path d="M24 3 43 11v14c0 12-10 20-19 24C15 45 5 37 5 25V11L24 3Z" stroke="currentColor" strokeWidth="3"/><path d="m24 12-8 12h5l-7 10h20l-7-10h5L24 12Z" fill="currentColor"/><path d="M24 33v7M13 23l-4 7h8m18-7 4 7h-8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/></svg>;
+  return <svg className="forest-logo" width={size} height={size} viewBox="0 0 100 112" fill="none" role="img" aria-label="Forest Guard: tree and leaf inside a protective shield">
+    <path d="M73 19C63 16 54 12 46 7 33 15 20 20 9 22V52C9 76 21 91 40 103" stroke="var(--logo-ink, #193b29)" strokeWidth="5.5" strokeLinejoin="round"/>
+    <path d="m46 20-15 22 9-2-18 21 13-2-21 22 22-3-16 15h16c8-17 21-20 35-25L55 57l11 2-17-19 10 2Z" fill="var(--logo-ink, #193b29)"/>
+    <path d="m80 22 13 5v24c0 11-1 20-5 28" stroke="#d1aa22" strokeWidth="4.5" strokeLinejoin="round"/>
+    <circle cx="77" cy="21" r="4.5" stroke="#d1aa22" strokeWidth="3.5"/>
+    <circle cx="88" cy="82" r="4.5" stroke="#d1aa22" strokeWidth="3.5"/>
+    <path d="M40 108c2-18 8-32 24-37 10-3 17-6 21-13-1 24-9 43-26 46-8 1-14 0-19 4Z" fill="#718b20"/>
+    <path d="M40 108c8-16 17-25 31-33-13 12-22 22-31 33Z" fill="var(--logo-cutout, #fff)"/>
+  </svg>;
 }
 
 function ForestAnimation({stage,paused,onPause}){
@@ -43,7 +51,7 @@ export default function Landing({onLogin}){
   useEffect(()=>startForestCursor(cursor.current),[]);
   useEffect(()=>{if(paused)return;const id=setInterval(()=>setStage(s=>(s+1)%3),3000);return()=>clearInterval(id);},[paused]);
   useEffect(()=>{let frame;const update=()=>{if(!workflow.current||!workflowSteps.current.length)return;const bounds=workflow.current.getBoundingClientRect(),centers=workflowSteps.current.map(node=>{const r=node.getBoundingClientRect();return r.top+r.height/2;});const start=centers[0]-bounds.top,end=centers.at(-1)-bounds.top,progress=Math.max(0,Math.min(1,(innerHeight*.8-bounds.top)/Math.max(1,bounds.height*.75))),orbit=workflowSteps.current[0].querySelector('.workflow-orbit').getBoundingClientRect();workflow.current.style.setProperty('--flow-start',`${start}px`);workflow.current.style.setProperty('--flow-end',`${end}px`);workflow.current.style.setProperty('--flow-progress',`${start+(end-start)*progress}px`);workflow.current.style.setProperty('--flow-x',`${orbit.left+orbit.width/2-bounds.left}px`);let nearest=0,distance=Infinity;centers.forEach((center,i)=>{const next=Math.abs(center-innerHeight/2);if(next<distance){nearest=i;distance=next;}});setActiveWorkflowStep(distance<innerHeight*.32?nearest:null);};const schedule=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(update);};schedule();addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);return()=>{cancelAnimationFrame(frame);removeEventListener('scroll',schedule);removeEventListener('resize',schedule);};},[]);
-  useEffect(()=>{if(loginOpen)dialog.current.showModal();else dialog.current?.close();},[loginOpen]);
+  useEffect(()=>{if(loginOpen){dialog.current.showModal();dialog.current.scrollTop=0;}else dialog.current?.close();},[loginOpen]);
   useEffect(()=>{const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');observer.unobserve(e.target);}}),{threshold:.12});document.querySelectorAll('.landing .reveal').forEach(e=>observer.observe(e));return()=>observer.disconnect();},[]);
   function openLogin(){setError('');setLoginOpen(true);}
   async function signIn(event){event.preventDefault();if(landingOnly){setError('Officer sign-in is available in the local workspace.');return;}setBusy(true);setError('');try{const response=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({district:'Harda',beat:'Joga',password})});let result;try{result=await response.json();}catch{throw Error('This deployment does not have the ForestGuard sign-in service. Use the locally running workspace.');}if(!response.ok)throw Error(result.detail||'Could not sign in');setLoginOpen(false);onLogin(result);}catch(e){setError(e.message);}finally{setBusy(false);}}

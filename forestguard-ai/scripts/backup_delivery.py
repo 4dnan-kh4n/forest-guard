@@ -76,7 +76,7 @@ def archive_files(archive,checksum):
 
 def create(archive):
     return backup.create(archive,selection(),
-        'Current compartment 279 research release. Real observations and unreviewed references; synthetic training/change fixtures. No evaluated real model. Excludes accounts, full scenes and environments.',FORMAT,LIMIT)
+        'Current compartment 279 research release. Real observations, unreviewed references and cloud-trained weak-label proxy; synthetic training/change fixtures. No independently validated forest model. Excludes accounts, full scenes and environments.',FORMAT,LIMIT)
 
 
 def verify(archive,checksum):

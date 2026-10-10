@@ -1,5 +1,12 @@
 # Progress checklist
 
+- [x] Adopt the supplied shield/tree/leaf logo design as a scalable vector across
+  landing, login, dashboard and favicon; verify production build and live header.
+  Visual evidence: `data/phase5/branding_v1/landing-logo.png` (local, Git-ignored).
+- [x] Restore system cursors while the native login modal is open; reset modal
+  scroll on reopening. Verified button/text cursors, visible logo and production
+  build; proof: `data/phase5/branding_v1/login-popup-fixed.png`.
+
 Local research dashboard — 10 October 2026:
 - [x] Add an officer-only research view with real saved proxy map, scope, date,
   coverage, pixel counts, model/dataset version and four actual export links.
@@ -7,7 +14,12 @@ Local research dashboard — 10 October 2026:
   preserve production forest/change approval gates and existing dataset access.
 - [x] Pass frontend build and isolated offline API/auth/download checks.
 - [x] Verify live login, research navigation, displayed data, map zoom and Fit map.
-- [ ] Complete browser panning/download and keyboard/mobile delivery checks.
+- [x] Complete drag/keyboard panning, all four browser downloads with byte-level
+  checks, refresh/missing/corrupt/recovery, narrow layout and core keyboard checks.
+- [x] Fix rejected-session recovery and verify actual browser return to login.
+- [x] Complete the updated full-backup restoration/offline acceptance handoff:
+  546 files restored; restored API and cold startup passed with external Python
+  networking blocked. Final receipts are retained with the acceptance supplement.
 See [startup, measured verification and limits](docs/RESEARCH_DASHBOARD.md).
 
 Offline research inference — 10 October 2026:

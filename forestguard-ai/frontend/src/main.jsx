@@ -12,7 +12,7 @@ function Icon({name,size=20}) { return <svg width={size} height={size} viewBox="
 const percent=n=>`${((n||0)*100).toFixed(2)}%`;
 const number=n=>Number(n||0).toLocaleString('en-IN');
 const dateLabel=d=>new Date(d+'T12:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-async function api(url,options) { const response=await fetch(url,options); if(!response.headers.get('content-type')?.includes('application/json')) throw Error('The local ForestGuard API did not return JSON. Check that the local server is running.'); const result=await response.json(); if(!response.ok) throw Error(result.detail||'Request failed'); return result; }
+async function api(url,options) { const response=await fetch(url,options); if(!response.headers.get('content-type')?.includes('application/json')) throw Error('The local ForestGuard API did not return JSON. Check that the local server is running.'); const result=await response.json(); if(response.status===401) window.dispatchEvent(new Event('forestguard-session-expired')); if(!response.ok) throw Error(result.detail||'Request failed'); return result; }
 
 function MapPane({data,observation,layer,rings,fitSignal,index,maps,busy}) {
   const host=useRef(null),map=useRef(null),image=useRef(null),outline=useRef(null),fitted=useRef('');
@@ -101,7 +101,7 @@ function App({onLogout}){
 function Stat({label,value,note,icon}){return <article className="stat-card"><div className="stat-top"><span>{label}</span><Icon name={icon}/></div><strong>{value}</strong><small>{note}</small></article>;}
 function ForestGuard(){
   const [officer,setOfficer]=useState(null);
-  useEffect(()=>{api('/api/session').then(result=>{if(result.authenticated)setOfficer(result);}).catch(()=>{});},[]);
+  useEffect(()=>{const expired=()=>setOfficer(null);window.addEventListener('forestguard-session-expired',expired);api('/api/session').then(result=>{if(result.authenticated)setOfficer(result);}).catch(()=>{});return()=>window.removeEventListener('forestguard-session-expired',expired);},[]);
   async function logout(){await api('/api/logout',{method:'POST'});window.location.reload();}
   return officer?<App onLogout={logout}/>:<Landing onLogin={result=>{setOfficer(result);window.scrollTo(0,0);}}/>;
 }

@@ -1,5 +1,6 @@
 """Run only an isolated test copy on port 8001, denying non-loopback Python networking."""
 import socket
+import argparse
 import sys
 from pathlib import Path
 
@@ -45,4 +46,8 @@ for blocked in [('203.0.113.1',443),('example.invalid',443)]:
     except OSError:pass
     else:raise AssertionError('External connection guard failed')
 print('External Python connections and DNS blocked; browser policy restricts resources to this local origin.',flush=True)
-uvicorn.run(app,host='127.0.0.1',port=8001)
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--port',type=int,default=8001)
+args=parser.parse_args()
+if not 8001<=args.port<=8010:parser.error('Use an isolated loopback test port between 8001 and 8010.')
+uvicorn.run(app,host='127.0.0.1',port=args.port)

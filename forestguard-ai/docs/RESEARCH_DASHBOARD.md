@@ -54,17 +54,31 @@ altered manifest, unsupported format and logout denial. Existing compartment dat
 remains available; real change readiness remains false. The frontend production
 build passed using the existing pinned dependencies.
 
-Live browser verification covered login, Research map navigation, correct displayed
-metadata, loaded raster overlay, zoom and Fit map. User interaction interrupted the
-remaining browser tests; panning and browser-triggered downloads are not yet
-verified. The download API bytes were verified. The verification record and available
-screenshots are retained under `data/phase5/research_dashboard_v1/`.
+Live browser acceptance now covers login, Research map navigation, correct displayed
+metadata, raster loading, zoom, Fit map, drag panning, arrow-key panning, refresh,
+missing and corrupt results, recovery, keyboard focus/activation and all four actual
+downloads. Every downloaded file matched the original SHA-256. An isolated copy
+served these checks with external Python connections/DNS blocked and same-origin
+browser policy. Narrow-window checks covered approximately 520 pixels of visible
+browser content, including navigation, cards, map, wrapped metadata and all export
+buttons. This is responsive-layout testing, not testing on physical phones.
+The verification records and screenshots are retained under
+`data/phase5/research_dashboard_v1/`.
 The retained screenshot shows the native viewer of the model-vote export after
 user interaction; it is not a dashboard capture or byte-level download proof.
 
-The interactive map container uses a named region so its zoom controls can remain
-available to accessibility tools. Full keyboard/mobile accessibility checks remain
-for delivery testing. No new scientific accuracy measurement was performed.
+The interactive map container uses a named region so its zoom controls remain
+available to accessibility tools. Tab reached Fit map with a visible focus indicator;
+Enter activated it and an arrow key panned the map. This checks core keyboard use,
+not full screen-reader/WCAG conformance. No new scientific accuracy was measured.
+
+During acceptance, logout from a concurrent test cleared the local presentation
+account's sessions. The stale workspace previously showed an auth error and a
+misleading data-restoration suggestion. The shared API helper now signals rejected
+sessions to the login gate. A real browser regression expired only the disposable
+copy's sessions and verified that Refresh returned to officer login. The actual
+helper also passed hypothetical 200/401/503 and non-JSON response checks in
+`scripts/check_client_session.cjs`. Original accounts/data were untouched.
 
 `.gitignore` continues to exclude generated data/builds, private artifacts, database
 sessions and environments. Source, locks and these instructions remain trackable;
